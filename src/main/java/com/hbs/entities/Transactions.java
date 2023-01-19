@@ -12,29 +12,19 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @Data
-
 @AllArgsConstructor
-
 @NoArgsConstructor
-
 @ToString
-
 @EqualsAndHashCode
-
 @Entity
-
 @Table(name = "transactions")
-
 public class Transactions {
 
 	@Id
-
 	@Column(name = "transaction_id")
-
 	private int transactionId;
 
 	@Column(name = "transaction_amount")
-
 	private double amount;
 
 }

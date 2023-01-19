@@ -9,6 +9,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
@@ -28,17 +29,19 @@ import lombok.ToString;
 @Table(name = "booking_details_table")
 public class BookingDetails {
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE)
+	@Column(name = "booking_id")
 	private int bookingId;
 
-	@Column(name = "user_id")
+	@OneToOne
+	@JoinColumn(name = "fk_user", referencedColumnName = "user_id")
+//	@Column(name = "user_id")
 	private User userId;
 
-	@Column(name = "hotel_id", nullable = false, unique = true)
+	@OneToOne
+	@JoinColumn(name = "fk_hotel", referencedColumnName = "hotel_id")
+//	@Column(name = "hotel_id", nullable = false, unique = true)
 	private Hotel hotelId;
-
-	@Column(name = "room_id", nullable = false, unique = true)
-	private User roomId;
 
 	@Column(name = "booked_from", nullable = false, unique = true)
 	private Date bookedFrom;
@@ -54,5 +57,14 @@ public class BookingDetails {
 
 	@Column(name = "amount", nullable = false)
 	private double amount;
+	
+	@OneToMany
+	@Column(name = "room_id", nullable = false)
+	private List<RoomDetails> roomsList;
+	
+	@OneToMany
+	@Column(name = "fk_payment", nullable = false)
+	private List<Payments> paymentList;
+
 
 }

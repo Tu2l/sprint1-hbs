@@ -23,51 +23,35 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @Data
-
 @AllArgsConstructor
-
 @NoArgsConstructor
-
 @ToString
-
 @EqualsAndHashCode
-
 @Entity
-
 @Table(name = "user_details")
-
 public class User {
 
 	@Id
-
 	@GeneratedValue(strategy = GenerationType.AUTO)
-
 	@Column(name = "user_id", unique = true, nullable = true)
-
 	private int userId;
 
 	@Column(name = "user_name", nullable = true)
-
 	private String userName;
 
 	@Column(name = "email", unique = true, nullable = true)
-
 	private String email;
 
 	@Column(name = "password", unique = true, nullable = true)
-
 	private String password;
 
 	@Column(name = "role", nullable = true)
-
 	private String role;
 
 	@Column(name = "mobile", unique = true, nullable = true)
-
 	private String mobile;
 
 	@Column(name = "address", nullable = true)
-
 	private String address;
 
 }
