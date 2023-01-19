@@ -2,6 +2,9 @@ package com.hbs.entities;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -18,7 +21,9 @@ import lombok.ToString;
 @Entity
 @Table(name = "hotels")
 public class Hotel {
-	@Column(name = "hotel_id", nullable = false)
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	@Column(name = "hotel_id")
 	private int hotelId;
 	@Column(name = "city", nullable = false)
 	private String city;
