@@ -1,7 +1,5 @@
 package com.hbs.entities;
 
-package com.hbs.entities;
-
 import java.sql.Blob;
 
 import javax.persistence.Column;
