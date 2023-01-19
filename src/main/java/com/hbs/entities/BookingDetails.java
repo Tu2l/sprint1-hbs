@@ -32,9 +32,11 @@ public class BookingDetails {
 	private int bookingId;
 
 	@Column(name = "user_id")
+	@OneToOne(fetch = FetchType.LAZY, optional = false)
 	private User userId;
 
 	@Column(name = "hotel_id", nullable = false, unique = true)
+	@OneToOne(fetch =FetchType.LAZY, optional =false)
 	private Hotel hotelId;
 
 	@Column(name = "room_id", nullable = false, unique = true)
