@@ -5,7 +5,9 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 
 import javax.persistence.Id;
-
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -32,10 +34,13 @@ public class Payments {
 	@Column(name = "payment_id")
 	private int paymentId;
 	
-	@Column(name = "booking_id")
-	private int bookingId;
+	@ManyToOne
+	@JoinColumn(name = "fk_booking_id")
+	private BookingDetails bookingId;
 
-	@Column(name = "transaction_id")
-	private int transactionId;
+	@OneToOne
+	@JoinColumn(name = "fk_transaction", referencedColumnName = "transaction_id")
+//	@Column(name = "transaction_id")
+	private Transactions transactionId;
 
 }
