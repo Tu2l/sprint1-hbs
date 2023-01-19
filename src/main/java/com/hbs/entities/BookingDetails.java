@@ -28,7 +28,7 @@ import lombok.ToString;
 @Table(name = "booking_details_table")
 public class BookingDetails {
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE)
 	private int bookingId;
 
 	@Column(name = "user_id")
