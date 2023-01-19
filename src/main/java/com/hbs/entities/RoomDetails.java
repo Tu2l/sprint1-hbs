@@ -7,6 +7,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -25,11 +27,12 @@ import lombok.ToString;
 public class RoomDetails {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	@Column(name = "room_id", unique = true, nullable = true)
+	@Column(name = "room_id")
 	private int roomId;
 
-	@Column(name = "hotel_id", unique = true, nullable = true)
-	private int hotelId;
+	@ManyToOne
+	@JoinColumn(name = "fk_hotel_id")
+	private Hotel hotelId;
 
 	@Column(name = "room_no", nullable = true)
 	private String roomNo;
