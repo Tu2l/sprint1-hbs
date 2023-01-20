@@ -32,7 +32,7 @@ public class UserServiceImpl implements UserService {
 		if (!(user.getEmail().equalsIgnoreCase(find.getEmail())) && userRepository.findByEmail(user.getEmail()) != null)
 			throw new UserAlreadyExistsException(USER_ALREADY_EXISTS + user.getEmail());
 
-		return userRepository.save(find);
+		return userRepository.save(user);
 	}
 
 	@Override
