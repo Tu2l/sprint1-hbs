@@ -6,9 +6,11 @@ import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 
 import com.hbs.dto.BookingDetailsDTO;
+import com.hbs.dto.HotelDTO;
 import com.hbs.dto.RoomDetailsDTO;
 import com.hbs.dto.UserDTO;
 import com.hbs.entities.BookingDetails;
+import com.hbs.entities.Hotel;
 import com.hbs.entities.RoomDetails;
 import com.hbs.entities.User;
 
@@ -58,6 +60,19 @@ public class MapperUtil {
 
 	public static List<BookingDetailsDTO> mapToBookingDetailsDtoList(List<BookingDetails> bookingDetailsList) {
 		return MAPPER.map(bookingDetailsList, new TypeToken<List<BookingDetailsDTO>>() {
+		}.getType());
+	}
+	
+	public static Hotel mapToHotel(HotelDTO hotelDto) {
+		return MAPPER.map(hotelDto, Hotel.class);
+	}
+
+	public static HotelDTO mapToHotelDto(Hotel hotel) {
+		return MAPPER.map(hotel, HotelDTO.class);
+	}
+
+	public static List<HotelDTO> mapToHotelList(List<Hotel> hotel) {
+		return MAPPER.map(hotel, new TypeToken<List<HotelDTO>>() {
 		}.getType());
 	}
 }
