@@ -32,7 +32,7 @@ public class RoomDetails {
 
 	@ManyToOne
 	@JoinColumn(name = "fk_hotel_id")
-	private Hotel hotelId;
+	private Hotel hotel;
 
 	@Column(name = "room_no", nullable = true)
 	private String roomNo;

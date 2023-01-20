@@ -1,9 +1,11 @@
 package com.hbs.repository;
 
-import java.util.List;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-import com.hbs.entities.*;
+import com.hbs.entities.Hotel;
 
-public interface IHotelRepository {
+@Repository
+public interface IHotelRepository extends JpaRepository<Hotel, Integer> {
 	
 }
