@@ -27,32 +27,32 @@ public class HotelController {
 
 	@PostMapping
 	public ResponseEntity<Hotel> add(@RequestBody Hotel hotel) {
-		Hotel newHotel = hotelService.addHotel(hotel);
+		Hotel newHotel = hotelService.add(hotel);
 		return new ResponseEntity<>(newHotel, HttpStatus.OK);
 	}
 
 	@PutMapping
 	public ResponseEntity<Hotel> update(@RequestBody Hotel hotel) throws HotelNotFoundException {
-		Hotel updateHotel = hotelService.updateHotel(hotel);
+		Hotel updateHotel = hotelService.update(hotel);
 		return new ResponseEntity<>(updateHotel, HttpStatus.OK);
 	}
 
-	@DeleteMapping
-	public ResponseEntity<Hotel> remove(@RequestBody Hotel hotel) throws HotelNotFoundException {
-		Hotel removeHotel = hotelService.removeHotel(hotel);
+	@DeleteMapping("/{id}")
+	public ResponseEntity<Hotel> remove(@PathVariable int id) throws HotelNotFoundException {
+		Hotel removeHotel = hotelService.remove(id);
 		return new ResponseEntity<>(removeHotel, HttpStatus.OK);
 	}
 
 	@GetMapping("/all")
-	public ResponseEntity<List<Hotel>> showAll(@RequestBody Hotel hotel) {
-		List<Hotel> showAllHotel = hotelService.showAllHotels();
+	public ResponseEntity<List<Hotel>> findAll(@RequestBody Hotel hotel) {
+		List<Hotel> showAllHotel = hotelService.findAll();
 		return new ResponseEntity<>(showAllHotel, HttpStatus.OK);
 	}
 
-	@GetMapping
-	public ResponseEntity<Hotel> showHotel(@PathVariable int id) throws HotelNotFoundException {
+	@GetMapping("/{id}")
+	public ResponseEntity<Hotel> findById(@PathVariable int id) throws HotelNotFoundException {
 		Hotel showHotel;
-		showHotel = hotelService.showHotel(id);
+		showHotel = hotelService.findById(id);
 		return new ResponseEntity<>(showHotel, HttpStatus.OK);
 	}
 }

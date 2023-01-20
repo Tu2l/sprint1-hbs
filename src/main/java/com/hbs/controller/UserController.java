@@ -2,6 +2,8 @@ package com.hbs.controller;
 
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,46 +16,46 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.hbs.dto.UserDTO;
 import com.hbs.entities.User;
 import com.hbs.exceptions.UserAlreadyExistsException;
 import com.hbs.exceptions.UserNotFoundException;
 import com.hbs.service.UserService;
+import com.hbs.util.MapperUtil;
 
 @RestController
 @RequestMapping("/user")
 public class UserController {
-
+	
 	@Autowired
 	private UserService userService;
 
 	@PostMapping
-	public ResponseEntity<User> add(@RequestBody User user) throws UserAlreadyExistsException {
-		User addedUser = userService.addUser(user);
-		return new ResponseEntity<>(addedUser, HttpStatus.CREATED);
+	public ResponseEntity<UserDTO> add(@Valid @RequestBody UserDTO userDto) throws UserAlreadyExistsException {
+		User user = userService.addUser(MapperUtil.mapToUser(userDto));
+		return new ResponseEntity<>(MapperUtil.mapToUserDto(user), HttpStatus.CREATED);
 	}
 
 	@PutMapping
-	public ResponseEntity<User> update(@RequestBody User user) throws UserNotFoundException, UserAlreadyExistsException {
-		User updatedUser = userService.updateUser(user);
-		return new ResponseEntity<>(updatedUser, HttpStatus.OK);
+	public ResponseEntity<UserDTO> update(@Valid @RequestBody UserDTO userDto) throws UserNotFoundException, UserAlreadyExistsException {
+		User user = userService.updateUser(MapperUtil.mapToUser(userDto));
+		return new ResponseEntity<>(MapperUtil.mapToUserDto(user), HttpStatus.OK);
 	}
 
 	@DeleteMapping("/{userId}")
-	public ResponseEntity<User> remove(@PathVariable int userId) throws UserNotFoundException {
-		return new ResponseEntity<>(userService.removeUser(userId), HttpStatus.OK);
+	public ResponseEntity<UserDTO> remove(@PathVariable int userId) throws UserNotFoundException {
+		return new ResponseEntity<>(MapperUtil.mapToUserDto(userService.removeUser(userId)), HttpStatus.OK);
 	}
 
 	@GetMapping("/all")
-	public ResponseEntity<List<User>> findAll() throws UserNotFoundException {
+	public ResponseEntity<List<UserDTO>> findAll() throws UserNotFoundException {
 		List<User> userList = userService.showAllUser();
-		return new ResponseEntity<>(userList, HttpStatus.OK);
+		return new ResponseEntity<>(MapperUtil.mapToUserDtoList(userList), HttpStatus.OK);
 	}
 
 	@GetMapping("/{id}")
-	public ResponseEntity<User> find(@PathVariable int id) throws UserNotFoundException {
-		User showUser;
-		showUser = userService.findById(id);
-		return new ResponseEntity<>(showUser, HttpStatus.OK);
+	public ResponseEntity<UserDTO> find(@PathVariable int id) throws UserNotFoundException {
+		return new ResponseEntity<>(MapperUtil.mapToUserDto(userService.findById(id)), HttpStatus.OK);
 	}
 
 }
