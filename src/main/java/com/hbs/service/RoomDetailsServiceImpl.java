@@ -15,9 +15,9 @@ import com.hbs.repository.IRoomDetailsRepository;
 @Service
 public class RoomDetailsServiceImpl implements RoomDetailsService {
 
+	private static final String MESSAGE = "Room details not found for room id: ";
 	@Autowired
 	private IRoomDetailsRepository roomDetailsRepository;
-	// private static final String MESSAGE = "Room details not found for room id: ";
 
 	@Override
 	public RoomDetails addRoomDetails(RoomDetails roomDetails) {
@@ -31,7 +31,7 @@ public class RoomDetailsServiceImpl implements RoomDetailsService {
 		Optional<RoomDetails> optionalRoomDetails = roomDetailsRepository.findById(roomDetails.getRoomId());
 
 		return optionalRoomDetails.map(rd -> roomDetailsRepository.save(roomDetails))
-				.orElseThrow(() -> new RoomDetailsNotFoundException());
+				.orElseThrow(() -> new RoomDetailsNotFoundException(MESSAGE + roomDetails.getRoomId()));
 	}
 
 	@Override
@@ -50,6 +50,6 @@ public class RoomDetailsServiceImpl implements RoomDetailsService {
 
 	@Override
 	public RoomDetails findRoomDetailsById(int roomDetailsId) throws RoomDetailsNotFoundException {
-		return roomDetailsRepository.findById(roomDetailsId).orElseThrow(() -> new RoomDetailsNotFoundException());
+		return roomDetailsRepository.findById(roomDetailsId).orElseThrow(() -> new RoomDetailsNotFoundException(MESSAGE + roomDetailsId));
 	}
 }
