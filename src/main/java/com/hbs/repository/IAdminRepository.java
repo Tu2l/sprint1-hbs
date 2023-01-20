@@ -1,7 +1,11 @@
 package com.hbs.repository;
 
-import com.hbs.entities.*;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-public interface IAdminRepository {
-	
+import com.hbs.entities.Admin;
+
+@Repository
+public interface IAdminRepository extends JpaRepository<Admin, Integer> {
+
 }
