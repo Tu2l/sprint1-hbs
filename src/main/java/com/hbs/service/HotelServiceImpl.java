@@ -15,36 +15,36 @@ public class HotelServiceImpl implements HotelService {
 
 	@Autowired
 	IHotelRepository hotelRepository;
-	private static final String message = "No Hotel Found";
+	private static final String HOTEL_NOT_FOUND = "No Hotel found with id: ";
 
 	@Override
-	public Hotel addHotel(Hotel hotel) {
+	public Hotel add(Hotel hotel) {
 		hotelRepository.save(hotel);
 		return null;
 	}
 
 	@Override
-	public Hotel updateHotel(Hotel hotel) throws HotelNotFoundException {
-		Hotel hHotel = hotelRepository.findById(hotel.getHotelId())
-				.orElseThrow(() -> new HotelNotFoundException(message + hotel.getHotelId()));
-		return hotelRepository.save(hotel);
+	public Hotel update(Hotel hotel) throws HotelNotFoundException {
+		findById(hotel.getHotelId());
+		hotelRepository.save(hotel);
+		return hotel;
 	}
 
 	@Override
-	public Hotel removeHotel(Hotel hotel) throws HotelNotFoundException {
-		Optional<Hotel> Hotelobj = hotelRepository.findById(hotel.getHotelId());
-		Hotelobj.ifPresent(h -> hotelRepository.delete(hotel));
-		return Hotelobj.orElseThrow(() -> new HotelNotFoundException(message + hotel.getHotelId()));
+	public Hotel remove(int id) throws HotelNotFoundException {
+		Hotel hotel = findById(id);
+		hotelRepository.deleteById(id);
+		return hotel;
 	}
 
 	@Override
-	public List<Hotel> showAllHotels() {
+	public List<Hotel> findAll() {
 		return hotelRepository.findAll();
 	}
 
 	@Override
-	public Hotel showHotel(int id) throws HotelNotFoundException {
-		return hotelRepository.findById(id).get();
+	public Hotel findById(int id) throws HotelNotFoundException {
+		return hotelRepository.findById(id).orElseThrow(()->new HotelNotFoundException(HOTEL_NOT_FOUND +id));
 	}
 
 }

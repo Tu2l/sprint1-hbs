@@ -7,9 +7,9 @@ import com.hbs.exceptions.HotelNotFoundException;
 
 
 public interface HotelService {
-	public Hotel addHotel(Hotel hotel);
-	public Hotel updateHotel(Hotel hotel) throws HotelNotFoundException;
-	public Hotel removeHotel(Hotel hotel)throws HotelNotFoundException;
-	public List<Hotel> showAllHotels();
-	public Hotel showHotel(int  id) throws HotelNotFoundException;
+	public Hotel add(Hotel hotel);
+	public Hotel update(Hotel hotel) throws HotelNotFoundException;
+	public Hotel remove(int id)throws HotelNotFoundException;
+	public List<Hotel> findAll();
+	public Hotel findById(int  id) throws HotelNotFoundException;
 }
