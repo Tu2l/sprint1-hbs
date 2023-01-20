@@ -1,7 +1,6 @@
 package com.hbs.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.hbs.entities.Admin;
@@ -19,8 +18,8 @@ public class AdminServiceImpl implements AdminService {
 	@Autowired
 	private AdminRepository repo;
 
-	@Autowired
-	private PasswordEncoder encoder;
+	//@Autowired
+	//private PasswordEncoder encoder;
 
 	@Override
 	public Admin signIn(Admin admin) throws AdminNotFoundException, InvalidCredentialsException {
@@ -29,10 +28,10 @@ public class AdminServiceImpl implements AdminService {
 			throw new AdminNotFoundException(ADMIN_NOT_FOUND_MESSAGE + admin.getEmail());
 
 		// verify hashed password
-		String findPass = encoder.encode(find.getPassword());
-		String pass = encoder.encode(admin.getPassword());
-		if (findPass.equals(pass))
-			return find;
+//		String findPass = encoder.encode(find.getPassword());
+//		String pass = encoder.encode(admin.getPassword());
+//		if (findPass.equals(pass))
+//			return find;
 
 		throw new InvalidCredentialsException(INVALID_CREDENTIALS_MESSAGE);
 	}
@@ -48,7 +47,7 @@ public class AdminServiceImpl implements AdminService {
 		if (find != null)
 			throw new AdminAlreadyExistsException(ADMIN_ALREADY_EXISTS);
 
-		admin.setPassword(encoder.encode(admin.getPassword()));
+		//admin.setPassword(encoder.encode(admin.getPassword()));
 		return repo.save(admin);
 	}
 

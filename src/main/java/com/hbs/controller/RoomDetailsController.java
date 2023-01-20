@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.hbs.dto.RoomDetailsDTO;
 import com.hbs.entities.RoomDetails;
 import com.hbs.exceptions.RoomDetailsNotFoundException;
 import com.hbs.service.RoomDetailsService;
@@ -26,10 +27,10 @@ public class RoomDetailsController {
 	private RoomDetailsService roomDetailsService;
 
 	@PostMapping
-	public ResponseEntity<RoomDetails> add(@RequestBody RoomDetails roomDetails) {
-
-		RoomDetails addedRoomDetails = roomDetailsService.addRoomDetails(roomDetails);
-		return new ResponseEntity<>(addedRoomDetails, HttpStatus.CREATED);
+	public ResponseEntity<RoomDetails> add(@RequestBody RoomDetailsDTO roomDetailsDto) {
+		
+//		RoomDetails addedRoomDetails = roomDetailsService.addRoomDetails(roomDetails);
+		return new ResponseEntity<>(HttpStatus.CREATED);
 	}
 
 	@PutMapping
