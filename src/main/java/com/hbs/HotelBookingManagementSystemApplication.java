@@ -7,6 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Bean;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.hbs.entities.BookingDetails;
 import com.hbs.entities.Hotel;
@@ -24,6 +27,11 @@ import com.hbs.repository.IUserRepository;
 @SpringBootApplication
 public class HotelBookingManagementSystemApplication {
 
+	@Bean
+	public PasswordEncoder getPasswordEncoder() {
+		return new BCryptPasswordEncoder ();
+	}
+	
 	public static void main(String[] args) {
 		SpringApplication.run(HotelBookingManagementSystemApplication.class, args);
 		System.err.println("Running");
