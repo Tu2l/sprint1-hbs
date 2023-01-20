@@ -19,9 +19,11 @@ public class GlobalExceptionHandler {
 
 	@ResponseStatus(value = HttpStatus.NOT_FOUND)
 	@ResponseBody
-	@ExceptionHandler(value = { HotelNotFoundException.class, UserNotFoundException.class,
-			RoomDetailsNotFoundException.class, BookingDetailsNotFoundException.class,
-			PaymentsNotFoundException.class })
+	@ExceptionHandler(value = { 
+			HotelNotFoundException.class, RoomDetailsNotFoundException.class,
+			BookingDetailsNotFoundException.class, PaymentsNotFoundException.class, 
+			UserNotFoundException.class,AdminNotFoundException.class })
+	
 	public ErrorResponse handleNotFound(Exception ex, HttpServletRequest req) {
 		return new ErrorResponse(ex.getMessage(), req.getRequestURI(), LocalDateTime.now().toString());
 	}
@@ -43,6 +45,13 @@ public class GlobalExceptionHandler {
 			msg = error.getDefaultMessage();
 
 		return new ErrorResponse(msg, req.getRequestURI(), LocalDateTime.now().toString());
+	}
+
+	@ResponseStatus(value = HttpStatus.UNAUTHORIZED)
+	@ResponseBody
+	@ExceptionHandler(value = { InvalidCredentialsException.class, UserAlreadyExistsException.class })
+	public ErrorResponse handleAuthenticationException(Exception ex, HttpServletRequest req) {
+		return new ErrorResponse(ex.getMessage(), req.getRequestURI(), LocalDateTime.now().toString());
 	}
 
 }
