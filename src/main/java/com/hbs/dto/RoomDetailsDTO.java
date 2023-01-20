@@ -3,10 +3,15 @@ package com.hbs.dto;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
+import org.springframework.web.multipart.MultipartFile;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty.Access;
+
 import lombok.Data;
 
 @Data
-public class RoomDetailsDTO {
+public class RoomDetailsDTO{
 	@Min(value = 0, message = "Invalid id")
 	private int hotelId;
 
@@ -20,4 +25,7 @@ public class RoomDetailsDTO {
 	private double ratePerDay;
 
 	private boolean isAvailable;
+	
+	@JsonProperty(access = Access.WRITE_ONLY)
+	private MultipartFile photo;
 }
