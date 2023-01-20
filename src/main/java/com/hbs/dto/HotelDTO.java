@@ -1,14 +1,5 @@
 package com.hbs.dto;
 
-<<<<<<< HEAD
-import lombok.Data;
-
-
-public class HotelDTO {
-	
-	
-	private int hotelId;
-=======
 import javax.validation.constraints.Email;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
