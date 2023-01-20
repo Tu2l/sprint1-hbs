@@ -51,5 +51,4 @@ public class HotelDTO {
 	@NotNull(message = "Website must not be empty")
 	private String website;
 
->>>>>>> branch 'main' of https://github.com/Tu2l/sprint1-hbs.git
 }
