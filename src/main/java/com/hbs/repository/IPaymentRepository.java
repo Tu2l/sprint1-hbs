@@ -1,7 +1,11 @@
 package com.hbs.repository;
 
-import com.hbs.entities.*;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-public interface IPaymentRepository {
+import com.hbs.entities.Payments;
+
+@Repository
+public interface IPaymentRepository extends JpaRepository<Payments, Integer> {
 	
 }

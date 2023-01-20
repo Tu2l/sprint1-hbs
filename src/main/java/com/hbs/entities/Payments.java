@@ -1,5 +1,6 @@
 package com.hbs.entities;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 
 import javax.persistence.Entity;
@@ -33,14 +34,13 @@ public class Payments {
 	@Id
 	@Column(name = "payment_id")
 	private int paymentId;
-	
-	@ManyToOne
-	@JoinColumn(name = "fk_booking_id")
-	private BookingDetails bookingId;
 
-	@OneToOne
+	@ManyToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name = "fk_booking_id")
+	private BookingDetails bookingDetails;
+
+	@OneToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "fk_transaction", referencedColumnName = "transaction_id")
-//	@Column(name = "transaction_id")
-	private Transactions transactionId;
+	private Transactions transaction;
 
 }

@@ -1,5 +1,6 @@
 package com.hbs.entities;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 import javax.persistence.CascadeType;
@@ -10,6 +11,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
@@ -26,7 +28,7 @@ import lombok.ToString;
 @ToString
 @EqualsAndHashCode
 @Entity
-@Table(name = "booking_details_table")
+@Table(name = "booking_details")
 public class BookingDetails {
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -35,36 +37,33 @@ public class BookingDetails {
 
 	@OneToOne
 	@JoinColumn(name = "fk_user", referencedColumnName = "user_id")
-//	@Column(name = "user_id")
-	private User userId;
+	private User user;
 
 	@OneToOne
 	@JoinColumn(name = "fk_hotel", referencedColumnName = "hotel_id")
-//	@Column(name = "hotel_id", nullable = false, unique = true)
-	private Hotel hotelId;
+	private Hotel hotel;
 
-	@Column(name = "booked_from", nullable = false, unique = true)
-	private Date bookedFrom;
+	@Column(name = "booked_from", nullable = false)
+	private LocalDate bookedFrom;
 
-	@Column(name = "booked_to", nullable = false, unique = true)
-	private Date bookedTo;
+	@Column(name = "booked_to", nullable = false)
+	private LocalDate bookedTo;
 
-	@Column(name = "no_of_adults", nullable = false, unique = true)
+	@Column(name = "no_of_adults", nullable = false)
 	private int noOfAdults;
 
-	@Column(name = "no_of_children", nullable = false, unique = true)
+	@Column(name = "no_of_children", nullable = false)
 	private int noOfChildren;
 
 	@Column(name = "amount", nullable = false)
 	private double amount;
-	
-	@OneToMany
-	@Column(name = "room_id", nullable = false)
-	private List<RoomDetails> roomsList;
-	
-	@OneToMany
-	@Column(name = "fk_payment", nullable = false)
-	private List<Payments> paymentList;
 
+	@OneToMany
+	@JoinTable(name = "booking_rooms", inverseJoinColumns = @JoinColumn(name = "room_id"), joinColumns = @JoinColumn(name = "booking_id"))
+	private List<RoomDetails> roomsList;
+
+	@OneToMany
+	@JoinTable(name = "booking_payments", inverseJoinColumns = @JoinColumn(name = "payment_id"), joinColumns = @JoinColumn(name = "booking_id"))
+	private List<Payments> paymentList;
 
 }

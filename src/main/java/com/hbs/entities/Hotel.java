@@ -8,6 +8,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -29,27 +31,28 @@ public class Hotel {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "hotel_id")
 	private int hotelId;
+	
 	@Column(name = "city", nullable = false)
-	
 	private String city;
+	
 	@Column(name = "hotel_name", nullable = false)
-	
 	private String hotelName;
+
 	@Column(name = "address", nullable = false)
-	
 	private String address;
-	@Column(name = "description", nullable = false)
 	
+	@Column(name = "description", nullable = false)	
 	private String description;
+	
 	@Column(name = "avg_rate_per_day", nullable = false)
-	
 	private double avgRatePerDay;
+	
 	@Column(name = "email", unique = true, nullable = false)
-	
 	private String email;
-	@Column(name = "phone1", unique = true, nullable = false)
 	
+	@Column(name = "phone1", unique = true, nullable = false)
 	private String phone1;
+	
 	@Column(name = "phone2", unique = true, nullable = false)
 	private String phone2;
 	
@@ -57,7 +60,7 @@ public class Hotel {
 	private String website;
 	
 	@OneToMany(cascade = CascadeType.ALL)
-	@Column(name = "room_id", nullable = false)
+	@JoinTable(name = "hotel_rooms", inverseJoinColumns = @JoinColumn(name = "room_id"), joinColumns = @JoinColumn(name = "hotel_id"))
 	private List<RoomDetails> roomList;
 	
 	
