@@ -4,7 +4,8 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty.Access;
 
 import lombok.Data;
 import lombok.ToString;
@@ -12,7 +13,9 @@ import lombok.ToString;
 @Data
 @ToString
 public class UserDTO {
+	@JsonProperty(access = Access.READ_ONLY)
 	private int userId;
+	
 	@NotNull(message = "UserName must not be null")
 	@Size(min = 4, message = "Username must have atleast 4 characters")
 	private String userName;
@@ -23,6 +26,7 @@ public class UserDTO {
 	
 	@NotNull(message = "Password must not be null")
 	@Size(min = 8, message = "Password must have atleast 8 characters")
+	@JsonProperty(access = Access.WRITE_ONLY)
 	private String password;
 	
 	private String role;

@@ -10,24 +10,24 @@ import org.springframework.stereotype.Service;
 
 import com.hbs.entities.RoomDetails;
 import com.hbs.exceptions.RoomDetailsNotFoundException;
-import com.hbs.repository.IRoomDetailsRepository;
+import com.hbs.repository.RoomDetailsRepository;
 
 @Service
 public class RoomDetailsServiceImpl implements RoomDetailsService {
 
 	private static final String MESSAGE = "Room details not found for room id: ";
 	@Autowired
-	private IRoomDetailsRepository roomDetailsRepository;
+	private RoomDetailsRepository roomDetailsRepository;
 
 	@Override
-	public RoomDetails addRoomDetails(RoomDetails roomDetails) {
+	public RoomDetails add(RoomDetails roomDetails) {
 
 		return roomDetailsRepository.save(roomDetails);
 	}
 
 	@Override
 	@Transactional
-	public RoomDetails updateRoomDetails(RoomDetails roomDetails) throws RoomDetailsNotFoundException {
+	public RoomDetails update(RoomDetails roomDetails) throws RoomDetailsNotFoundException {
 		Optional<RoomDetails> optionalRoomDetails = roomDetailsRepository.findById(roomDetails.getRoomId());
 
 		return optionalRoomDetails.map(rd -> roomDetailsRepository.save(roomDetails))
@@ -35,21 +35,26 @@ public class RoomDetailsServiceImpl implements RoomDetailsService {
 	}
 
 	@Override
-	public RoomDetails removeRoomDetailsById(int id) throws RoomDetailsNotFoundException {
+	public RoomDetails removeById(int id) throws RoomDetailsNotFoundException {
 
-		RoomDetails room = findRoomDetailsById(id);
+		RoomDetails room = findById(id);
 		roomDetailsRepository.deleteById(id);
 		return room;
 	}
 
 	@Override
-	public List<RoomDetails> findAllRoomDetails() {
+	public List<RoomDetails> findAll() {
 
 		return roomDetailsRepository.findAll();
 	}
 
 	@Override
-	public RoomDetails findRoomDetailsById(int roomDetailsId) throws RoomDetailsNotFoundException {
+	public RoomDetails findById(int roomDetailsId) throws RoomDetailsNotFoundException {
 		return roomDetailsRepository.findById(roomDetailsId).orElseThrow(() -> new RoomDetailsNotFoundException(MESSAGE + roomDetailsId));
+	}
+
+	@Override
+	public List<RoomDetails> findByHotelId(int hotelId) {
+		return roomDetailsRepository.findByHotelId(hotelId);
 	}
 }
