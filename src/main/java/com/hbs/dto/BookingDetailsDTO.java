@@ -28,6 +28,7 @@ public class BookingDetailsDTO {
 	@JsonProperty(access = Access.WRITE_ONLY)
 	private int bookingId;
 
+	@NotNull
 	@Min(value = 0, message = "User Id must be greater than zero")
 	private int userId;
 
@@ -50,12 +51,15 @@ public class BookingDetailsDTO {
 	@NotNull(message = "Number of children is required.")
 	private int noOfChildren;
 
+	@NotNull
 	@Min(value = 0, message = "Amount must be greater than zero.")
 	private double amount;
 
+	@NotNull
 	@Size(min = 1, message = "room list must not be empty")
 	private List<Integer> roomIdList;
 
+	@NotNull
 	@Size(min = 1, message = "payment list must not be empty")
-	private List<Integer> paymentIdList;
+	private List<PaymentsDTO> paymentsList;
 }
