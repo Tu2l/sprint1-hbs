@@ -14,9 +14,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.hbs.dto.HotelDTO;
 import com.hbs.entities.Hotel;
 import com.hbs.exceptions.HotelNotFoundException;
 import com.hbs.service.HotelService;
+import com.hbs.util.MapperUtil;
 
 @RestController
 @RequestMapping("/hotel")
@@ -26,33 +28,33 @@ public class HotelController {
 	HotelService hotelService;
 
 	@PostMapping
-	public ResponseEntity<Hotel> add(@RequestBody Hotel hotel) {
-		Hotel newHotel = hotelService.add(hotel);
-		return new ResponseEntity<>(newHotel, HttpStatus.OK);
+	public ResponseEntity<HotelDTO> add(@RequestBody HotelDTO hotelDto){
+		Hotel newHotel = hotelService.add(MapperUtil.mapToHotel(hotelDto));
+		return new ResponseEntity<>(MapperUtil.mapToHotelDto(newHotel), HttpStatus.CREATED);
 	}
 
 	@PutMapping
-	public ResponseEntity<Hotel> update(@RequestBody Hotel hotel) throws HotelNotFoundException {
-		Hotel updateHotel = hotelService.update(hotel);
-		return new ResponseEntity<>(updateHotel, HttpStatus.OK);
+	public ResponseEntity<HotelDTO> update(@RequestBody HotelDTO hotelDto) throws HotelNotFoundException {
+		Hotel updateHotel = hotelService.update(MapperUtil.mapToHotel(hotelDto));
+		return new ResponseEntity<>(MapperUtil.mapToHotelDto(updateHotel), HttpStatus.OK);
 	}
 
 	@DeleteMapping("/{id}")
-	public ResponseEntity<Hotel> remove(@PathVariable int id) throws HotelNotFoundException {
+	public ResponseEntity<HotelDTO> remove(@PathVariable int id) throws HotelNotFoundException {
 		Hotel removeHotel = hotelService.remove(id);
-		return new ResponseEntity<>(removeHotel, HttpStatus.OK);
+		return new ResponseEntity<>(MapperUtil.mapToHotelDto(removeHotel), HttpStatus.OK);
 	}
 
 	@GetMapping("/all")
-	public ResponseEntity<List<Hotel>> findAll(@RequestBody Hotel hotel) {
+	public ResponseEntity<List<HotelDTO>> findAll() throws HotelNotFoundException{
 		List<Hotel> showAllHotel = hotelService.findAll();
-		return new ResponseEntity<>(showAllHotel, HttpStatus.OK);
+		return new ResponseEntity<>(MapperUtil.mapToHotelList(showAllHotel), HttpStatus.OK);
 	}
 
 	@GetMapping("/{id}")
-	public ResponseEntity<Hotel> findById(@PathVariable int id) throws HotelNotFoundException {
+	public ResponseEntity<HotelDTO> findById(@PathVariable int id) throws HotelNotFoundException {
 		Hotel showHotel;
 		showHotel = hotelService.findById(id);
-		return new ResponseEntity<>(showHotel, HttpStatus.OK);
+		return new ResponseEntity<>(MapperUtil.mapToHotelDto(showHotel), HttpStatus.OK);
 	}
 }
