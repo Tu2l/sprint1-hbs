@@ -6,13 +6,13 @@ import com.hbs.entities.BookingDetails;
 import com.hbs.exceptions.BookingDetailsNotFoundException;
 
 public interface BookingDetailsService {
-	BookingDetails addBookingDetails(BookingDetails bookingDetails);
+	BookingDetails add(BookingDetails bookingDetails);
 
-	BookingDetails updateBookingDetails(BookingDetails bookingDetails)throws BookingDetailsNotFoundException;
+	BookingDetails update(BookingDetails bookingDetails)throws BookingDetailsNotFoundException;
 
-	BookingDetails removeBookingDetails(BookingDetails bookingDetails)throws BookingDetailsNotFoundException;
+	BookingDetails remove(int bookingId)throws BookingDetailsNotFoundException;
 
-	List<BookingDetails> showAllBookingDetails();
+	List<BookingDetails> findAll();
 
-	BookingDetails showBookingDetails(int bookingDetailsId)throws BookingDetailsNotFoundException;
+	BookingDetails findById(int bookingId)throws BookingDetailsNotFoundException;
 }
