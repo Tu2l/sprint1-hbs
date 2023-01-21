@@ -1,21 +1,20 @@
 package com.hbs.entities;
 
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -62,8 +61,21 @@ public class BookingDetails {
 	@JoinTable(name = "booking_rooms", inverseJoinColumns = @JoinColumn(name = "room_id"), joinColumns = @JoinColumn(name = "booking_id"))
 	private List<RoomDetails> roomsList;
 
-	@OneToMany
+	@OneToMany(cascade = CascadeType.ALL)
 	@JoinTable(name = "booking_payments", inverseJoinColumns = @JoinColumn(name = "payment_id"), joinColumns = @JoinColumn(name = "booking_id"))
 	private List<Payments> paymentList;
+
+	public void setPaymentList(List<Payments> paymentList) {
+		//generating payments
+		this.paymentList = paymentList;
+		for (Payments payment : paymentList) {
+			payment.setBookingDetails(this);
+
+			// generating transactions
+			Transactions transaction = new Transactions();
+			transaction.setAmount(payment.getAmount());
+			payment.setTransaction(transaction);
+		}
+	}
 
 }

@@ -52,7 +52,7 @@ public class GlobalExceptionHandler {
 	@ResponseBody
 	@ExceptionHandler(value = { Exception.class })
 	public ErrorResponse handleError(Exception ex, HttpServletRequest req) {
-//		ex.printStackTrace();
+		ex.printStackTrace();
 		return new ErrorResponse(ex.getMessage(), req.getRequestURI(), LocalDateTime.now().toString());
 	}
 }

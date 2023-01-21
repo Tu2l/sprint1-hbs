@@ -12,9 +12,12 @@ import lombok.Data;
 
 @Data
 public class RoomDetailsDTO{
-	@Min(value = 0, message = "Invalid id")
+	@JsonProperty(access = Access.READ_ONLY)
 	private int hotelId;
-
+	
+	@JsonProperty(access = Access.READ_ONLY)
+	private int roomId;
+	
 	@NotNull(message = "room number must not be null")
 	private String roomNo;
 
@@ -26,6 +29,10 @@ public class RoomDetailsDTO{
 
 	private boolean isAvailable;
 	
+	@JsonProperty(access = Access.READ_ONLY)
+	private String imageUrl;
+
 	@JsonProperty(access = Access.WRITE_ONLY)
-	private MultipartFile photo;
+	private MultipartFile photoUpload;
+	
 }
