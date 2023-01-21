@@ -1,5 +1,7 @@
 package com.hbs.controller;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +21,7 @@ public class PaymentController {
 	private PaymentService paymentService;
 
 	@PostMapping
-	public ResponseEntity<Payments> addPayment(@RequestBody Payments payment) {
-		return new ResponseEntity<>(paymentService.addPayment(payment), HttpStatus.CREATED);
+	public ResponseEntity<Payments> add(@Valid @RequestBody Payments payment) {
+		return new ResponseEntity<>(paymentService.add(payment), HttpStatus.CREATED);
 	}
 }

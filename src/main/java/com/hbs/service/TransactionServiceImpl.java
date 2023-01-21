@@ -4,16 +4,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.hbs.entities.Transactions;
-import com.hbs.repository.ITransactionRepository;
+import com.hbs.repository.TransactionRepository;
 
 @Service
 public class TransactionServiceImpl implements TransactionService {
 
 	@Autowired
-	private ITransactionRepository transactionRepository;
+	private TransactionRepository transactionRepository;
 
 	@Override
-	public Transactions addTransaction(Transactions transaction) {
+	public Transactions add(Transactions transaction) {
 
 		return transactionRepository.save(transaction);
 	}

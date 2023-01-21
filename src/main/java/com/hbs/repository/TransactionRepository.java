@@ -6,6 +6,6 @@ import org.springframework.stereotype.Repository;
 import com.hbs.entities.Transactions;
 
 @Repository
-public interface ITransactionRepository extends JpaRepository<Transactions, Integer> {
+public interface TransactionRepository extends JpaRepository<Transactions, Integer> {
 	
 }
