@@ -6,13 +6,13 @@ import com.hbs.exceptions.UserAlreadyExistsException;
 import com.hbs.exceptions.UserNotFoundException;
 
 public interface UserService {
-	public User addUser(User user) throws UserAlreadyExistsException;
+	public User add(User user) throws UserAlreadyExistsException;
 
-	public User updateUser(User user) throws UserNotFoundException, UserAlreadyExistsException;
+	public User update(User user) throws UserNotFoundException, UserAlreadyExistsException;
 
-	public User removeUser(int id) throws UserNotFoundException;
+	public User remove(int id) throws UserNotFoundException;
 
-	public List<User> showAllUser() throws UserNotFoundException;
+	public List<User> findAll() throws UserNotFoundException;
 
 	public User findById(int user) throws UserNotFoundException;
 }

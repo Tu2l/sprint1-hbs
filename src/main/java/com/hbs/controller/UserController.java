@@ -32,24 +32,24 @@ public class UserController {
 
 	@PostMapping
 	public ResponseEntity<UserDTO> add(@Valid @RequestBody UserDTO userDto) throws UserAlreadyExistsException {
-		User user = userService.addUser(MapperUtil.mapToUser(userDto));
+		User user = userService.add(MapperUtil.mapToUser(userDto));
 		return new ResponseEntity<>(MapperUtil.mapToUserDto(user), HttpStatus.CREATED);
 	}
 
 	@PutMapping
 	public ResponseEntity<UserDTO> update(@Valid @RequestBody UserDTO userDto) throws UserNotFoundException, UserAlreadyExistsException {
-		User user = userService.updateUser(MapperUtil.mapToUser(userDto));
+		User user = userService.update(MapperUtil.mapToUser(userDto));
 		return new ResponseEntity<>(MapperUtil.mapToUserDto(user), HttpStatus.OK);
 	}
 
 	@DeleteMapping("/{userId}")
 	public ResponseEntity<UserDTO> remove(@PathVariable int userId) throws UserNotFoundException {
-		return new ResponseEntity<>(MapperUtil.mapToUserDto(userService.removeUser(userId)), HttpStatus.OK);
+		return new ResponseEntity<>(MapperUtil.mapToUserDto(userService.remove(userId)), HttpStatus.OK);
 	}
 
 	@GetMapping("/all")
 	public ResponseEntity<List<UserDTO>> findAll() throws UserNotFoundException {
-		List<User> userList = userService.showAllUser();
+		List<User> userList = userService.findAll();
 		return new ResponseEntity<>(MapperUtil.mapToUserDtoList(userList), HttpStatus.OK);
 	}
 
