@@ -1,6 +1,8 @@
 package com.hbs.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.hbs.entities.Admin;
@@ -18,8 +20,8 @@ public class AdminServiceImpl implements AdminService {
 	@Autowired
 	private AdminRepository repo;
 
-	//@Autowired
-	//private PasswordEncoder encoder;
+
+	private PasswordEncoder encoder = new BCryptPasswordEncoder();
 
 	@Override
 	public Admin signIn(Admin admin) throws AdminNotFoundException, InvalidCredentialsException {
@@ -28,10 +30,10 @@ public class AdminServiceImpl implements AdminService {
 			throw new AdminNotFoundException(ADMIN_NOT_FOUND_MESSAGE + admin.getEmail());
 
 		// verify hashed password
-//		String findPass = encoder.encode(find.getPassword());
-//		String pass = encoder.encode(admin.getPassword());
-//		if (findPass.equals(pass))
-//			return find;
+		String findPass = encoder.encode(find.getPassword());
+		String pass = encoder.encode(admin.getPassword());
+		if (findPass.equals(pass))
+			return find;
 
 		throw new InvalidCredentialsException(INVALID_CREDENTIALS_MESSAGE);
 	}
@@ -47,8 +49,16 @@ public class AdminServiceImpl implements AdminService {
 		if (find != null)
 			throw new AdminAlreadyExistsException(ADMIN_ALREADY_EXISTS);
 
-		//admin.setPassword(encoder.encode(admin.getPassword()));
+		admin.setPassword(encoder.encode(admin.getPassword()));
 		return repo.save(admin);
+	}
+
+	@Override
+	public Admin findByEmail(String email) throws AdminNotFoundException {
+		Admin admin = repo.findByEmail(email);
+		if (admin == null)
+			throw new AdminNotFoundException(ADMIN_NOT_FOUND_MESSAGE + email);
+		return repo.findByEmail(email);
 	}
 
 }
