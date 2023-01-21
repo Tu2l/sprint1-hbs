@@ -28,12 +28,6 @@ public class GlobalExceptionHandler {
 		return new ErrorResponse(ex.getMessage(), req.getRequestURI(), LocalDateTime.now().toString());
 	}
 
-	@ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
-	@ResponseBody
-	@ExceptionHandler(value = { Exception.class })
-	public ErrorResponse handleError(Exception ex, HttpServletRequest req) {
-		return new ErrorResponse(ex.getMessage(), req.getRequestURI(), LocalDateTime.now().toString());
-	}
 
 	@ResponseStatus(value = HttpStatus.BAD_REQUEST)
 	@ResponseBody
@@ -54,4 +48,11 @@ public class GlobalExceptionHandler {
 		return new ErrorResponse(ex.getMessage(), req.getRequestURI(), LocalDateTime.now().toString());
 	}
 
+	@ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
+	@ResponseBody
+	@ExceptionHandler(value = { Exception.class })
+	public ErrorResponse handleError(Exception ex, HttpServletRequest req) {
+//		ex.printStackTrace();
+		return new ErrorResponse(ex.getMessage(), req.getRequestURI(), LocalDateTime.now().toString());
+	}
 }

@@ -11,4 +11,6 @@ public interface AdminService {
 	Admin signOut(Admin admin);
 	
 	Admin add(Admin admin) throws AdminAlreadyExistsException;
+	
+	Admin findByEmail(String email) throws AdminNotFoundException;
 }
