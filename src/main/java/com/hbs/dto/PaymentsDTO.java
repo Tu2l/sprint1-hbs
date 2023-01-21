@@ -2,16 +2,24 @@ package com.hbs.dto;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty.Access;
+
 import lombok.Data;
 
 @Data
 public class PaymentsDTO {
-	@Min(value = 0, message = "Invalid payment id") 
+	@JsonProperty(access = Access.READ_ONLY)
 	private int paymentId;
-	
-	@NotNull(message = " booking id is invalid") 
+
+	@JsonProperty(access = Access.WRITE_ONLY)
+	@Min(value = 1, message = "amount is invalid")
+	private double amount;
+
+	@JsonProperty(access = Access.READ_ONLY)
 	private int bookingId;
 	
-	@Min(value = 0, message = " transaction id is invalid")
+	@JsonProperty(access = Access.READ_ONLY)
 	private int transactionId;
 }

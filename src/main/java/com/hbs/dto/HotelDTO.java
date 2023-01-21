@@ -5,11 +5,15 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty.Access;
+
 import lombok.Data;
 
 @Data
 public class HotelDTO {
 
+	@JsonProperty(access = Access.READ_ONLY)
 	private int hotelId;
 
 	@NotNull(message = "City must not be Empty")

@@ -1,7 +1,9 @@
 package com.hbs.controller;
 
 import java.util.List;
+
 import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,8 +15,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
 import com.hbs.dto.BookingDetailsDTO;
-import com.hbs.entities.BookingDetails;
 import com.hbs.exceptions.BookingDetailsNotFoundException;
 import com.hbs.service.BookingDetailsService;
 import com.hbs.util.MapperUtil;
@@ -44,8 +46,10 @@ public class BookingDetailsController {
 	}
 
 	@DeleteMapping("/{bookingId}")
-	public ResponseEntity<BookingDetails> remove(@PathVariable int bookingId) throws BookingDetailsNotFoundException {
-		return new ResponseEntity<>(bookingDetailsService.remove(bookingId), HttpStatus.OK);
+	public ResponseEntity<BookingDetailsDTO> remove(@PathVariable int bookingId)
+			throws BookingDetailsNotFoundException {
+		return new ResponseEntity<>(MapperUtil.mapToBookingDetailsDto(bookingDetailsService.remove(bookingId)),
+				HttpStatus.OK);
 	}
 
 	@GetMapping

@@ -10,6 +10,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import lombok.AllArgsConstructor;
 
@@ -34,8 +35,11 @@ public class Payments {
 	@Id
 	@Column(name = "payment_id")
 	private int paymentId;
-
-	@ManyToOne(cascade = CascadeType.ALL)
+	
+	@Transient
+	private double amount;
+	
+	@ManyToOne
 	@JoinColumn(name = "fk_booking_id")
 	private BookingDetails bookingDetails;
 
