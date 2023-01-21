@@ -8,13 +8,13 @@ import org.springframework.stereotype.Service;
 
 import com.hbs.entities.Hotel;
 import com.hbs.exceptions.HotelNotFoundException;
-import com.hbs.repository.IHotelRepository;
+import com.hbs.repository.HotelRepository;
 
 @Service
 public class HotelServiceImpl implements HotelService {
 
 	@Autowired
-	IHotelRepository hotelRepository;
+	HotelRepository hotelRepository;
 	private static final String HOTEL_NOT_FOUND = "No Hotel found with id: ";
 
 	@Override

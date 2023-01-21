@@ -18,7 +18,7 @@ public class UserServiceImpl implements UserService {
 	private UserRepository userRepository;
 
 	@Override
-	public User addUser(User user) throws UserAlreadyExistsException {
+	public User add(User user) throws UserAlreadyExistsException {
 		User find = userRepository.findByEmail(user.getEmail());
 		if (find != null)
 			throw new UserAlreadyExistsException(USER_ALREADY_EXISTS + user.getEmail());
@@ -27,7 +27,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public User updateUser(User user) throws UserNotFoundException, UserAlreadyExistsException {
+	public User update(User user) throws UserNotFoundException, UserAlreadyExistsException {
 		User find = findById(user.getUserId());
 		if (!(user.getEmail().equalsIgnoreCase(find.getEmail())) && userRepository.findByEmail(user.getEmail()) != null)
 			throw new UserAlreadyExistsException(USER_ALREADY_EXISTS + user.getEmail());
@@ -36,14 +36,14 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public User removeUser(int id) throws UserNotFoundException {
+	public User remove(int id) throws UserNotFoundException {
 		User find = findById(id);
 		userRepository.deleteById(find.getUserId());
 		return find;
 	}
 
 	@Override
-	public List<User> showAllUser() throws UserNotFoundException {
+	public List<User> findAll() throws UserNotFoundException {
 		return userRepository.findAll();
 	}
 
