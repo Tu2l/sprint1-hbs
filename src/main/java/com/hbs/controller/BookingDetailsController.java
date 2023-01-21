@@ -1,7 +1,7 @@
 package com.hbs.controller;
 
 import java.util.List;
-
+import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,9 +13,11 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import com.hbs.dto.BookingDetailsDTO;
 import com.hbs.entities.BookingDetails;
 import com.hbs.exceptions.BookingDetailsNotFoundException;
 import com.hbs.service.BookingDetailsService;
+import com.hbs.util.MapperUtil;
 
 @RestController
 @RequestMapping("/bookingDetails")
@@ -24,41 +26,38 @@ public class BookingDetailsController {
 	@Autowired
 	private BookingDetailsService bookingDetailsService;
 
-	//http://localhost:8080/bookingDetails
 	@PostMapping
-	public ResponseEntity<BookingDetails> addBookingDetails(@RequestBody BookingDetails bookingDetails) {
-		BookingDetails addedBookingDetails = bookingDetailsService.addBookingDetails(bookingDetails);
-		return new ResponseEntity<>(addedBookingDetails, HttpStatus.CREATED);
+	public ResponseEntity<BookingDetailsDTO> add(@Valid @RequestBody BookingDetailsDTO bookingDetailsDto) {
+		return new ResponseEntity<>(
+				MapperUtil.mapToBookingDetailsDto(
+						bookingDetailsService.add(MapperUtil.mapToBookingDetails(bookingDetailsDto))),
+				HttpStatus.CREATED);
 	}
 
 	@PutMapping
-	public ResponseEntity<BookingDetails> updateBookingDetails(@RequestBody BookingDetails bookingDetails)
+	public ResponseEntity<BookingDetailsDTO> update(@Valid @RequestBody BookingDetailsDTO bookingDetailsDto)
 			throws BookingDetailsNotFoundException {
-		BookingDetails updatedBookingDetails = bookingDetailsService.updateBookingDetails(bookingDetails);
-		return new ResponseEntity<>(updatedBookingDetails, HttpStatus.OK);
-
+		return new ResponseEntity<>(
+				MapperUtil.mapToBookingDetailsDto(
+						bookingDetailsService.update(MapperUtil.mapToBookingDetails(bookingDetailsDto))),
+				HttpStatus.OK);
 	}
 
 	@DeleteMapping("/{bookingId}")
-	public ResponseEntity<Void> removeBookingDetails(@PathVariable int bookingId)
-			throws BookingDetailsNotFoundException {
-		BookingDetails bookingDetails = new BookingDetails();
-		bookingDetails.setBookingId(bookingId);
-		bookingDetailsService.removeBookingDetails(bookingDetails);
-		return new ResponseEntity<>(HttpStatus.OK);
+	public ResponseEntity<BookingDetails> remove(@PathVariable int bookingId) throws BookingDetailsNotFoundException {
+		return new ResponseEntity<>(bookingDetailsService.remove(bookingId), HttpStatus.OK);
 	}
 
 	@GetMapping
-	public ResponseEntity<List<BookingDetails>> showAllBookingDetails() {
-		List<BookingDetails> bookingDetailsList = bookingDetailsService.showAllBookingDetails();
-		return new ResponseEntity<>(bookingDetailsList, HttpStatus.OK);
+	public ResponseEntity<List<BookingDetailsDTO>> findAll() {
+		return new ResponseEntity<>(MapperUtil.mapToBookingDetailsDtoList(bookingDetailsService.findAll()),
+				HttpStatus.OK);
 	}
 
 	@GetMapping("/{bookingId}")
-	public ResponseEntity<BookingDetails> showBookingDetails(@PathVariable int bookingId)
+	public ResponseEntity<BookingDetailsDTO> findById(@PathVariable int bookingId)
 			throws BookingDetailsNotFoundException {
-		BookingDetails bookingDetails = bookingDetailsService.showBookingDetails(bookingId);
-		return new ResponseEntity<>(bookingDetails, HttpStatus.FOUND);
-
+		return new ResponseEntity<>(MapperUtil.mapToBookingDetailsDto(bookingDetailsService.findById(bookingId)),
+				HttpStatus.OK);
 	}
 }
