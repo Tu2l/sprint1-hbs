@@ -11,6 +11,7 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -20,30 +21,39 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.hbs.dto.RoomDetailsDTO;
 import com.hbs.entities.RoomDetails;
 import com.hbs.exceptions.RoomDetailsNotFoundException;
 import com.hbs.service.RoomDetailsService;
+import com.hbs.util.FileUploadUtil;
 import com.hbs.util.MapperUtil;
 
 @RestController
 @RequestMapping("/roomdetails")
 public class RoomDetailsController {
-	private static final Logger LOGGER = LogManager.getLogger(RoomDetailsController.class);
-
+	private static final Logger LOGGER ;
+	static {
+		LOGGER = LogManager.getLogger(RoomDetailsController.class);
+	}
+	
 	@Autowired
 	private RoomDetailsService roomService;
 
 	@PostMapping(consumes = { "multipart/form-data" })
-	public ResponseEntity<RoomDetailsDTO> add(@Valid @ModelAttribute RoomDetailsDTO roomDetailsDto)
-			throws IOException, SQLException {
+	public ResponseEntity<RoomDetailsDTO> add(@Valid @ModelAttribute RoomDetailsDTO roomDetailsDto) throws IOException {
 
 		RoomDetails room = MapperUtil.mapToRoomDetails(roomDetailsDto);
-		room.setPhoto(new javax.sql.rowset.serial.SerialBlob(roomDetailsDto.getPhoto().getBytes()));
+		MultipartFile photo = roomDetailsDto.getPhotoUpload();
 
+		String fileName = StringUtils.cleanPath(photo.getOriginalFilename());
+		String uploadDir = roomDetailsDto.getHotelId() + "/" + room.getRoomNo();
+		String path = FileUploadUtil.saveFile(uploadDir, fileName, roomDetailsDto.getPhotoUpload());
+		room.setImageUrl(path);
 		room = roomService.add(room);
 
+//		LOGGER.info(room);
 		return new ResponseEntity<>(MapperUtil.mapToRoomDetailsDto(room), HttpStatus.CREATED);
 	}
 
@@ -73,6 +83,7 @@ public class RoomDetailsController {
 
 	@GetMapping("/byhotelid/{hotelId}")
 	public ResponseEntity<List<RoomDetailsDTO>> findByHotelId(@PathVariable int hotelId) {
-		return new ResponseEntity<>(MapperUtil.mapToRoomDetailsDtoList(roomService.findByHotelId(hotelId)), HttpStatus.OK);
+		return new ResponseEntity<>(MapperUtil.mapToRoomDetailsDtoList(roomService.findByHotelId(hotelId)),
+				HttpStatus.OK);
 	}
 }
