@@ -2,6 +2,8 @@ package com.hbs.controller;
 
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,13 +30,13 @@ public class HotelController {
 	HotelService hotelService;
 
 	@PostMapping
-	public ResponseEntity<HotelDTO> add(@RequestBody HotelDTO hotelDto){
+	public ResponseEntity<HotelDTO> add(@Valid @RequestBody HotelDTO hotelDto){
 		Hotel newHotel = hotelService.add(MapperUtil.mapToHotel(hotelDto));
 		return new ResponseEntity<>(MapperUtil.mapToHotelDto(newHotel), HttpStatus.CREATED);
 	}
 
 	@PutMapping
-	public ResponseEntity<HotelDTO> update(@RequestBody HotelDTO hotelDto) throws HotelNotFoundException {
+	public ResponseEntity<HotelDTO> update(@Valid @RequestBody HotelDTO hotelDto) throws HotelNotFoundException {
 		Hotel updateHotel = hotelService.update(MapperUtil.mapToHotel(hotelDto));
 		return new ResponseEntity<>(MapperUtil.mapToHotelDto(updateHotel), HttpStatus.OK);
 	}
