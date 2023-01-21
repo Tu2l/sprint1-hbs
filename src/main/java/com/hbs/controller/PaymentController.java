@@ -10,8 +10,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.hbs.entities.Payments;
+import com.hbs.dto.PaymentsDTO;
 import com.hbs.service.PaymentService;
+import com.hbs.util.MapperUtil;
 
 @RestController
 @RequestMapping("/payments")
@@ -21,7 +22,8 @@ public class PaymentController {
 	private PaymentService paymentService;
 
 	@PostMapping
-	public ResponseEntity<Payments> add(@Valid @RequestBody Payments payment) {
-		return new ResponseEntity<>(paymentService.add(payment), HttpStatus.CREATED);
+	public ResponseEntity<PaymentsDTO> add(@Valid @RequestBody PaymentsDTO paymentDto) {
+		return new ResponseEntity<>(MapperUtil.mapToPaymentDto(paymentService.add(MapperUtil.mapToPayment(paymentDto))),
+				HttpStatus.CREATED);
 	}
 }
