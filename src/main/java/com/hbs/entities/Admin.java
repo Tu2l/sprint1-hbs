@@ -25,13 +25,16 @@ public class Admin {
 	@GeneratedValue(strategy = GenerationType.SEQUENCE)
 	@Column(name = "user_id", nullable = false)
 	private int adminId;
-	
+
 	@Column(name = "admin_name", nullable = false)
 	private String adminName;
-	
+
 	@Column(name = "email", unique = true, nullable = false)
 	private String email;
-	
+
 	@Column(name = "pasword", nullable = false)
 	private String password;
+
+	@Column(name = "salt")
+	private Long salt;
 }

@@ -53,5 +53,6 @@ public class User {
 
 	@Column(name = "address", nullable = true)
 	private String address;
+	
 
 }

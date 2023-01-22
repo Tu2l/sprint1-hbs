@@ -39,8 +39,8 @@ public class AdminController {
 	}
 
 	@PostMapping("/signout")
-	public ResponseEntity<AdminDTO> signOut(@RequestBody AdminDTO adminDto) {
+	public ResponseEntity<AdminDTO> signOut(@RequestBody AdminDTO adminDto) throws AdminNotFoundException {
 		Admin admin = MapperUtil.mapToAdmin(adminDto);
-		return new ResponseEntity<>(MapperUtil.mapToAdminDto(admin), HttpStatus.OK);
+		return new ResponseEntity<>(MapperUtil.mapToAdminDto(service.signOut(admin)), HttpStatus.OK);
 	}
 }

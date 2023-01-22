@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class JwtResponseModel {
+public class JwtResponse {
 	private String token;
+	private String email;
 }

@@ -20,7 +20,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.hbs.dto.HotelDTO;
 import com.hbs.entities.Hotel;
+import com.hbs.exceptions.HotelAlreadyExistsExcetion;
 import com.hbs.exceptions.HotelNotFoundException;
+import com.hbs.exceptions.InvalidEmailFormatException;
+import com.hbs.exceptions.InvalidMobileNumberFormatException;
 import com.hbs.service.HotelService;
 import com.hbs.util.MapperUtil;
 
@@ -28,20 +31,26 @@ import com.hbs.util.MapperUtil;
 @RequestMapping("/hotel")
 public class HotelController {
 	private static final Logger LOGGER = LogManager.getLogger(HotelController.class);
-	
+
 	@Autowired
 	HotelService hotelService;
 
 	@PostMapping
-	public ResponseEntity<HotelDTO> add(@Valid @RequestBody HotelDTO hotelDto){
+	public ResponseEntity<HotelDTO> add(@Valid @RequestBody HotelDTO hotelDto)
+			throws InvalidEmailFormatException, InvalidMobileNumberFormatException, HotelAlreadyExistsExcetion {
 		Hotel newHotel = hotelService.add(MapperUtil.mapToHotel(hotelDto));
-		LOGGER.info(newHotel);
+//		LOGGER.info(newHotel);
 		return new ResponseEntity<>(MapperUtil.mapToHotelDto(newHotel), HttpStatus.CREATED);
 	}
 
-	@PutMapping
-	public ResponseEntity<HotelDTO> update(@Valid @RequestBody HotelDTO hotelDto) throws HotelNotFoundException {
+	@PutMapping("/{id}")
+	public ResponseEntity<HotelDTO> update(@Valid @RequestBody HotelDTO hotelDto, @PathVariable int id)
+			throws HotelNotFoundException, InvalidEmailFormatException, InvalidMobileNumberFormatException,
+			HotelAlreadyExistsExcetion {
+		
 		Hotel updateHotel = hotelService.update(MapperUtil.mapToHotel(hotelDto));
+		updateHotel.setHotelId(id);
+		
 		return new ResponseEntity<>(MapperUtil.mapToHotelDto(updateHotel), HttpStatus.OK);
 	}
 
@@ -51,8 +60,8 @@ public class HotelController {
 		return new ResponseEntity<>(MapperUtil.mapToHotelDto(removeHotel), HttpStatus.OK);
 	}
 
-	@GetMapping("/all")
-	public ResponseEntity<List<HotelDTO>> findAll(){
+	@GetMapping
+	public ResponseEntity<List<HotelDTO>> findAll() {
 		List<Hotel> showAllHotel = hotelService.findAll();
 		return new ResponseEntity<>(MapperUtil.mapToHotelList(showAllHotel), HttpStatus.OK);
 	}

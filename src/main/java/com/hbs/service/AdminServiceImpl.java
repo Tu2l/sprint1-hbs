@@ -39,8 +39,10 @@ public class AdminServiceImpl implements AdminService {
 	}
 
 	@Override
-	public Admin signOut(Admin admin) {
-		return admin;
+	public Admin signOut(Admin admin) throws AdminNotFoundException {
+		Admin find = findByEmail(admin.getEmail());
+		find.setSalt(Long.valueOf(0));
+		return repo.save(find);
 	}
 
 	@Override

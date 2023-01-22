@@ -12,6 +12,11 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
+
+import com.hbs.exceptions.InvalidCredentialsException;
+import com.hbs.service.JwtService;
+import com.hbs.util.LoggerUtil;
+
 import io.jsonwebtoken.ExpiredJwtException;
 
 @Component
@@ -19,8 +24,8 @@ public class JwtFilter extends OncePerRequestFilter {
 	@Autowired
 	private JwtUserDetailsService userDetailsService;
 	@Autowired
-	private TokenManager tokenManager;
-
+	private JwtService service;
+	
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
 			throws ServletException, IOException {
@@ -31,23 +36,27 @@ public class JwtFilter extends OncePerRequestFilter {
 		if (tokenHeader != null && tokenHeader.startsWith("Bearer ")) {
 			token = tokenHeader.substring(7);
 			try {
-				System.err.println(token);
-				username = tokenManager.getUsernameFromToken(token);
+				LoggerUtil.logInfo(token);
+				username = service.getUsernameFromToken(token);
 			} catch (IllegalArgumentException e) {
-				System.out.println("Unable to get JWT Token");
+				LoggerUtil.logInfo("Unable to get JWT Token");
 			} catch (ExpiredJwtException e) {
-				System.out.println("JWT Token has expired");
+				LoggerUtil.logInfo("JWT Token has expired");
 			}
 		} else {
-			System.out.println("Bearer String not found in token");
+			LoggerUtil.logInfo("Bearer String not found in token");
 		}
-		if (null != username && SecurityContextHolder.getContext().getAuthentication() == null) {
+		if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
 			UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-			if (tokenManager.validateJwtToken(token, userDetails)) {
-				UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
-						userDetails, null, userDetails.getAuthorities());
-				authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-				SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+			try {
+				if (Boolean.TRUE.equals(service.validateJwtToken(token, userDetails.getUsername()))) {
+					UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
+							userDetails, null, userDetails.getAuthorities());
+					authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+					SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+				}
+			} catch (InvalidCredentialsException e) {
+				e.printStackTrace();
 			}
 		}
 		filterChain.doFilter(request, response);
