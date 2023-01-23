@@ -59,7 +59,7 @@ public class BookingDetails {
 
 	@OneToMany
 	@JoinTable(name = "booking_rooms", inverseJoinColumns = @JoinColumn(name = "room_id"), joinColumns = @JoinColumn(name = "booking_id"))
-	private List<RoomDetails> roomsList;
+	private List<RoomDetails> roomList;
 
 	@OneToMany(cascade = CascadeType.ALL)
 	@JoinTable(name = "booking_payments", inverseJoinColumns = @JoinColumn(name = "payment_id"), joinColumns = @JoinColumn(name = "booking_id"))

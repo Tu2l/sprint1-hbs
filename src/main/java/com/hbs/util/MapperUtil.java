@@ -1,19 +1,21 @@
 package com.hbs.util;
 
 import java.util.List;
+import java.util.stream.Collectors;
+
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 
-import com.hbs.dto.AdminDTO;
+import com.hbs.auth.JwtResponse;
 import com.hbs.dto.BookingDetailsDTO;
 import com.hbs.dto.HotelDTO;
 import com.hbs.dto.PaymentsDTO;
 import com.hbs.dto.RoomDetailsDTO;
 import com.hbs.dto.TransactionsDTO;
 import com.hbs.dto.UserDTO;
-import com.hbs.entities.Admin;
 import com.hbs.entities.BookingDetails;
 import com.hbs.entities.Hotel;
+import com.hbs.entities.JwtToken;
 import com.hbs.entities.Payments;
 import com.hbs.entities.RoomDetails;
 import com.hbs.entities.Transactions;
@@ -26,7 +28,9 @@ public class MapperUtil {
 		MAPPER = new ModelMapper();
 	}
 
-	private MapperUtil() {}
+	private MapperUtil() {
+	
+	}
 
 	// user<->userdto
 	public static User mapToUser(UserDTO userDto) {
@@ -57,8 +61,26 @@ public class MapperUtil {
 	}
 
 	// bookingdetails<->bookingdetailsdto
-	public static BookingDetails mapToBookingDetails(BookingDetailsDTO bookingDetailsDto) {
-		return MAPPER.map(bookingDetailsDto, BookingDetails.class);
+	public static BookingDetails mapToBookingDetails(BookingDetailsDTO dto) {
+		BookingDetails booking = MAPPER.map(dto, BookingDetails.class);
+	
+		List<RoomDetails> roomList = dto.getRoomIds().stream().map((id) -> {
+			RoomDetails room = new RoomDetails();
+			room.setRoomId(id);
+			return room;
+		}).collect(Collectors.toList());
+
+		booking.setRoomList(roomList);
+
+		List<Payments> payments = dto.getPayments().stream().map((amount) -> {
+			Payments payment = new Payments();
+			payment.setAmount(amount);
+			return payment;
+		}).collect(Collectors.toList());
+
+		booking.setPaymentList(payments);
+
+		return booking;
 	}
 
 	public static BookingDetailsDTO mapToBookingDetailsDto(BookingDetails bookingDetails) {
@@ -100,13 +122,8 @@ public class MapperUtil {
 		return MAPPER.map(hotel, new TypeToken<List<HotelDTO>>() {
 		}.getType());
 	}
-	
-	//admin 
-	public static Admin mapToAdmin(AdminDTO dto) {
-		return MAPPER.map(dto, Admin.class);
-	}
 
-	public static AdminDTO mapToAdminDto(Admin admin) {
-		return MAPPER.map(admin, AdminDTO.class);
+	public static JwtResponse mapToJwtResponse(JwtToken jwt) {
+		return MAPPER.map(jwt, JwtResponse.class);
 	}
 }

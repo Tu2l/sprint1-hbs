@@ -18,7 +18,10 @@ import org.springframework.http.ResponseEntity;
 
 import com.hbs.dto.HotelDTO;
 import com.hbs.entities.Hotel;
+import com.hbs.exceptions.HotelAlreadyExistsExcetion;
 import com.hbs.exceptions.HotelNotFoundException;
+import com.hbs.exceptions.InvalidEmailFormatException;
+import com.hbs.exceptions.InvalidMobileNumberFormatException;
 import com.hbs.service.HotelService;
 import com.hbs.util.MapperUtil;
 
@@ -51,7 +54,7 @@ class HotelControllerTest {
 	}
 
 	@Test
-	void add() {
+	void add() throws InvalidEmailFormatException, InvalidMobileNumberFormatException, HotelAlreadyExistsExcetion {
 		when(hotelService.add(hotel)).thenReturn(hotel);
 		ResponseEntity<HotelDTO> response = hotelController.add(hotelDto);
 		assertEquals(HttpStatus.CREATED, response.getStatusCode());
@@ -59,9 +62,9 @@ class HotelControllerTest {
 	}
 
 	@Test
-	void update() throws HotelNotFoundException {
+	void update() throws HotelNotFoundException, InvalidEmailFormatException, InvalidMobileNumberFormatException, HotelAlreadyExistsExcetion {
 		when(hotelService.update(hotel)).thenReturn(hotel);
-		ResponseEntity<HotelDTO> response = hotelController.update(hotelDto);
+		ResponseEntity<HotelDTO> response = hotelController.update(hotelDto,1);
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 		assertEquals(hotelDto, response.getBody());
 	}
@@ -103,9 +106,9 @@ class HotelControllerTest {
 	}
 
 	@Test
-	void update_throws_HotelNotFoundException() throws HotelNotFoundException {
+	void update_throws_HotelNotFoundException() throws HotelNotFoundException, InvalidEmailFormatException, InvalidMobileNumberFormatException, HotelAlreadyExistsExcetion {
 		when(hotelService.update(hotel)).thenThrow(HotelNotFoundException.class);
-		assertThrows(HotelNotFoundException.class, () -> hotelController.update(hotelDto));
+		assertThrows(HotelNotFoundException.class, () -> hotelController.update(hotelDto,1));
 	}
 
 }

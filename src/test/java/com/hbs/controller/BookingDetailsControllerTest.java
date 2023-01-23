@@ -8,8 +8,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -25,6 +23,9 @@ import com.hbs.dto.BookingDetailsDTO;
 import com.hbs.entities.BookingDetails;
 import com.hbs.entities.Hotel;
 import com.hbs.exceptions.BookingDetailsNotFoundException;
+import com.hbs.exceptions.HotelNotFoundException;
+import com.hbs.exceptions.RoomDetailsNotFoundException;
+import com.hbs.exceptions.UserNotFoundException;
 import com.hbs.service.BookingDetailsService;
 import com.hbs.util.MapperUtil;
 
@@ -64,7 +65,7 @@ class BookingDetailsControllerTest {
 
 	@Test
 	@Order(1)
-	void testAdd() {
+	void testAdd() throws UserNotFoundException, HotelNotFoundException, RoomDetailsNotFoundException {
 		when(bookingDetailsService.add(bookingDetails)).thenReturn(bookingDetails);
 		ResponseEntity<BookingDetailsDTO> response = bookingDetailsController.add(bookingDetailsDto);
 		assertEquals(HttpStatus.CREATED, response.getStatusCode());
@@ -74,9 +75,9 @@ class BookingDetailsControllerTest {
 
 	@Test
 	@Order(4)
-	void testUpdate() throws BookingDetailsNotFoundException {
+	void testUpdate() throws BookingDetailsNotFoundException, UserNotFoundException, HotelNotFoundException, RoomDetailsNotFoundException {
 		when(bookingDetailsService.update(bookingDetails)).thenReturn(bookingDetails);
-		ResponseEntity<BookingDetailsDTO> response = bookingDetailsController.update(bookingDetailsDto);
+		ResponseEntity<BookingDetailsDTO> response = bookingDetailsController.update(bookingDetailsDto, 1);
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 		assertEquals(bookingDetailsDto, response.getBody());
 	}
@@ -113,4 +114,13 @@ class BookingDetailsControllerTest {
 	
 	
 
+
+	@Test
+	    public void testAddNew() throws UserNotFoundException, HotelNotFoundException, RoomDetailsNotFoundException {
+	        when(MapperUtil.mapToBookingDetails(bookingDetailsDto)).thenReturn(bookingDetails);
+	        when(bookingDetailsService.add(bookingDetails)).thenReturn(bookingDetails);
+	        when(MapperUtil.mapToBookingDetailsDto(bookingDetails)).thenReturn(bookingDetailsDto);
+	        ResponseEntity<BookingDetailsDTO> response = bookingDetailsController.add(bookingDetailsDto);
+	        assertEquals(HttpStatus.CREATED, response.getStatusCode());
+	    }
 }
