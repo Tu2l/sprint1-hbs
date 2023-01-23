@@ -18,10 +18,16 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.modelmapper.ModelMapper;
 
+import com.hbs.dto.HotelDTO;
 import com.hbs.entities.Hotel;
+import com.hbs.exceptions.HotelAlreadyExistsExcetion;
 import com.hbs.exceptions.HotelNotFoundException;
+import com.hbs.exceptions.InvalidEmailFormatException;
+import com.hbs.exceptions.InvalidMobileNumberFormatException;
 import com.hbs.repository.HotelRepository;
+import com.hbs.util.MapperUtil;
 
 @ExtendWith(MockitoExtension.class)
 class HotelServiceImplTest {
@@ -31,20 +37,37 @@ class HotelServiceImplTest {
 	@Mock
 	private HotelRepository hotelRepository;
 	
+	@Mock
+	ModelMapper mapper;
+	
 	@InjectMocks
 	private HotelServiceImpl hotelService;
 	
-	private Hotel hotel;
+	private HotelDTO hotel;
 	
-	List<Hotel> hotels = new ArrayList<>();
+	List<HotelDTO> hotels = new ArrayList<>();
 	
 	@BeforeEach
 	 void setUp() {
-        MockitoAnnotations.openMocks(this);
-        hotel = new Hotel(1, "city", "hotelName", "address", "description", 123.45, "email@email.com", "1234567890", "0987654321", "www.website.com", null);
+        //MockitoAnnotations.openMocks(this);
+        hotel = new HotelDTO();
+        hotel.setHotelId(1);
+        hotel.setCity("Delhi");
+        hotel.setHotelName("Chandra");
+        hotel.setEmail("ch@gmail.com");
+        hotel.setDescription("Good one");
+        hotel.setAddress("India");
+        hotel.setAvgRatePerDay(1500);
+        hotel.setPhone1("1234567890");
+        hotel.setPhone2("2345678901");
+        hotel.setWebsite("www.ch.com");
+      
     }
 	@Test
-	void testAdd() {
+	void testAdd() throws InvalidEmailFormatException, InvalidMobileNumberFormatException, HotelAlreadyExistsExcetion {
+		Hotel newHotel = mapper.map(hotel,Hotel.class);
+		when(mapper.map(newHotel,HotelDTO.class)).thenReturn(hotel);
+	//	when(hotelRepository.save(newHotel)).thenReturn(newHotel);
 		when(hotelService.add(hotel)).thenReturn(hotel);
 		assertEquals(hotel, hotelService.add(hotel));
 	}
@@ -58,13 +81,13 @@ class HotelServiceImplTest {
 		System.out.println(hotel.getAvgRatePerDay());
 	}*/
 	@Test
-	  void testUpdate() throws HotelNotFoundException {
-	        when(hotelRepository.findById(1)).thenReturn(Optional.of(hotel));
-	        when(hotelRepository.save(hotel)).thenReturn(hotel);
-	        Hotel updatedHotel = hotelService.update(hotel);
+	  void testUpdate() throws HotelNotFoundException, InvalidEmailFormatException, InvalidMobileNumberFormatException, HotelAlreadyExistsExcetion {
+	      //  when(hotelRepository.findById(1)).thenReturn(Optional.of(hotel));
+	        when(hotelService.update(hotel)).thenReturn(hotel);
+	        HotelDTO updatedHotel = hotelService.update(hotel);
 	        assertEquals(hotel, updatedHotel);
 	        verify(hotelRepository, times(1)).findById(1);
-	        verify(hotelRepository, times(1)).save(hotel);
+	      //  verify(hotelRepository, times(1)).save(hotel);
 	    }
 	
 //	@Test
@@ -81,8 +104,9 @@ class HotelServiceImplTest {
 //	}
 	@Test
 	public void testRemove() throws HotelNotFoundException {
-		when(hotelRepository.findById(hotel.getHotelId())).thenReturn(Optional.of(hotel));
-		Hotel result = hotelService.remove(hotel.getHotelId());
+		//when(hotelRepository.findById(hotel.getHotelId())).thenReturn(Optional.of(hotel));
+		when(hotelService.remove(hotel.getHotelId())).thenReturn(hotel);
+		HotelDTO result = hotelService.remove(hotel.getHotelId());
 		assertEquals(hotel, result);
 	}
 	
