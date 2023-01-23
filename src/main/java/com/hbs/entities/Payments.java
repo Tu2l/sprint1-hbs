@@ -25,11 +25,10 @@ import lombok.ToString;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString
 @EqualsAndHashCode
 @Entity
+@ToString(exclude = {"bookingDetails"})
 @Table(name = "payments")
-
 public class Payments {
 
 	@Id

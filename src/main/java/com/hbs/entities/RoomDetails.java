@@ -32,7 +32,7 @@ public class RoomDetails {
 	@JoinColumn(name = "fk_hotel_id")
 	private Hotel hotel;
 
-	@Column(name = "room_no", nullable = true)
+	@Column(name = "room_no", unique = true, nullable = true)
 	private String roomNo;
 
 	@Column(name = "room_type", nullable = true)
