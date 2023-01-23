@@ -1,7 +1,7 @@
 package com.hbs.service;
 
-import com.hbs.entities.Payments;
+import com.hbs.dto.PaymentsDTO;
 
 public interface PaymentService {
-	public Payments add(Payments payment);
+	public PaymentsDTO add(PaymentsDTO dto);
 }

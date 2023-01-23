@@ -29,7 +29,7 @@ public class MapperUtil {
 	}
 
 	private MapperUtil() {
-	
+
 	}
 
 	// user<->userdto
@@ -63,7 +63,7 @@ public class MapperUtil {
 	// bookingdetails<->bookingdetailsdto
 	public static BookingDetails mapToBookingDetails(BookingDetailsDTO dto) {
 		BookingDetails booking = MAPPER.map(dto, BookingDetails.class);
-	
+
 		List<RoomDetails> roomList = dto.getRoomIds().stream().map((id) -> {
 			RoomDetails room = new RoomDetails();
 			room.setRoomId(id);
@@ -84,7 +84,17 @@ public class MapperUtil {
 	}
 
 	public static BookingDetailsDTO mapToBookingDetailsDto(BookingDetails bookingDetails) {
-		return MAPPER.map(bookingDetails, BookingDetailsDTO.class);
+		BookingDetailsDTO dto = MAPPER.map(bookingDetails, BookingDetailsDTO.class);
+		List<Integer> roomIdList = bookingDetails.getRoomList().stream().map((room) -> room.getRoomId())
+				.collect(Collectors.toList());
+
+		dto.setRoomIds(roomIdList);
+
+		List<Double> payments = bookingDetails.getPaymentList().stream().map((payment) -> payment.getAmount())
+				.collect(Collectors.toList());
+
+		dto.setPayments(payments);
+		return dto;
 	}
 
 	public static List<BookingDetailsDTO> mapToBookingDetailsDtoList(List<BookingDetails> bookingDetailsList) {

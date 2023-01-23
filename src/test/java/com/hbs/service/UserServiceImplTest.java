@@ -41,7 +41,7 @@ class UserServiceImplTest {
 	void testAddUser()
 			throws UserAlreadyExistsException, InvalidEmailFormatException, InvalidMobileNumberFormatException {
 
-		when(userRepository.findByEmail(user.getEmail())).thenReturn(null);
+		when(userRepository.findByEmail(user.getEmail())).thenReturn(Optional.of(user));
 		when(userRepository.save(user)).thenReturn(user);
 		User result = userService.add(user);
 		assertEquals(user, result);

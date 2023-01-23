@@ -1,7 +1,7 @@
 package com.hbs.service;
 
-import com.hbs.entities.Transactions;
+import com.hbs.dto.TransactionsDTO;
 
 public interface TransactionService {
-	public Transactions add(Transactions transaction);
+	public TransactionsDTO add(TransactionsDTO dto);
 }

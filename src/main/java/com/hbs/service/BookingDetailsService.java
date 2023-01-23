@@ -2,6 +2,7 @@ package com.hbs.service;
 
 import java.util.List;
 
+import com.hbs.dto.BookingDetailsDTO;
 import com.hbs.entities.BookingDetails;
 import com.hbs.exceptions.BookingDetailsNotFoundException;
 import com.hbs.exceptions.HotelNotFoundException;
@@ -9,15 +10,15 @@ import com.hbs.exceptions.RoomDetailsNotFoundException;
 import com.hbs.exceptions.UserNotFoundException;
 
 public interface BookingDetailsService {
-	BookingDetails add(BookingDetails bookingDetails)
+	BookingDetailsDTO add(BookingDetailsDTO bookingDetails)
 			throws UserNotFoundException, HotelNotFoundException, RoomDetailsNotFoundException;
 
-	BookingDetails update(BookingDetails bookingDetails) throws BookingDetailsNotFoundException, UserNotFoundException,
-			HotelNotFoundException, RoomDetailsNotFoundException;
+	BookingDetailsDTO update(BookingDetailsDTO bookingDetails) throws BookingDetailsNotFoundException,
+			UserNotFoundException, HotelNotFoundException, RoomDetailsNotFoundException;
 
-	BookingDetails remove(int bookingId) throws BookingDetailsNotFoundException;
+	BookingDetailsDTO remove(int bookingId) throws BookingDetailsNotFoundException;
 
-	List<BookingDetails> findAll();
+	List<BookingDetailsDTO> findAll();
 
-	BookingDetails findById(int bookingId) throws BookingDetailsNotFoundException;
+	BookingDetailsDTO findById(int bookingId) throws BookingDetailsNotFoundException;
 }

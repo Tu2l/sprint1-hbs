@@ -59,6 +59,7 @@ class HotelControllerTest {
 		ResponseEntity<HotelDTO> response = hotelController.add(hotelDto);
 		assertEquals(HttpStatus.CREATED, response.getStatusCode());
 		assertEquals(hotelDto, response.getBody());
+		
 	}
 
 	@Test
@@ -94,19 +95,19 @@ class HotelControllerTest {
 	}
 
 	@Test
-	void remove_throws_HotelNotFoundException() throws HotelNotFoundException {
+	void removeThrowsHotelNotFoundException() throws HotelNotFoundException {
 		when(hotelService.remove(1)).thenThrow(HotelNotFoundException.class);
 		assertThrows(HotelNotFoundException.class, () -> hotelController.remove(1));
 	}
 
 	@Test
-	void findById_throws_HotelNotFoundException() throws HotelNotFoundException {
+	void findByIdThrowsHotelNotFoundException() throws HotelNotFoundException {
 		when(hotelService.findById(1)).thenThrow(HotelNotFoundException.class);
 		assertThrows(HotelNotFoundException.class, () -> hotelController.findById(1));
 	}
 
 	@Test
-	void update_throws_HotelNotFoundException() throws HotelNotFoundException, InvalidEmailFormatException, InvalidMobileNumberFormatException, HotelAlreadyExistsExcetion {
+	void updateThrowsHotelNotFoundException() throws HotelNotFoundException, InvalidEmailFormatException, InvalidMobileNumberFormatException, HotelAlreadyExistsExcetion {
 		when(hotelService.update(hotel)).thenThrow(HotelNotFoundException.class);
 		assertThrows(HotelNotFoundException.class, () -> hotelController.update(hotelDto,1));
 	}
