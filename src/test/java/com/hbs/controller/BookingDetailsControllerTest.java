@@ -1,9 +1,17 @@
 package com.hbs.controller;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.when;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -15,16 +23,20 @@ import org.springframework.http.ResponseEntity;
 
 import com.hbs.dto.BookingDetailsDTO;
 import com.hbs.entities.BookingDetails;
+import com.hbs.entities.Hotel;
+import com.hbs.exceptions.BookingDetailsNotFoundException;
 import com.hbs.service.BookingDetailsService;
 import com.hbs.util.MapperUtil;
 
 @ExtendWith(MockitoExtension.class)
-public class BookingDetailsControllerTest {
+class BookingDetailsControllerTest {
 
+	
+	
 	@Mock
 	private BookingDetailsService bookingDetailsService;
 
-	//private MapperUtil mapperUtil;
+	// private MapperUtil mapperUtil;
 
 	@InjectMocks
 	private BookingDetailsController bookingDetailsController;
@@ -35,19 +47,70 @@ public class BookingDetailsControllerTest {
 	@BeforeEach
 	public void setup() {
 		bookingDetailsDto = new BookingDetailsDTO();
-		bookingDetails = new BookingDetails();
-
+	    bookingDetailsDto.setBookingId(1);
+	    bookingDetailsDto.setUserId(1);
+	    Hotel hotel = new Hotel();
+	    hotel.setHotelId(1);
+	    hotel.setHotelName("Maurya");
+	    bookingDetailsDto.setHotelId(1);
+	    bookingDetailsDto.setBookedFrom(LocalDate.now());
+	    bookingDetailsDto.setBookedTo(LocalDate.now().plusDays(3));
+	    bookingDetailsDto.setNoOfAdults(2);
+	    bookingDetailsDto.setNoOfChildren(1);
+	    bookingDetailsDto.setAmount(500.0);
+		bookingDetails = MapperUtil.mapToBookingDetails(bookingDetailsDto);
 		MockitoAnnotations.openMocks(this);
 	}
 
 	@Test
-	    public void testAdd() {
-	        when(MapperUtil.mapToBookingDetails(bookingDetailsDto)).thenReturn(bookingDetails);
-	        when(bookingDetailsService.add(bookingDetails)).thenReturn(bookingDetails);
-	        when(MapperUtil.mapToBookingDetailsDto(bookingDetails)).thenReturn(bookingDetailsDto);
-	        ResponseEntity<BookingDetailsDTO> response = bookingDetailsController.add(bookingDetailsDto);
-	        assertEquals(HttpStatus.CREATED, response.getStatusCode());
-	    }
+	@Order(1)
+	void testAdd() {
+		when(bookingDetailsService.add(bookingDetails)).thenReturn(bookingDetails);
+		ResponseEntity<BookingDetailsDTO> response = bookingDetailsController.add(bookingDetailsDto);
+		assertEquals(HttpStatus.CREATED, response.getStatusCode());
+		assertEquals(500.0,bookingDetails.getAmount());
+		assertEquals(bookingDetailsDto, response.getBody());
+	}
+
+	@Test
+	@Order(4)
+	void testUpdate() throws BookingDetailsNotFoundException {
+		when(bookingDetailsService.update(bookingDetails)).thenReturn(bookingDetails);
+		ResponseEntity<BookingDetailsDTO> response = bookingDetailsController.update(bookingDetailsDto);
+		assertEquals(HttpStatus.OK, response.getStatusCode());
+		assertEquals(bookingDetailsDto, response.getBody());
+	}
+
+	@Test
+	@Order(5)
+	void testRemove() throws BookingDetailsNotFoundException {
+		when(bookingDetailsService.remove(anyInt())).thenReturn(bookingDetails);
+		ResponseEntity<BookingDetailsDTO> response = bookingDetailsController.remove(1);
+		assertEquals(HttpStatus.OK, response.getStatusCode());
+		assertEquals(bookingDetailsDto, response.getBody());
+	}
+
+	@Test
+	@Order(3)
+	void testFindAll() {
+		List<BookingDetails> bookingDetailsList = new ArrayList<>();
+		bookingDetailsList.add(bookingDetails);
+		when(bookingDetailsService.findAll()).thenReturn(bookingDetailsList);
+		ResponseEntity<List<BookingDetailsDTO>> response = bookingDetailsController.findAll();
+		assertEquals(HttpStatus.OK, response.getStatusCode());
+		assertEquals(bookingDetailsList.size(), response.getBody().size());
+	}
+
+	@Test
+	@Order(2)
+	void testFindById() throws BookingDetailsNotFoundException {
+		when(bookingDetailsService.findById(anyInt())).thenReturn(bookingDetails);
+		ResponseEntity<BookingDetailsDTO> response = bookingDetailsController.findById(1);
+		assertEquals(HttpStatus.OK, response.getStatusCode());
+		assertEquals(bookingDetailsDto, response.getBody());
+	}
+	
+	
+	
+
 }
-
-
