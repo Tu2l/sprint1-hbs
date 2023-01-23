@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.hbs.auth.JwtRequest;
 import com.hbs.auth.JwtResponse;
+import com.hbs.dto.UserDTO;
 import com.hbs.entities.User;
 import com.hbs.entities.UserRole;
 import com.hbs.exceptions.AdminNotFoundException;
@@ -17,13 +18,14 @@ import com.hbs.exceptions.InvalidMobileNumberFormatException;
 import com.hbs.exceptions.UserAlreadyExistsException;
 import com.hbs.exceptions.UserNotFoundException;
 import com.hbs.repository.UserRepository;
+import com.hbs.util.MapperUtil;
 import com.hbs.util.ValidationUtil;
 
 @Service
 public class UserServiceImpl implements UserService {
-	private static final String USER_NOT_FOUND_EXCEPTION = "User not found with id: ";
-	private static final String USER_NOT_FOUND_EMAIL_EXCEPTION = "User not found with email: ";
-	private static final String USER_ALREADY_EXISTS = "User already exists with email: ";
+	private static final String USER_NOT_FOUND_EXCEPTION = "UserDTO not found with id: ";
+	private static final String USER_NOT_FOUND_EMAIL_EXCEPTION = "UserDTO not found with email: ";
+	private static final String USER_ALREADY_EXISTS = "UserDTO already exists with email: ";
 	private static final String INVALID_EMAIL_FORMAT = "Invalid email: ";
 	private static final String INVALID_MOBILE_NUMBER_FORMAT = "Invalid mobile number";
 
@@ -45,8 +47,10 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public User add(User user)
+	public UserDTO add(UserDTO dto)
 			throws UserAlreadyExistsException, InvalidEmailFormatException, InvalidMobileNumberFormatException {
+
+		User user = MapperUtil.mapToUser(dto);
 
 		if (userRepository.findByEmail(user.getEmail()).isPresent())
 			throw new UserAlreadyExistsException(USER_ALREADY_EXISTS + user.getEmail());
@@ -56,13 +60,16 @@ public class UserServiceImpl implements UserService {
 		user.setRole(UserRole.USER);
 		user.setPassword(passwordEncoder.encode(user.getPassword()));
 
-		return userRepository.save(user);
+		return MapperUtil.mapToUserDto(userRepository.save(user));
 	}
 
 	@Override
-	public User update(User user) throws UserNotFoundException, UserAlreadyExistsException, InvalidEmailFormatException,
-			InvalidMobileNumberFormatException {
-		User find = findById(user.getUserId());
+	public UserDTO update(UserDTO dto) throws UserNotFoundException, UserAlreadyExistsException,
+			InvalidEmailFormatException, InvalidMobileNumberFormatException {
+
+		User user = MapperUtil.mapToUser(dto);
+
+		UserDTO find = findById(user.getUserId());
 		if (!(user.getEmail().equalsIgnoreCase(find.getEmail()))
 				&& userRepository.findByEmail(user.getEmail()).isPresent())
 			throw new UserAlreadyExistsException(USER_ALREADY_EXISTS + user.getEmail());
@@ -71,30 +78,31 @@ public class UserServiceImpl implements UserService {
 
 		user.setPassword(passwordEncoder.encode(user.getPassword()));
 
-		return userRepository.save(user);
+		return MapperUtil.mapToUserDto(userRepository.save(user));
 	}
 
 	@Override
-	public User remove(int id) throws UserNotFoundException {
-		User find = findById(id);
+	public UserDTO remove(int id) throws UserNotFoundException {
+		UserDTO find = findById(id);
 		userRepository.deleteById(find.getUserId());
 		return find;
 	}
 
 	@Override
-	public List<User> findAll() throws UserNotFoundException {
-		return userRepository.findAllByRole(UserRole.USER);
+	public List<UserDTO> findAll() throws UserNotFoundException {
+		return MapperUtil.mapToUserDtoList(userRepository.findAllByRole(UserRole.USER));
 	}
 
 	@Override
-	public User findById(int userId) throws UserNotFoundException {
-		return userRepository.findByUserIdAndRole(userId, UserRole.USER)
+	public UserDTO findById(int userId) throws UserNotFoundException {
+		User user = userRepository.findByUserIdAndRole(userId, UserRole.USER)
 				.orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND_EXCEPTION + userId));
+		return MapperUtil.mapToUserDto(user);
 
 	}
 
 	@Override
-	public User findByEmail(String email) throws UserNotFoundException {
+	public UserDTO findByEmail(String email) throws UserNotFoundException {
 		return findByEmailAndRole(email, UserRole.USER);
 	}
 
@@ -108,15 +116,17 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public User signOut(JwtRequest request) throws UserNotFoundException {
-		User find = findByEmail(request.getEmail());
+	public UserDTO signOut(JwtRequest request) throws UserNotFoundException {
+		UserDTO find = findByEmail(request.getEmail());
 		jwtService.invalidateToken(request.getEmail());
 		return find;
 	}
 
 	@Override
-	public User findByEmailAndRole(String email, UserRole role) throws UserNotFoundException {
-		return userRepository.findByEmailAndRole(email, role)
+	public UserDTO findByEmailAndRole(String email, UserRole role) throws UserNotFoundException {
+		User user = userRepository.findByEmailAndRole(email, role)
 				.orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND_EMAIL_EXCEPTION + email));
+
+		return MapperUtil.mapToUserDto(user);
 	}
 }
