@@ -2,16 +2,16 @@ package com.hbs.service;
 
 import java.util.List;
 
-import javax.transaction.Transactional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.hbs.dto.RoomDetailsDTO;
 import com.hbs.entities.RoomDetails;
 import com.hbs.exceptions.HotelNotFoundException;
 import com.hbs.exceptions.RoomDetailsNotFoundException;
 import com.hbs.repository.HotelRepository;
 import com.hbs.repository.RoomDetailsRepository;
+import com.hbs.util.MapperUtil;
 
 @Service
 public class RoomDetailsServiceImpl implements RoomDetailsService {
@@ -23,50 +23,50 @@ public class RoomDetailsServiceImpl implements RoomDetailsService {
 	@Autowired
 	private HotelRepository hotelRepository;
 
-	private void validateRoomDetails(RoomDetails room) throws HotelNotFoundException, RoomDetailsNotFoundException {
+	private void validateRoomDetails(RoomDetailsDTO room) throws HotelNotFoundException, RoomDetailsNotFoundException {
 		// validate hotel and room
-		if (!hotelRepository.existsById(room.getHotel().getHotelId()))
-			throw new HotelNotFoundException(HOTEL_NOT_FOUND + room.getHotel().getHotelId());
+		if (!hotelRepository.existsById(room.getHotelId()))
+			throw new HotelNotFoundException(HOTEL_NOT_FOUND + room.getHotelId());
 
-		if (roomRepository.findByRoomNoAndHotelIdCount(room.getHotel().getHotelId(), room.getRoomNo()) != 1)
+		if (roomRepository.findByRoomNoAndHotelIdCount(room.getHotelId(), room.getRoomNo()) != 1)
 			throw new RoomDetailsNotFoundException(ROOM_DETAILS_NOT_FOUND);
 	}
 
 	@Override
-	public RoomDetails add(RoomDetails roomDetails) throws HotelNotFoundException, RoomDetailsNotFoundException {
-		validateRoomDetails(roomDetails);
-		
-		return roomRepository.save(roomDetails);
+	public RoomDetailsDTO add(RoomDetailsDTO dto) throws HotelNotFoundException, RoomDetailsNotFoundException {
+		validateRoomDetails(dto);
+
+		return MapperUtil.mapToRoomDetailsDto(roomRepository.save(MapperUtil.mapToRoomDetails(dto)));
 	}
 
 	@Override
-	@Transactional
-	public RoomDetails update(RoomDetails roomDetails) throws RoomDetailsNotFoundException, HotelNotFoundException {
-		findById(roomDetails.getRoomId());
-		validateRoomDetails(roomDetails);
-		return roomRepository.save(roomDetails);
+	public RoomDetailsDTO update(RoomDetailsDTO dto) throws RoomDetailsNotFoundException, HotelNotFoundException {
+		findById(dto.getRoomId());
+		validateRoomDetails(dto);
+		return MapperUtil.mapToRoomDetailsDto(roomRepository.save(MapperUtil.mapToRoomDetails(dto)));
 	}
 
 	@Override
-	public RoomDetails removeById(int id) throws RoomDetailsNotFoundException {
-		RoomDetails room = findById(id);
+	public RoomDetailsDTO removeById(int id) throws RoomDetailsNotFoundException {
+		RoomDetailsDTO room = findById(id);
 		roomRepository.deleteById(id);
 		return room;
 	}
 
 	@Override
-	public List<RoomDetails> findAll() {
-		return roomRepository.findAll();
+	public List<RoomDetailsDTO> findAll() {
+		return MapperUtil.mapToRoomDetailsDtoList(roomRepository.findAll());
 	}
 
 	@Override
-	public RoomDetails findById(int roomDetailsId) throws RoomDetailsNotFoundException {
-		return roomRepository.findById(roomDetailsId)
+	public RoomDetailsDTO findById(int roomDetailsId) throws RoomDetailsNotFoundException {
+		RoomDetails roomDetails = roomRepository.findById(roomDetailsId)
 				.orElseThrow(() -> new RoomDetailsNotFoundException(ROOM_DETAILS_NOT_FOUND + roomDetailsId));
+		return MapperUtil.mapToRoomDetailsDto(roomDetails);
 	}
 
 	@Override
-	public List<RoomDetails> findByHotelId(int hotelId) {
-		return roomRepository.findByHotelId(hotelId);
+	public List<RoomDetailsDTO> findByHotelId(int hotelId) {
+		return MapperUtil.mapToRoomDetailsDtoList(roomRepository.findByHotelId(hotelId));
 	}
 }
