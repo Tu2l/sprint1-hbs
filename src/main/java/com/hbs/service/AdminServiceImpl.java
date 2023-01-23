@@ -1,17 +1,24 @@
 package com.hbs.service;
 
+
+
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.hbs.auth.JwtRequest;
 import com.hbs.auth.JwtResponse;
+import com.hbs.dto.UserDTO;
 import com.hbs.entities.User;
 import com.hbs.entities.UserRole;
 import com.hbs.exceptions.AdminAlreadyExistsException;
 import com.hbs.exceptions.AdminNotFoundException;
 import com.hbs.exceptions.InvalidCredentialsException;
 import com.hbs.repository.UserRepository;
+import com.hbs.util.MapperUtil;
 
 @Service
 public class AdminServiceImpl implements AdminService {
@@ -31,25 +38,30 @@ public class AdminServiceImpl implements AdminService {
 	}
 
 	@Override
-	public User signOut(JwtRequest request) throws AdminNotFoundException {
-		User find = findByEmail(request.getEmail());
+	public UserDTO signOut(JwtRequest request) throws AdminNotFoundException {
+		UserDTO find = findByEmail(request.getEmail());
 		jwtService.invalidateToken(request.getEmail());
 		return find;
 	}
 
 	@Override
-	public User add(User admin) throws AdminAlreadyExistsException {
-		if (repo.findByEmail(admin.getEmail()).isPresent())
+	public UserDTO add(UserDTO dto) throws AdminAlreadyExistsException {
+		Optional<User> find = repo.findByEmail(dto.getEmail());
+		if (find.isPresent())
 			throw new AdminAlreadyExistsException(ADMIN_ALREADY_EXISTS);
-
+  
+	
+		User admin = MapperUtil.mapToUser(dto);
 		admin.setRole(UserRole.ADMIN);
 		admin.setPassword(encoder.encode(admin.getPassword()));
-		return repo.save(admin);
+		return MapperUtil.mapToUserDto(repo.save(admin));
 	}
 
 	@Override
-	public User findByEmail(String email) throws AdminNotFoundException {
-		return repo.findByEmail(email).orElseThrow(() -> new AdminNotFoundException(ADMIN_NOT_FOUND_MESSAGE + email));
+	public UserDTO findByEmail(String email) throws AdminNotFoundException {
+		User admin =repo.findByEmail(email).orElseThrow(() -> new AdminNotFoundException(ADMIN_NOT_FOUND_MESSAGE + email));
+		return MapperUtil.mapToUserDto(admin);
 	}
-
+	
+	
 }

@@ -2,21 +2,21 @@ package com.hbs.service;
 
 import java.util.List;
 
-import com.hbs.entities.RoomDetails;
+import com.hbs.dto.RoomDetailsDTO;
 import com.hbs.exceptions.HotelNotFoundException;
 import com.hbs.exceptions.RoomDetailsNotFoundException;
 
 public interface RoomDetailsService {
 
-	RoomDetails add(RoomDetails roomDetails) throws HotelNotFoundException, RoomDetailsNotFoundException;
+	RoomDetailsDTO add(RoomDetailsDTO dto) throws HotelNotFoundException, RoomDetailsNotFoundException;
 
-	RoomDetails update(RoomDetails roomDetails) throws RoomDetailsNotFoundException, HotelNotFoundException;
+	RoomDetailsDTO update(RoomDetailsDTO dto) throws RoomDetailsNotFoundException, HotelNotFoundException;
 
-	RoomDetails removeById(int roomDetailsId) throws RoomDetailsNotFoundException;
+	RoomDetailsDTO removeById(int roomDetailsId) throws RoomDetailsNotFoundException;
 
-	List<RoomDetails> findAll();
+	List<RoomDetailsDTO> findAll();
 
-	RoomDetails findById(int roomDetailsId) throws RoomDetailsNotFoundException;
+	RoomDetailsDTO findById(int roomDetailsId) throws RoomDetailsNotFoundException;
 
-	List<RoomDetails> findByHotelId(int hotelId);
+	List<RoomDetailsDTO> findByHotelId(int hotelId);
 }

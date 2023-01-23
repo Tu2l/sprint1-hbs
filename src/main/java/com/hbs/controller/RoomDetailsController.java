@@ -33,7 +33,7 @@ import com.hbs.util.ValidationUtil;
 @RestController
 @RequestMapping("/room")
 public class RoomDetailsController {
-	
+
 	@Autowired
 	private RoomDetailsService roomService;
 
@@ -47,47 +47,39 @@ public class RoomDetailsController {
 		String fileName = StringUtils.cleanPath(photo.getOriginalFilename());
 		StringBuilder sb = new StringBuilder(fileName);
 		String ext = sb.substring(sb.lastIndexOf("."));
-		if(!ValidationUtil.validateImageExtension(ext))
+		if (!ValidationUtil.validateImageExtension(ext))
 			throw new InvalidImageFormatException("Invalid Image file");
-		
+
 		String uploadDir = roomDetailsDto.getHotelId() + "/" + room.getRoomNo();
 		String path = FileUploadUtil.saveFile(uploadDir, fileName, roomDetailsDto.getPhotoUpload());
-		room.setImageUrl(path);
-		room = roomService.add(room);
-
-		return new ResponseEntity<>(MapperUtil.mapToRoomDetailsDto(room), HttpStatus.CREATED);
+		roomDetailsDto.setImageUrl(path);
+		return new ResponseEntity<>(roomService.add(roomDetailsDto), HttpStatus.CREATED);
 	}
 
 	@PutMapping("/{id}")
 	public ResponseEntity<RoomDetailsDTO> update(@Valid @RequestBody RoomDetailsDTO roomDetailsDto,
-			@PathVariable int id)
-			throws RoomDetailsNotFoundException, HotelNotFoundException {
-
-		RoomDetails room = roomService.update(MapperUtil.mapToRoomDetails(roomDetailsDto));
-		room.setRoomId(id);
-		
-		return new ResponseEntity<>(MapperUtil.mapToRoomDetailsDto(room), HttpStatus.OK);
+			@PathVariable int id) throws RoomDetailsNotFoundException, HotelNotFoundException {
+		roomDetailsDto.setRoomId(id);
+		return new ResponseEntity<>(roomService.update(roomDetailsDto), HttpStatus.OK);
 	}
 
 	@DeleteMapping("/{id}")
 	public ResponseEntity<RoomDetailsDTO> remove(@PathVariable int id) throws RoomDetailsNotFoundException {
-		RoomDetails room = roomService.removeById(id);
-		return new ResponseEntity<>(MapperUtil.mapToRoomDetailsDto(room), HttpStatus.OK);
+		return new ResponseEntity<>(roomService.removeById(id), HttpStatus.OK);
 	}
 
 	@GetMapping
 	public ResponseEntity<List<RoomDetailsDTO>> findAll() {
-		return new ResponseEntity<>(MapperUtil.mapToRoomDetailsDtoList(roomService.findAll()), HttpStatus.OK);
+		return new ResponseEntity<>(roomService.findAll(), HttpStatus.OK);
 	}
 
 	@GetMapping("/{id}")
 	public ResponseEntity<RoomDetailsDTO> findById(@PathVariable int id) throws RoomDetailsNotFoundException {
-		return new ResponseEntity<>(MapperUtil.mapToRoomDetailsDto(roomService.findById(id)), HttpStatus.OK);
+		return new ResponseEntity<>(roomService.findById(id), HttpStatus.OK);
 	}
 
 	@GetMapping("/byhotelid/{id}")
 	public ResponseEntity<List<RoomDetailsDTO>> findByHotelId(@PathVariable int id) {
-		return new ResponseEntity<>(MapperUtil.mapToRoomDetailsDtoList(roomService.findByHotelId(id)),
-				HttpStatus.OK);
+		return new ResponseEntity<>((roomService.findByHotelId(id)), HttpStatus.OK);
 	}
 }

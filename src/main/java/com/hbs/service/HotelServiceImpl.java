@@ -5,80 +5,74 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.hbs.dto.HotelDTO;
 import com.hbs.entities.Hotel;
 import com.hbs.exceptions.HotelAlreadyExistsExcetion;
 import com.hbs.exceptions.HotelNotFoundException;
 import com.hbs.exceptions.InvalidEmailFormatException;
 import com.hbs.exceptions.InvalidMobileNumberFormatException;
 import com.hbs.repository.HotelRepository;
+import com.hbs.util.MapperUtil;
 import com.hbs.util.ValidationUtil;
 
 @Service
 public class HotelServiceImpl implements HotelService {
-	private static final String HOTEL_NOT_FOUND = "No Hotel found with id: ";
+	private static final String HOTEL_NOT_FOUND = "No dto found with id: ";
 	private static final String INVALID_EMAIL_FORMAT = "Invalid email: ";
 	private static final String INVALID_MOBILE_NUMBER_FORMAT = "Invalid mobile number";
-	private static final String HOTEL_ALREADY_EXISTS = "Hotel already exists with email: ";
+	private static final String HOTEL_ALREADY_EXISTS = "HotelDTO already exists with email: ";
 
 	@Autowired
 	HotelRepository hotelRepository;
 
-	private void validateHotel(Hotel hotel) throws InvalidEmailFormatException, InvalidMobileNumberFormatException {
+	private void validateHotel(HotelDTO hotel) throws InvalidEmailFormatException, InvalidMobileNumberFormatException {
 		if (!ValidationUtil.validateEmail(hotel.getEmail()))
 			throw new InvalidEmailFormatException(INVALID_EMAIL_FORMAT + hotel.getEmail());
-
 		boolean phone1 = ValidationUtil.validatePhoneNumber(hotel.getPhone1());
-
 		boolean phone2 = !(hotel.getPhone2() != null || !hotel.getPhone2().isEmpty())
 				|| ValidationUtil.validatePhoneNumber(hotel.getPhone2());
-
 		if (!phone1 || !phone2)
 			throw new InvalidMobileNumberFormatException(INVALID_MOBILE_NUMBER_FORMAT);
-
 	}
 
 	@Override
-	public Hotel add(Hotel hotel)
+	public HotelDTO add(HotelDTO dto)
 			throws InvalidEmailFormatException, InvalidMobileNumberFormatException, HotelAlreadyExistsExcetion {
-
-		validateHotel(hotel);
-
-		if (hotelRepository.findByEmail(hotel.getEmail()) != null)
-			throw new HotelAlreadyExistsExcetion(HOTEL_ALREADY_EXISTS + hotel.getEmail());
-
-		return hotelRepository.save(hotel);
+		validateHotel(dto);
+		if (hotelRepository.findByEmail(dto.getEmail()) != null)
+			throw new HotelAlreadyExistsExcetion(HOTEL_ALREADY_EXISTS + dto.getEmail());
+		return MapperUtil.mapToHotelDto(hotelRepository.save(MapperUtil.mapToHotel(dto)));
 	}
 
 	@Override
-	public Hotel update(Hotel hotel) throws HotelNotFoundException, InvalidEmailFormatException,
+	public HotelDTO update(HotelDTO dto) throws HotelNotFoundException, InvalidEmailFormatException,
 			InvalidMobileNumberFormatException, HotelAlreadyExistsExcetion {
+		HotelDTO find = findById(dto.getHotelId());
+		validateHotel(dto);
 
-		Hotel find = findById(hotel.getHotelId());
+		if (!dto.getEmail().equalsIgnoreCase(find.getEmail()) && hotelRepository.findByEmail(dto.getEmail()) != null)
+			throw new HotelAlreadyExistsExcetion(HOTEL_ALREADY_EXISTS + dto.getEmail());
 
-		validateHotel(hotel);
-
-		if (!hotel.getEmail().equalsIgnoreCase(find.getEmail())
-				&& hotelRepository.findByEmail(hotel.getEmail()) != null)
-			throw new HotelAlreadyExistsExcetion(HOTEL_ALREADY_EXISTS + hotel.getEmail());
-
-		return hotelRepository.save(hotel);
+		return MapperUtil.mapToHotelDto(hotelRepository.save(MapperUtil.mapToHotel(dto)));
 	}
 
 	@Override
-	public Hotel remove(int id) throws HotelNotFoundException {
-		Hotel hotel = findById(id);
+	public HotelDTO remove(int id) throws HotelNotFoundException {
+		HotelDTO dto = findById(id);
 		hotelRepository.deleteById(id);
-		return hotel;
+		return dto;
 	}
 
 	@Override
-	public List<Hotel> findAll() {
-		return hotelRepository.findAll();
+	public List<HotelDTO> findAll() {
+		return MapperUtil.mapToHotelList(hotelRepository.findAll());
 	}
 
 	@Override
-	public Hotel findById(int id) throws HotelNotFoundException {
-		return hotelRepository.findById(id).orElseThrow(() -> new HotelNotFoundException(HOTEL_NOT_FOUND + id));
+	public HotelDTO findById(int id) throws HotelNotFoundException {
+		Hotel hotel = hotelRepository.findById(id).orElseThrow(() -> new HotelNotFoundException(HOTEL_NOT_FOUND + id));
+		return MapperUtil.mapToHotelDto(hotel);
+
 	}
 
 }
