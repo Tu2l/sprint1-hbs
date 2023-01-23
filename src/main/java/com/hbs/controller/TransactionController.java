@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.hbs.dto.TransactionsDTO;
 import com.hbs.service.TransactionService;
-import com.hbs.util.MapperUtil;
 
 @RestController
 @RequestMapping("/transactions")
@@ -22,9 +21,7 @@ public class TransactionController {
 	private TransactionService transactionService;
 
 	@PostMapping
-	public ResponseEntity<TransactionsDTO> add(@Valid @RequestBody TransactionsDTO transactionDto) {
-		return new ResponseEntity<>(
-				MapperUtil.mapToTransactionDto(transactionService.add(MapperUtil.mapToTransaction(transactionDto))),
-				HttpStatus.CREATED);
+	public ResponseEntity<TransactionsDTO> add(@Valid @RequestBody TransactionsDTO transactionsDTO) {
+		return new ResponseEntity<>(transactionService.add(transactionsDTO), HttpStatus.CREATED);
 	}
 }

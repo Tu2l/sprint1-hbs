@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.hbs.dto.PaymentsDTO;
 import com.hbs.service.PaymentService;
-import com.hbs.util.MapperUtil;
 
 @RestController
 @RequestMapping("/payments")
@@ -23,7 +22,6 @@ public class PaymentController {
 
 	@PostMapping
 	public ResponseEntity<PaymentsDTO> add(@Valid @RequestBody PaymentsDTO paymentDto) {
-		return new ResponseEntity<>(MapperUtil.mapToPaymentDto(paymentService.add(MapperUtil.mapToPayment(paymentDto))),
-				HttpStatus.CREATED);
+		return new ResponseEntity<>(paymentService.add(paymentDto), HttpStatus.CREATED);
 	}
 }
