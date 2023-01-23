@@ -26,13 +26,12 @@ public class AdminController {
 	private AdminService service;
 
 	@PostMapping
-	public ResponseEntity<UserDTO> add(@Valid @RequestBody UserDTO userDto) throws AdminAlreadyExistsException {
-		User user = MapperUtil.mapToUser(userDto);
-		return new ResponseEntity<>(MapperUtil.mapToUserDto(service.add(user)), HttpStatus.OK);
+	public ResponseEntity<UserDTO> add(@Valid @RequestBody UserDTO dto) throws AdminAlreadyExistsException {
+		return new ResponseEntity<>(service.add(dto), HttpStatus.OK);
 	}
 
 	@PostMapping("/signout")
 	public ResponseEntity<UserDTO> signOut(@RequestBody JwtRequest jwtRequest) throws AdminNotFoundException {
-		return new ResponseEntity<>(MapperUtil.mapToUserDto(service.signOut(jwtRequest)), HttpStatus.OK);
+		return new ResponseEntity<>(service.signOut(jwtRequest), HttpStatus.OK);
 	}
 }
