@@ -33,19 +33,19 @@ public class UserController {
 	private UserService userService;
 
 	@PostMapping
-	public ResponseEntity<UserDTO> add(@Valid @RequestBody UserDTO userDto)
+	public ResponseEntity<UserDTO> add(@Valid @RequestBody UserDTO dto)
 			throws UserAlreadyExistsException, InvalidEmailFormatException, InvalidMobileNumberFormatException {
-		return new ResponseEntity<>(userService.add(userDto), HttpStatus.CREATED);
+		return new ResponseEntity<>(userService.add(dto), HttpStatus.CREATED);
 	}
 
 	@PutMapping("/{id}")
-	public ResponseEntity<UserDTO> update(@Valid @RequestBody UserDTO userDto, @PathVariable int id)
+	public ResponseEntity<UserDTO> update(@Valid @RequestBody UserDTO dto, @PathVariable int id)
 			throws UserNotFoundException, UserAlreadyExistsException, InvalidEmailFormatException,
 			InvalidMobileNumberFormatException {
 		
-		userDto.setUserId(id);
+		dto.setUserId(id);
 		
-		return new ResponseEntity<>(userService.update(userDto), HttpStatus.OK);
+		return new ResponseEntity<>(userService.update(dto), HttpStatus.OK);
 	}
 
 	@DeleteMapping("/{id}")
