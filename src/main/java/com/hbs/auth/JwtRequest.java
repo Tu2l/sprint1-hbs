@@ -9,9 +9,9 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class JwtRequestModel {
+public class JwtRequest {
 	@NotNull(message = "username/email must not be null")
-	private String userName;
+	private String email;
 	@NotNull(message = "password must not be null")
 	private String password;
 }
