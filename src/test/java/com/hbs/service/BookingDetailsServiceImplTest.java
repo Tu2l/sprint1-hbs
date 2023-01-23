@@ -26,6 +26,9 @@ import com.hbs.entities.Payments;
 import com.hbs.entities.RoomDetails;
 import com.hbs.entities.User;
 import com.hbs.exceptions.BookingDetailsNotFoundException;
+import com.hbs.exceptions.HotelNotFoundException;
+import com.hbs.exceptions.RoomDetailsNotFoundException;
+import com.hbs.exceptions.UserNotFoundException;
 import com.hbs.repository.BookingDetailsRepository;
 
 @ExtendWith(MockitoExtension.class)
@@ -65,18 +68,18 @@ class BookingDetailsServiceImplTest {
 		bookingDetails.setNoOfChildren(1);
 		bookingDetails.setAmount(1000);
 		bookingDetails.setPaymentList(payments);
-		bookingDetails.setRoomsList(roomsList);
+		bookingDetails.setRoomList(roomsList);
 		// MockitoAnnotations.openMocks(this);
 	}
 
 	@Test
-	void testAdd() {
+	void testAdd() throws UserNotFoundException, HotelNotFoundException, RoomDetailsNotFoundException {
 		when(serviceImplMock.add(bookingDetails)).thenReturn(bookingDetails);
 		assertEquals(bookingDetails, serviceImplMock.add(bookingDetails));
 	}
 
 	@Test
-	void testUpdate() {
+	void testUpdate() throws UserNotFoundException, HotelNotFoundException, RoomDetailsNotFoundException {
 		
 		try {
 			System.out.println(bookingDetails.getAmount());
@@ -122,7 +125,7 @@ class BookingDetailsServiceImplTest {
 	}
 
 	@Test
-	void testUpdate_throwsBookingDetailsNotFoundException() {
+	void testUpdate_throwsBookingDetailsNotFoundException() throws UserNotFoundException, HotelNotFoundException, RoomDetailsNotFoundException {
 		try {
 			when(serviceImplMock.update(bookingDetails))
 					.thenThrow(new BookingDetailsNotFoundException(EXCEPTION + bookingDetails.getBookingId()));
