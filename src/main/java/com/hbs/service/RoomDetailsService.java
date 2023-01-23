@@ -3,13 +3,14 @@ package com.hbs.service;
 import java.util.List;
 
 import com.hbs.entities.RoomDetails;
+import com.hbs.exceptions.HotelNotFoundException;
 import com.hbs.exceptions.RoomDetailsNotFoundException;
 
 public interface RoomDetailsService {
 
-	RoomDetails add(RoomDetails roomDetails);
+	RoomDetails add(RoomDetails roomDetails) throws HotelNotFoundException, RoomDetailsNotFoundException;
 
-	RoomDetails update(RoomDetails roomDetails) throws RoomDetailsNotFoundException;
+	RoomDetails update(RoomDetails roomDetails) throws RoomDetailsNotFoundException, HotelNotFoundException;
 
 	RoomDetails removeById(int roomDetailsId) throws RoomDetailsNotFoundException;
 

@@ -3,7 +3,8 @@ package com.hbs.entities;
 import javax.persistence.Column;
 
 import javax.persistence.Entity;
-
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 
 import javax.persistence.GenerationType;
@@ -45,13 +46,15 @@ public class User {
 	@Column(name = "password", unique = true, nullable = true)
 	private String password;
 
+	@Enumerated(EnumType.STRING)
 	@Column(name = "role", nullable = true)
-	private String role;
+	private UserRole role;
 
 	@Column(name = "mobile", unique = true, nullable = true)
 	private String mobile;
 
 	@Column(name = "address", nullable = true)
 	private String address;
+	
 
 }
