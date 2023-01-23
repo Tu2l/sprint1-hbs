@@ -12,11 +12,10 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import com.hbs.entities.User;
+import com.hbs.dto.UserDTO;
 import com.hbs.entities.UserRole;
 import com.hbs.exceptions.UserNotFoundException;
 import com.hbs.service.UserService;
-import com.hbs.util.LoggerUtil;
 
 import lombok.Setter;
 
@@ -36,7 +35,7 @@ public class JwtUserDetailsService implements UserDetailsService {
 				throw new UserNotFoundException("Role not defined");
 
 //			LoggerUtil.logInfo("asd");
-			User user = userService.findByEmailAndRole(email, role);
+			UserDTO user = userService.findByEmailAndRole(email, role);
 
 			List<GrantedAuthority> roles = new ArrayList<>();
 			roles.add(new SimpleGrantedAuthority("ROLE_" + role));
