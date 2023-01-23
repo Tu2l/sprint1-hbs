@@ -10,11 +10,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.hbs.dto.AdminDTO;
-import com.hbs.entities.Admin;
+import com.hbs.auth.JwtRequest;
+import com.hbs.dto.UserDTO;
+import com.hbs.entities.User;
 import com.hbs.exceptions.AdminAlreadyExistsException;
 import com.hbs.exceptions.AdminNotFoundException;
-import com.hbs.exceptions.InvalidCredentialsException;
 import com.hbs.service.AdminService;
 import com.hbs.util.MapperUtil;
 
@@ -26,21 +26,13 @@ public class AdminController {
 	private AdminService service;
 
 	@PostMapping
-	public ResponseEntity<AdminDTO> add(@Valid @RequestBody AdminDTO adminDto) throws AdminAlreadyExistsException {
-		Admin admin = MapperUtil.mapToAdmin(adminDto);
-		return new ResponseEntity<>(MapperUtil.mapToAdminDto(service.add(admin)), HttpStatus.OK);
-	}
-
-	@PostMapping("/signin")
-	public ResponseEntity<AdminDTO> signIn(@Valid @RequestBody AdminDTO adminDto)
-			throws AdminNotFoundException, InvalidCredentialsException {
-		Admin admin = MapperUtil.mapToAdmin(adminDto);
-		return new ResponseEntity<>(MapperUtil.mapToAdminDto(service.signIn(admin)), HttpStatus.OK);
+	public ResponseEntity<UserDTO> add(@Valid @RequestBody UserDTO userDto) throws AdminAlreadyExistsException {
+		User user = MapperUtil.mapToUser(userDto);
+		return new ResponseEntity<>(MapperUtil.mapToUserDto(service.add(user)), HttpStatus.OK);
 	}
 
 	@PostMapping("/signout")
-	public ResponseEntity<AdminDTO> signOut(@RequestBody AdminDTO adminDto) throws AdminNotFoundException {
-		Admin admin = MapperUtil.mapToAdmin(adminDto);
-		return new ResponseEntity<>(MapperUtil.mapToAdminDto(service.signOut(admin)), HttpStatus.OK);
+	public ResponseEntity<UserDTO> signOut(@RequestBody JwtRequest jwtRequest) throws AdminNotFoundException {
+		return new ResponseEntity<>(MapperUtil.mapToUserDto(service.signOut(jwtRequest)), HttpStatus.OK);
 	}
 }

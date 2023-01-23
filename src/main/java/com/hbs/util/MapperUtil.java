@@ -7,14 +7,12 @@ import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 
 import com.hbs.auth.JwtResponse;
-import com.hbs.dto.AdminDTO;
 import com.hbs.dto.BookingDetailsDTO;
 import com.hbs.dto.HotelDTO;
 import com.hbs.dto.PaymentsDTO;
 import com.hbs.dto.RoomDetailsDTO;
 import com.hbs.dto.TransactionsDTO;
 import com.hbs.dto.UserDTO;
-import com.hbs.entities.Admin;
 import com.hbs.entities.BookingDetails;
 import com.hbs.entities.Hotel;
 import com.hbs.entities.JwtToken;
@@ -123,15 +121,6 @@ public class MapperUtil {
 	public static List<HotelDTO> mapToHotelList(List<Hotel> hotel) {
 		return MAPPER.map(hotel, new TypeToken<List<HotelDTO>>() {
 		}.getType());
-	}
-
-	// admin
-	public static Admin mapToAdmin(AdminDTO dto) {
-		return MAPPER.map(dto, Admin.class);
-	}
-
-	public static AdminDTO mapToAdminDto(Admin admin) {
-		return MAPPER.map(admin, AdminDTO.class);
 	}
 
 	public static JwtResponse mapToJwtResponse(JwtToken jwt) {

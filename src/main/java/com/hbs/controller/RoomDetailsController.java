@@ -5,8 +5,6 @@ import java.util.List;
 
 import javax.validation.Valid;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,10 +23,12 @@ import org.springframework.web.multipart.MultipartFile;
 import com.hbs.dto.RoomDetailsDTO;
 import com.hbs.entities.RoomDetails;
 import com.hbs.exceptions.HotelNotFoundException;
+import com.hbs.exceptions.InvalidImageFormatException;
 import com.hbs.exceptions.RoomDetailsNotFoundException;
 import com.hbs.service.RoomDetailsService;
 import com.hbs.util.FileUploadUtil;
 import com.hbs.util.MapperUtil;
+import com.hbs.util.ValidationUtil;
 
 @RestController
 @RequestMapping("/room")
@@ -39,18 +39,22 @@ public class RoomDetailsController {
 
 	@PostMapping(consumes = { "multipart/form-data" })
 	public ResponseEntity<RoomDetailsDTO> add(@Valid @ModelAttribute RoomDetailsDTO roomDetailsDto)
-			throws IOException, HotelNotFoundException, RoomDetailsNotFoundException {
+			throws IOException, HotelNotFoundException, RoomDetailsNotFoundException, InvalidImageFormatException {
 
 		RoomDetails room = MapperUtil.mapToRoomDetails(roomDetailsDto);
 		MultipartFile photo = roomDetailsDto.getPhotoUpload();
 
 		String fileName = StringUtils.cleanPath(photo.getOriginalFilename());
+		StringBuilder sb = new StringBuilder(fileName);
+		String ext = sb.substring(sb.lastIndexOf("."));
+		if(!ValidationUtil.validateImageExtension(ext))
+			throw new InvalidImageFormatException("Invalid Image file");
+		
 		String uploadDir = roomDetailsDto.getHotelId() + "/" + room.getRoomNo();
 		String path = FileUploadUtil.saveFile(uploadDir, fileName, roomDetailsDto.getPhotoUpload());
 		room.setImageUrl(path);
 		room = roomService.add(room);
 
-//		LOGGER.info(room);
 		return new ResponseEntity<>(MapperUtil.mapToRoomDetailsDto(room), HttpStatus.CREATED);
 	}
 

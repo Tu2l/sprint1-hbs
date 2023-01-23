@@ -47,6 +47,7 @@ public class JwtFilter extends OncePerRequestFilter {
 			LoggerUtil.logInfo("Bearer String not found in token");
 		}
 		if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+			userDetailsService.setRole(service.getRoleFromToken(token));
 			UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 			try {
 				if (Boolean.TRUE.equals(service.validateJwtToken(token, userDetails.getUsername()))) {

@@ -23,4 +23,11 @@ public class ValidationUtil {
 
 		return validatePattern(regexPattern, phone);
 	}
+	
+	public static boolean validateImageExtension(String ext) {
+		String regex = "([^\\s]+(\\.(?i)(jpe?g|png|gif|bmp))$)";
+		
+		return validatePattern(regex, ext);
+		
+	}
 }

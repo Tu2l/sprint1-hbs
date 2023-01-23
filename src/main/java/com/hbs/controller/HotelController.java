@@ -4,8 +4,6 @@ import java.util.List;
 
 import javax.validation.Valid;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,8 +28,6 @@ import com.hbs.util.MapperUtil;
 @RestController
 @RequestMapping("/hotel")
 public class HotelController {
-	private static final Logger LOGGER = LogManager.getLogger(HotelController.class);
-
 	@Autowired
 	HotelService hotelService;
 
@@ -39,7 +35,6 @@ public class HotelController {
 	public ResponseEntity<HotelDTO> add(@Valid @RequestBody HotelDTO hotelDto)
 			throws InvalidEmailFormatException, InvalidMobileNumberFormatException, HotelAlreadyExistsExcetion {
 		Hotel newHotel = hotelService.add(MapperUtil.mapToHotel(hotelDto));
-//		LOGGER.info(newHotel);
 		return new ResponseEntity<>(MapperUtil.mapToHotelDto(newHotel), HttpStatus.CREATED);
 	}
 

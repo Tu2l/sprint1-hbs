@@ -3,19 +3,21 @@ package com.hbs.service;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.CrossOrigin;
 
 import com.hbs.auth.JwtRequest;
 import com.hbs.auth.JwtResponse;
 import com.hbs.auth.JwtUserDetailsService;
 import com.hbs.entities.JwtToken;
-import com.hbs.entities.User;
 import com.hbs.entities.UserRole;
 import com.hbs.exceptions.InvalidCredentialsException;
 import com.hbs.repository.JwtRepository;
@@ -25,52 +27,66 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 
 @Service
+@CrossOrigin
 public class JwtServiceImpl implements JwtService {
-
+	private static final String INVALID_CREDENTIALS_MESSAGE = "Email or password is wrong";
+	private static final String INVALID_TOKEN_MESSAGE = "Invalid token";
+	
 	@Autowired
 	private JwtUserDetailsService userDetailsService;
 	@Autowired
+	@Lazy
 	private AuthenticationManager authenticationManager;
 	@Autowired
 	private JwtRepository repo;
 
 	@Override
 	public JwtResponse authenticate(JwtRequest request, UserRole role) throws InvalidCredentialsException {
-		try {
-			authenticationManager.authenticate(
-					new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
+		userDetailsService.setRole(role);
+		try {			
+			UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(request.getEmail(),
+					request.getPassword());
+		
+			authenticationManager.authenticate(auth);
 		} catch (BadCredentialsException e) {
-			throw new InvalidCredentialsException("INVALID_CREDENTIALS");
+			// e.printStackTrace();
+			throw new InvalidCredentialsException(INVALID_CREDENTIALS_MESSAGE);
 		}
 
-		userDetailsService.setRole(role);
-		final UserDetails userDetails = userDetailsService.loadUserByUsername(request.getUsername());
+
+		final UserDetails userDetails = userDetailsService.loadUserByUsername(request.getEmail());
 		final JwtToken jwt = generateToken(userDetails.getUsername(), role);
 		return MapperUtil.mapToJwtResponse(jwt);
 	}
 
 	@Override
 	public boolean invalidateToken(String email) {
-		repo.deleteByEmail(email);
-		return repo.findByEmail(email).isEmpty();
+		Optional<JwtToken> jwt = repo.findByEmail(email);
+		if(jwt.isPresent())
+			repo.delete(jwt.get());
+		return true;
 	}
 
 	@Override
 	public JwtToken add(JwtToken token) {
-		repo.deleteByEmail(token.getUser().getEmail());
+		invalidateToken(token.getEmail());
+		
 		return repo.save(token);
 	}
 
 	@Override
 	public JwtToken deleteByToken(String token) throws InvalidCredentialsException {
-		JwtToken jwt = repo.findByToken(token).orElseThrow(() -> new InvalidCredentialsException("Token not found"));
-		repo.deleteByEmail(token);
+		JwtToken jwt = repo.findByToken(token)
+				.orElseThrow(() -> new InvalidCredentialsException(INVALID_TOKEN_MESSAGE));
+		repo.delete(jwt);
+		
 		return jwt;
 	}
 
 	@Override
 	public JwtToken findByEmail(String email) throws InvalidCredentialsException {
-		return repo.findByToken(email).orElseThrow(() -> new InvalidCredentialsException("Token not found"));
+//		LoggerUtil.logInfo(email);
+		return repo.findByEmail(email).orElseThrow(() -> new InvalidCredentialsException(INVALID_TOKEN_MESSAGE));
 	}
 
 	@Override
@@ -82,9 +98,7 @@ public class JwtServiceImpl implements JwtService {
 		JwtToken jwt = new JwtToken();
 		jwt.setToken(token);
 		jwt.setRole(role);
-		User user = new User();
-		user.setEmail(email);
-		jwt.setUser(user);
+		jwt.setEmail(email);
 
 		return add(jwt);
 	}

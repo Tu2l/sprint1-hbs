@@ -21,7 +21,6 @@ public interface RoomDetailsRepository extends JpaRepository<RoomDetails, Intege
 	@Query("SELECT COUNT(room) FROM RoomDetails room JOIN room.hotel hotel WHERE hotel.hotelId=:hotelId AND room.roomId=:roomIds")
 	Integer findByRoomIdAndHotelIdCount(@Param("hotelId") int hotelId, @Param("roomIds") List<Integer> roomIds);
 
-
 	@Query("SELECT COUNT(room) FROM RoomDetails room JOIN room.hotel hotel WHERE hotel.hotelId=:hotelId AND room.roomNo=:roomNo")
 	Integer findByRoomNoAndHotelIdCount(@Param("hotelId") int hotelId, @Param("roomNo")String roomNo);
 }

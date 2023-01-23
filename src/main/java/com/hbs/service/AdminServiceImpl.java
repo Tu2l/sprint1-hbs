@@ -1,66 +1,55 @@
 package com.hbs.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.hbs.entities.Admin;
+import com.hbs.auth.JwtRequest;
+import com.hbs.auth.JwtResponse;
+import com.hbs.entities.User;
+import com.hbs.entities.UserRole;
 import com.hbs.exceptions.AdminAlreadyExistsException;
 import com.hbs.exceptions.AdminNotFoundException;
 import com.hbs.exceptions.InvalidCredentialsException;
-import com.hbs.repository.AdminRepository;
+import com.hbs.repository.UserRepository;
 
 @Service
 public class AdminServiceImpl implements AdminService {
 	private static final String ADMIN_NOT_FOUND_MESSAGE = "Admin not found with email ";
-	private static final String INVALID_CREDENTIALS_MESSAGE = "Email or password is wrong";
 	private static final String ADMIN_ALREADY_EXISTS = "Admin already exists";
 
 	@Autowired
-	private AdminRepository repo;
-
-
-	private PasswordEncoder encoder = new BCryptPasswordEncoder();
-
+	private UserRepository repo;
+	@Autowired
+	private JwtService jwtService;
+	@Autowired
+	private PasswordEncoder encoder;
+	
 	@Override
-	public Admin signIn(Admin admin) throws AdminNotFoundException, InvalidCredentialsException {
-		Admin find = repo.findByEmail(admin.getEmail());
-		if (find == null)
-			throw new AdminNotFoundException(ADMIN_NOT_FOUND_MESSAGE + admin.getEmail());
-
-		// verify hashed password
-		String findPass = encoder.encode(find.getPassword());
-		String pass = encoder.encode(admin.getPassword());
-		if (findPass.equals(pass))
-			return find;
-
-		throw new InvalidCredentialsException(INVALID_CREDENTIALS_MESSAGE);
+	public JwtResponse signIn(JwtRequest request) throws AdminNotFoundException, InvalidCredentialsException {
+		return jwtService.authenticate(request, UserRole.ADMIN);
 	}
 
 	@Override
-	public Admin signOut(Admin admin) throws AdminNotFoundException {
-		Admin find = findByEmail(admin.getEmail());
-		find.setSalt(Long.valueOf(0));
-		return repo.save(find);
+	public User signOut(JwtRequest request) throws AdminNotFoundException {
+		User find = findByEmail(request.getEmail());
+		jwtService.invalidateToken(request.getEmail());
+		return find;
 	}
 
 	@Override
-	public Admin add(Admin admin) throws AdminAlreadyExistsException {
-		Admin find = repo.findByEmail(admin.getEmail());
-		if (find != null)
+	public User add(User admin) throws AdminAlreadyExistsException {
+		if (repo.findByEmail(admin.getEmail()).isPresent())
 			throw new AdminAlreadyExistsException(ADMIN_ALREADY_EXISTS);
 
+		admin.setRole(UserRole.ADMIN);
 		admin.setPassword(encoder.encode(admin.getPassword()));
 		return repo.save(admin);
 	}
 
 	@Override
-	public Admin findByEmail(String email) throws AdminNotFoundException {
-		Admin admin = repo.findByEmail(email);
-		if (admin == null)
-			throw new AdminNotFoundException(ADMIN_NOT_FOUND_MESSAGE + email);
-		return repo.findByEmail(email);
+	public User findByEmail(String email) throws AdminNotFoundException {
+		return repo.findByEmail(email).orElseThrow(() -> new AdminNotFoundException(ADMIN_NOT_FOUND_MESSAGE + email));
 	}
 
 }

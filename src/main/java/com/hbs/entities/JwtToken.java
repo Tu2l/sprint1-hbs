@@ -1,12 +1,9 @@
 package com.hbs.entities;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -26,9 +23,7 @@ public class JwtToken {
 	@GeneratedValue(strategy = GenerationType.SEQUENCE)
 	private int id;
 	
-	@OneToOne(cascade = CascadeType.REMOVE)
-	@JoinColumn(name = "user_email",referencedColumnName = "email")
-	private User user;
+	private String email;
 	
 	private UserRole role;
 	

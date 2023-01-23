@@ -5,7 +5,13 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import com.hbs.auth.JwtRequest;
+import com.hbs.auth.JwtResponse;
 import com.hbs.entities.User;
+import com.hbs.entities.UserRole;
+import com.hbs.exceptions.AdminNotFoundException;
+import com.hbs.exceptions.InvalidCredentialsException;
 import com.hbs.exceptions.InvalidEmailFormatException;
 import com.hbs.exceptions.InvalidMobileNumberFormatException;
 import com.hbs.exceptions.UserAlreadyExistsException;
@@ -23,6 +29,8 @@ public class UserServiceImpl implements UserService {
 
 	@Autowired
 	private UserRepository userRepository;
+	@Autowired
+	private JwtService jwtService;
 
 	@Autowired
 	private PasswordEncoder passwordEncoder;
@@ -39,12 +47,13 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public User add(User user)
 			throws UserAlreadyExistsException, InvalidEmailFormatException, InvalidMobileNumberFormatException {
-//		User find = userRepository.findByEmail(user.getEmail());
+
 		if (userRepository.findByEmail(user.getEmail()).isPresent())
 			throw new UserAlreadyExistsException(USER_ALREADY_EXISTS + user.getEmail());
 
 		validateUser(user);
 
+		user.setRole(UserRole.USER);
 		user.setPassword(passwordEncoder.encode(user.getPassword()));
 
 		return userRepository.save(user);
@@ -54,7 +63,8 @@ public class UserServiceImpl implements UserService {
 	public User update(User user) throws UserNotFoundException, UserAlreadyExistsException, InvalidEmailFormatException,
 			InvalidMobileNumberFormatException {
 		User find = findById(user.getUserId());
-		if (!(user.getEmail().equalsIgnoreCase(find.getEmail())) && userRepository.findByEmail(user.getEmail()) != null)
+		if (!(user.getEmail().equalsIgnoreCase(find.getEmail()))
+				&& userRepository.findByEmail(user.getEmail()).isPresent())
 			throw new UserAlreadyExistsException(USER_ALREADY_EXISTS + user.getEmail());
 
 		validateUser(user);
@@ -73,19 +83,40 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public List<User> findAll() throws UserNotFoundException {
-		return userRepository.findAll();
+		return userRepository.findAllByRole(UserRole.USER);
 	}
 
 	@Override
 	public User findById(int userId) throws UserNotFoundException {
-		return userRepository.findById(userId)
+		return userRepository.findByUserIdAndRole(userId, UserRole.USER)
 				.orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND_EXCEPTION + userId));
 
 	}
 
 	@Override
 	public User findByEmail(String email) throws UserNotFoundException {
-		return userRepository.findByEmail(email)
+		return findByEmailAndRole(email, UserRole.USER);
+	}
+
+	@Override
+	public JwtResponse signIn(JwtRequest request) throws UserNotFoundException, InvalidCredentialsException {
+		try {
+			return jwtService.authenticate(request, UserRole.USER);
+		} catch (AdminNotFoundException e) {
+			throw new UserNotFoundException(e.getMessage());
+		}
+	}
+
+	@Override
+	public User signOut(JwtRequest request) throws UserNotFoundException {
+		User find = findByEmail(request.getEmail());
+		jwtService.invalidateToken(request.getEmail());
+		return find;
+	}
+
+	@Override
+	public User findByEmailAndRole(String email, UserRole role) throws UserNotFoundException {
+		return userRepository.findByEmailAndRole(email, role)
 				.orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND_EMAIL_EXCEPTION + email));
 	}
 }

@@ -33,11 +33,12 @@ public class BookingDetailsServiceImpl implements BookingDetailsService {
 	@Autowired
 	private RoomDetailsRepository roomRepository;
 
+
 	private void validateBooking(BookingDetails booking)
 			throws UserNotFoundException, HotelNotFoundException, RoomDetailsNotFoundException {
 		// validate user,hotel,room
-		if (!userRepository.existsById(booking.getBookingId()))
-			throw new UserNotFoundException(USER_NOT_FOUND + booking.getBookingId());
+		if (!userRepository.existsById(booking.getUser().getUserId()))
+			throw new UserNotFoundException(USER_NOT_FOUND + booking.getUser().getUserId());
 
 		if (!hotelRepository.existsById(booking.getHotel().getHotelId()))
 			throw new HotelNotFoundException(HOTEL_NOT_FOUND + booking.getHotel().getHotelId());
@@ -45,6 +46,9 @@ public class BookingDetailsServiceImpl implements BookingDetailsService {
 		List<Integer> roomIds = booking.getRoomList().stream().map(RoomDetails::getRoomId).collect(Collectors.toList());
 		if (roomRepository.findByRoomIdAndHotelIdCount(booking.getHotel().getHotelId(), roomIds) != roomIds.size())
 			throw new RoomDetailsNotFoundException(ROOM_DETAILS_NOT_FOUND);
+		
+		
+		//validate booking dates also
 	}
 
 	@Override

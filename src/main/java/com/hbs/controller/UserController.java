@@ -16,8 +16,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.hbs.auth.JwtRequest;
 import com.hbs.dto.UserDTO;
 import com.hbs.entities.User;
+import com.hbs.entities.UserRole;
 import com.hbs.exceptions.InvalidEmailFormatException;
 import com.hbs.exceptions.InvalidMobileNumberFormatException;
 import com.hbs.exceptions.UserAlreadyExistsException;
@@ -26,7 +28,7 @@ import com.hbs.service.UserService;
 import com.hbs.util.MapperUtil;
 
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/admin/user")
 public class UserController {
 
 	@Autowired
@@ -62,6 +64,16 @@ public class UserController {
 	@GetMapping("/{id}")
 	public ResponseEntity<UserDTO> find(@PathVariable int id) throws UserNotFoundException {
 		return new ResponseEntity<>(MapperUtil.mapToUserDto(userService.findById(id)), HttpStatus.OK);
+	}
+	
+	@GetMapping("/{email}/{role}")
+	public ResponseEntity<UserDTO> find(@PathVariable String email, @PathVariable String role) throws UserNotFoundException {
+		return new ResponseEntity<>(MapperUtil.mapToUserDto(userService.findByEmailAndRole(email,UserRole.set(role))), HttpStatus.OK);
+	}
+	
+	@PostMapping("/signout")
+	public ResponseEntity<UserDTO> signOut(@RequestBody JwtRequest jwtRequest) throws UserNotFoundException {
+		return new ResponseEntity<>(MapperUtil.mapToUserDto(userService.signOut(jwtRequest)), HttpStatus.OK);
 	}
 
 }

@@ -18,10 +18,13 @@ import io.jsonwebtoken.SignatureAlgorithm;
 public interface JwtService {
 	long TOKEN_VALIDITY = 10 * 60 * 60;
 	String SECRET = "hbs";
-	String ENCODED_JWT_SECRECT = Base64.getEncoder().encodeToString(SECRET.getBytes());;
+	String ENCODED_JWT_SECRECT = Base64.getEncoder().encodeToString(SECRET.getBytes());
 
 	default String generate(Map<String, Object> claims, String username) {
-		return Jwts.builder().setClaims(claims).setSubject(username).setIssuedAt(new Date(System.currentTimeMillis()))
+		return Jwts.builder()
+				.setClaims(claims)
+				.setSubject(username)
+				.setIssuedAt(new Date(System.currentTimeMillis()))
 				.setExpiration(new Date(System.currentTimeMillis() + TOKEN_VALIDITY * 1000))
 				.signWith(SignatureAlgorithm.HS512, ENCODED_JWT_SECRECT).compact();
 	}
@@ -31,6 +34,12 @@ public interface JwtService {
 		return claims.getSubject();
 	}
 
+
+	default UserRole getRoleFromToken(String token) {
+		final Claims claims = Jwts.parser().setSigningKey(ENCODED_JWT_SECRECT).parseClaimsJws(token).getBody();
+		return UserRole.set(String.valueOf(claims.get("role")));
+	}
+	
 	JwtToken generateToken(String email, UserRole role);
 
 	Boolean validateJwtToken(String token, String email) throws InvalidCredentialsException;
