@@ -25,7 +25,7 @@ import lombok.ToString;
 @ToString
 public class BookingDetailsDTO {
 	@Min(value = 0, message = "Booking Id must greater than zero.")
-	@JsonProperty(access = Access.WRITE_ONLY)
+	@JsonProperty(access = Access.READ_ONLY)
 	private int bookingId;
 
 	@NotNull
@@ -57,9 +57,9 @@ public class BookingDetailsDTO {
 
 	@NotNull
 	@Size(min = 1, message = "room list must not be empty")
-	private List<Integer> roomIdList;
+	private List<Integer> roomIds;
 
 	@NotNull
 	@Size(min = 1, message = "payment list must not be empty")
-	private List<PaymentsDTO> paymentsList;
+	private List<Double> payments;
 }

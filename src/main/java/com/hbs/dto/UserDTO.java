@@ -18,7 +18,7 @@ public class UserDTO {
 	
 	@NotNull(message = "UserName must not be null")
 	@Size(min = 4, message = "Username must have atleast 4 characters")
-	private String userName;
+	private String username;
 	
 	@NotNull(message = "Email must not be null")
 	@Email(message = "Invalid email")
@@ -28,8 +28,6 @@ public class UserDTO {
 	@Size(min = 8, message = "Password must have atleast 8 characters")
 	@JsonProperty(access = Access.WRITE_ONLY)
 	private String password;
-	
-	private String role;
 	
 	@NotNull(message = "mobile must not be null")
 	@Size(min=10,max=10, message = "Invalid mobile number")
