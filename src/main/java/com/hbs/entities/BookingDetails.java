@@ -27,8 +27,7 @@ import lombok.ToString;
 @ToString
 @EqualsAndHashCode
 @Entity
-@Table(name = "booking_details")
-public class BookingDetails {
+@Table(name = "booking_details")public class BookingDetails {
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE)
 	@Column(name = "booking_id")
