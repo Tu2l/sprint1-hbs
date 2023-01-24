@@ -16,6 +16,7 @@ import org.mockito.MockitoAnnotations;
 import com.hbs.dto.TransactionsDTO;
 import com.hbs.entities.Transactions;
 import com.hbs.repository.TransactionRepository;
+import com.hbs.serviceimpl.TransactionServiceImpl;
 
 class TransactionServiceImplTest {
 

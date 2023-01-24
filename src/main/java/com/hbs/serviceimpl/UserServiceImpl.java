@@ -1,4 +1,4 @@
-package com.hbs.service;
+package com.hbs.serviceimpl;
 
 import java.util.List;
 
@@ -18,6 +18,8 @@ import com.hbs.exceptions.InvalidMobileNumberFormatException;
 import com.hbs.exceptions.UserAlreadyExistsException;
 import com.hbs.exceptions.UserNotFoundException;
 import com.hbs.repository.UserRepository;
+import com.hbs.service.JwtService;
+import com.hbs.service.UserService;
 import com.hbs.util.MapperUtil;
 import com.hbs.util.ValidationUtil;
 
