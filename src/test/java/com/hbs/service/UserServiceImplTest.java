@@ -25,6 +25,7 @@ import com.hbs.exceptions.InvalidMobileNumberFormatException;
 import com.hbs.exceptions.UserAlreadyExistsException;
 import com.hbs.exceptions.UserNotFoundException;
 import com.hbs.repository.UserRepository;
+import com.hbs.serviceimpl.UserServiceImpl;
 
 class UserServiceImplTest {
 
