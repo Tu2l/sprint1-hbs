@@ -1,4 +1,4 @@
-package com.hbs.service;
+package com.hbs.serviceimpl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import com.hbs.dto.TransactionsDTO;
 import com.hbs.entities.Transactions;
 import com.hbs.repository.TransactionRepository;
+import com.hbs.service.TransactionService;
 import com.hbs.util.MapperUtil;
 
 @Service

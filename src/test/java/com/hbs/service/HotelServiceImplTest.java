@@ -27,6 +27,7 @@ import com.hbs.exceptions.HotelNotFoundException;
 import com.hbs.exceptions.InvalidEmailFormatException;
 import com.hbs.exceptions.InvalidMobileNumberFormatException;
 import com.hbs.repository.HotelRepository;
+import com.hbs.serviceimpl.HotelServiceImpl;
 import com.hbs.util.MapperUtil;
 
 @ExtendWith(MockitoExtension.class)

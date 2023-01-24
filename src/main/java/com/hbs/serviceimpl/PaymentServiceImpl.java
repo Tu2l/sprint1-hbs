@@ -1,4 +1,4 @@
-package com.hbs.service;
+package com.hbs.serviceimpl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import com.hbs.dto.PaymentsDTO;
 import com.hbs.entities.Payments;
 import com.hbs.repository.PaymentRepository;
+import com.hbs.service.PaymentService;
 import com.hbs.util.MapperUtil;
 
 @Service
