@@ -16,7 +16,6 @@ class RoomDetailsTest {
 	void setUp() {
 		room = new RoomDetails();
 		hotel = new Hotel();
-		room.setAvailable(false);
 		room.setImageUrl("path");
 		room.setRatePerDay(1300);
 		room.setRoomId(123);

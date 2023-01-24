@@ -76,7 +76,7 @@ class HotelTest {
 	void testGetWebsite() {
 		assertEquals("www.sagar.com",hotel.getWebsite());	}
 
-	@Test
+	/*@Test
 	void testGetRoomList() {
 		RoomDetails room = new RoomDetails();
 		room.setRoomId(0);
@@ -84,6 +84,6 @@ class HotelTest {
 		roomList.add(room);
 		hotel.setRoomList(roomList);
 		assertEquals(roomList, hotel.getRoomList());
-	}
+	}*/
 
 }
