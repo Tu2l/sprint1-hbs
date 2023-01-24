@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.hbs.dto.BookingDetailsDTO;
 import com.hbs.exceptions.BookingDetailsNotFoundException;
 import com.hbs.exceptions.HotelNotFoundException;
+import com.hbs.exceptions.RoomAlreadyBookedException;
 import com.hbs.exceptions.RoomDetailsNotFoundException;
 import com.hbs.exceptions.UserNotFoundException;
 import com.hbs.service.BookingDetailsService;
@@ -32,14 +33,14 @@ public class BookingDetailsController {
 
 	@PostMapping
 	public ResponseEntity<BookingDetailsDTO> add(@Valid @RequestBody BookingDetailsDTO bookingDetailsDTO)
-			throws UserNotFoundException, HotelNotFoundException, RoomDetailsNotFoundException {
+			throws UserNotFoundException, HotelNotFoundException, RoomDetailsNotFoundException, RoomAlreadyBookedException {
 		return new ResponseEntity<>(bookingDetailsService.add(bookingDetailsDTO), HttpStatus.CREATED);
 	}
 
 	@PutMapping("/{bookingId}")
 	public ResponseEntity<BookingDetailsDTO> update(@PathVariable int bookingId,@Valid @RequestBody BookingDetailsDTO bookingDetailsDTO)
 			throws BookingDetailsNotFoundException, UserNotFoundException, HotelNotFoundException,
-			RoomDetailsNotFoundException {
+			RoomDetailsNotFoundException, RoomAlreadyBookedException {
 		
 		bookingDetailsDTO.setBookingId(bookingId);
 		return new ResponseEntity<>(bookingDetailsService.update(bookingDetailsDTO), HttpStatus.OK);
@@ -54,11 +55,11 @@ public class BookingDetailsController {
 	@GetMapping("/{bookingId}")
 	public ResponseEntity<BookingDetailsDTO> findById(@PathVariable int bookingId)
 			throws BookingDetailsNotFoundException {
-		return new ResponseEntity<>(bookingDetailsService.findById(bookingId), HttpStatus.FOUND);
+		return new ResponseEntity<>(bookingDetailsService.findById(bookingId), HttpStatus.OK);
 	}
 
 	@GetMapping
 	public ResponseEntity<List<BookingDetailsDTO>> findAll() {
-		return new ResponseEntity<>(bookingDetailsService.findAll(), HttpStatus.FOUND);
+		return new ResponseEntity<>(bookingDetailsService.findAll(), HttpStatus.OK);
 	}
 }

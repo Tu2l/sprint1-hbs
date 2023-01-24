@@ -12,11 +12,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.hbs.auth.JwtRequest;
 import com.hbs.dto.UserDTO;
-import com.hbs.entities.User;
 import com.hbs.exceptions.AdminAlreadyExistsException;
 import com.hbs.exceptions.AdminNotFoundException;
 import com.hbs.service.AdminService;
-import com.hbs.util.MapperUtil;
 
 @RestController
 @RequestMapping("/admin")
