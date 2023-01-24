@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.hbs.auth.JwtRequest;
 import com.hbs.dto.UserDTO;
 import com.hbs.entities.UserRole;
+import com.hbs.exceptions.ActiveBookingFoundException;
 import com.hbs.exceptions.InvalidEmailFormatException;
 import com.hbs.exceptions.InvalidMobileNumberFormatException;
 import com.hbs.exceptions.UserAlreadyExistsException;
@@ -49,7 +50,7 @@ public class UserController {
 	}
 
 	@DeleteMapping("/{id}")
-	public ResponseEntity<UserDTO> remove(@PathVariable int id) throws UserNotFoundException {
+	public ResponseEntity<UserDTO> remove(@PathVariable int id) throws UserNotFoundException, ActiveBookingFoundException {
 		return new ResponseEntity<>(userService.remove(id), HttpStatus.OK);
 	}
 

@@ -1,5 +1,6 @@
 package com.hbs.serviceimpl;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.hbs.dto.BookingDetailsDTO;
 import com.hbs.entities.BookingDetails;
+import com.hbs.exceptions.ActiveBookingFoundException;
 import com.hbs.exceptions.BookingDetailsNotFoundException;
 import com.hbs.exceptions.HotelNotFoundException;
 import com.hbs.exceptions.RoomAlreadyBookedException;
@@ -21,11 +23,12 @@ import com.hbs.util.MapperUtil;
 
 @Service
 public class BookingDetailsServiceImpl implements BookingDetailsService {
-	private static final String BOOKING_DETAILS_NOT_FOUND = "Booking details not found for bookingid: ";
-	private static final String USER_NOT_FOUND = "User not found for userid: ";
-	private static final String HOTEL_NOT_FOUND = "Hotel not found for hotelid: ";
-	private static final String ROOM_DETAILS_NOT_FOUND = "Invalid RoomDetails";
-	private static final String ROOM_ALREADY_BOOKED = "Room already booked";
+	private static final String BOOKING_DETAILS_NOT_FOUND_MESSAGE = "Booking details not found for bookingid: ";
+	private static final String USER_NOT_FOUND_MESSAGE = "User not found for userid: ";
+	private static final String HOTEL_NOT_FOUND_MESSAGE = "Hotel not found for hotelid: ";
+	private static final String ROOM_DETAILS_NOT_FOUND_MESSAGE = "Invalid RoomDetails";
+	private static final String ROOM_ALREADY_BOOKED_MESSAGE = "Room already booked";
+	private static final String ACTIVE_BOOKING_FOUND_MESSAGE = "Active booking found";
 
 	@Autowired
 	private BookingDetailsRepository bookingDetailsRepository;
@@ -40,13 +43,13 @@ public class BookingDetailsServiceImpl implements BookingDetailsService {
 			throws UserNotFoundException, HotelNotFoundException, RoomDetailsNotFoundException {
 		// validate user,hotel,room
 		if (!userRepository.existsById(dto.getUserId()))
-			throw new UserNotFoundException(USER_NOT_FOUND + dto.getUserId());
+			throw new UserNotFoundException(USER_NOT_FOUND_MESSAGE + dto.getUserId());
 
 		if (!hotelRepository.existsById(dto.getHotelId()))
-			throw new HotelNotFoundException(HOTEL_NOT_FOUND + dto.getHotelId());
+			throw new HotelNotFoundException(HOTEL_NOT_FOUND_MESSAGE + dto.getHotelId());
 
 		if (roomRepository.findByRoomIdAndHotelIdCount(dto.getHotelId(), dto.getRoomIds()) != dto.getRoomIds().size())
-			throw new RoomDetailsNotFoundException(ROOM_DETAILS_NOT_FOUND);
+			throw new RoomDetailsNotFoundException(ROOM_DETAILS_NOT_FOUND_MESSAGE);
 
 	}
 
@@ -55,7 +58,7 @@ public class BookingDetailsServiceImpl implements BookingDetailsService {
 		int size = roomRepository.findBookedRoomsCountByDateAndRoomId(dto.getBookedFromDate(), dto.getBookedToDate(),
 				dto.getRoomIds());
 		if (size != 0)
-			throw new RoomAlreadyBookedException(ROOM_ALREADY_BOOKED);
+			throw new RoomAlreadyBookedException(ROOM_ALREADY_BOOKED_MESSAGE);
 
 	}
 
@@ -79,7 +82,8 @@ public class BookingDetailsServiceImpl implements BookingDetailsService {
 
 		validateBooking(dto);
 
-		remove(dto.getBookingId());
+		bookingDetailsRepository.deleteById(dto.getBookingId());
+		
 		BookingDetails bookingDetails = MapperUtil.mapToBookingDetails(dto);
 
 		try {
@@ -88,6 +92,7 @@ public class BookingDetailsServiceImpl implements BookingDetailsService {
 			throw new RoomAlreadyBookedException(ex.getMessage());
 		} finally {
 			bookingDetails.setBookingId(dto.getBookingId());
+			dto.setAmount(roomRepository.calculateTotalAmount(dto.getRoomIds()));
 			bookingDetails = bookingDetailsRepository.save(bookingDetails);
 		}
 
@@ -95,14 +100,27 @@ public class BookingDetailsServiceImpl implements BookingDetailsService {
 	}
 
 	@Override
-	public BookingDetailsDTO remove(int bookingId) throws BookingDetailsNotFoundException {
+	public BookingDetailsDTO remove(int bookingId) throws BookingDetailsNotFoundException, ActiveBookingFoundException {
 		BookingDetailsDTO dto = findById(bookingId);
+		
+		if(bookingDetailsRepository.findCountByDate(LocalDate.now(),bookingId) > 0)
+			throw new ActiveBookingFoundException(ACTIVE_BOOKING_FOUND_MESSAGE);
 
 		bookingDetailsRepository.deleteById(bookingId);
 
 		return dto;
 	}
 
+	
+	@Override
+	public BookingDetailsDTO removeActive(int bookingId) throws BookingDetailsNotFoundException {
+		BookingDetailsDTO dto = findById(bookingId);
+	
+		bookingDetailsRepository.deleteById(bookingId);
+
+		return dto;
+	}
+	
 	@Override
 	public List<BookingDetailsDTO> findAll() {
 		return MapperUtil.mapToBookingDetailsDtoList(bookingDetailsRepository.findAll());
@@ -112,7 +130,7 @@ public class BookingDetailsServiceImpl implements BookingDetailsService {
 	@Override
 	public BookingDetailsDTO findById(int bookingId) throws BookingDetailsNotFoundException {
 		return MapperUtil.mapToBookingDetailsDto(bookingDetailsRepository.findById(bookingId)
-				.orElseThrow(() -> new BookingDetailsNotFoundException(BOOKING_DETAILS_NOT_FOUND + bookingId)));
+				.orElseThrow(() -> new BookingDetailsNotFoundException(BOOKING_DETAILS_NOT_FOUND_MESSAGE + bookingId)));
 	}
 
 }

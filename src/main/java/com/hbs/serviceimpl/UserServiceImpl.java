@@ -1,5 +1,6 @@
 package com.hbs.serviceimpl;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,14 +10,17 @@ import org.springframework.stereotype.Service;
 import com.hbs.auth.JwtRequest;
 import com.hbs.auth.JwtResponse;
 import com.hbs.dto.UserDTO;
+import com.hbs.entities.BookingDetails;
 import com.hbs.entities.User;
 import com.hbs.entities.UserRole;
+import com.hbs.exceptions.ActiveBookingFoundException;
 import com.hbs.exceptions.AdminNotFoundException;
 import com.hbs.exceptions.InvalidCredentialsException;
 import com.hbs.exceptions.InvalidEmailFormatException;
 import com.hbs.exceptions.InvalidMobileNumberFormatException;
 import com.hbs.exceptions.UserAlreadyExistsException;
 import com.hbs.exceptions.UserNotFoundException;
+import com.hbs.repository.BookingDetailsRepository;
 import com.hbs.repository.UserRepository;
 import com.hbs.service.JwtService;
 import com.hbs.service.UserService;
@@ -30,9 +34,12 @@ public class UserServiceImpl implements UserService {
 	private static final String USER_ALREADY_EXISTS = "UserDTO already exists with email: ";
 	private static final String INVALID_EMAIL_FORMAT = "Invalid email: ";
 	private static final String INVALID_MOBILE_NUMBER_FORMAT = "Invalid mobile number";
+	private static final String ACTIVE_BOOKING_FOUND_MESSAGE = "Active booking found";
 
 	@Autowired
 	private UserRepository userRepository;
+	@Autowired
+	private BookingDetailsRepository bookingRepository;
 	@Autowired
 	private JwtService jwtService;
 
@@ -84,9 +91,18 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public UserDTO remove(int id) throws UserNotFoundException {
+	public UserDTO remove(int id) throws UserNotFoundException, ActiveBookingFoundException {
 		UserDTO find = findById(id);
+
+		if (bookingRepository.findByDateAndUserIdCount(LocalDate.now(), id) > 0)
+			throw new ActiveBookingFoundException(ACTIVE_BOOKING_FOUND_MESSAGE);
+
+		List<BookingDetails> bookings = bookingRepository.findByUserId(id);
+		if (!bookings.isEmpty())
+			bookingRepository.deleteAll(bookings);
+
 		userRepository.deleteById(find.getUserId());
+
 		return find;
 	}
 

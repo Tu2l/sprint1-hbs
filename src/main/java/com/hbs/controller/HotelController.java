@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.hbs.dto.HotelDTO;
+import com.hbs.exceptions.ActiveBookingFoundException;
 import com.hbs.exceptions.HotelAlreadyExistsExcetion;
 import com.hbs.exceptions.HotelNotFoundException;
 import com.hbs.exceptions.InvalidEmailFormatException;
@@ -39,14 +40,15 @@ public class HotelController {
 	public ResponseEntity<HotelDTO> update(@Valid @RequestBody HotelDTO dto, @PathVariable int id)
 			throws HotelNotFoundException, InvalidEmailFormatException, InvalidMobileNumberFormatException,
 			HotelAlreadyExistsExcetion {
-		
+
 		dto.setHotelId(id);
-		
+
 		return new ResponseEntity<>(hotelService.update(dto), HttpStatus.OK);
 	}
 
 	@DeleteMapping("/{id}")
-	public ResponseEntity<HotelDTO> remove(@PathVariable int id) throws HotelNotFoundException {
+	public ResponseEntity<HotelDTO> remove(@PathVariable int id)
+			throws HotelNotFoundException, ActiveBookingFoundException {
 		return new ResponseEntity<>(hotelService.remove(id), HttpStatus.OK);
 	}
 
