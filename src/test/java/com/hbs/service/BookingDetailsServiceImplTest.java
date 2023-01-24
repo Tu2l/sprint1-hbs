@@ -27,6 +27,7 @@ import com.hbs.entities.Payments;
 import com.hbs.entities.RoomDetails;
 import com.hbs.exceptions.BookingDetailsNotFoundException;
 import com.hbs.exceptions.HotelNotFoundException;
+import com.hbs.exceptions.RoomAlreadyBookedException;
 import com.hbs.exceptions.RoomDetailsNotFoundException;
 import com.hbs.exceptions.UserNotFoundException;
 import com.hbs.repository.BookingDetailsRepository;
@@ -34,6 +35,7 @@ import com.hbs.repository.HotelRepository;
 import com.hbs.repository.PaymentRepository;
 import com.hbs.repository.RoomDetailsRepository;
 import com.hbs.repository.UserRepository;
+import com.hbs.serviceimpl.BookingDetailsServiceImpl;
 import com.hbs.util.MapperUtil;
 
 @ExtendWith(MockitoExtension.class)
@@ -107,7 +109,7 @@ class BookingDetailsServiceImplTest {
 
 
 	@Test
-	void testAdd() throws UserNotFoundException, HotelNotFoundException, RoomDetailsNotFoundException {
+	void testAdd() throws UserNotFoundException, HotelNotFoundException, RoomDetailsNotFoundException, RoomAlreadyBookedException {
 		when(userRepoMock.existsById(1)).thenReturn(true);
 		when(hotelRepoMock.existsById(2)).thenReturn(true);
 		when(roomRepoMock.findByRoomIdAndHotelIdCount(1, Arrays.asList(121))).thenReturn(1);
@@ -115,7 +117,7 @@ class BookingDetailsServiceImplTest {
 	}
 
 	@Test
-	void testUpdate() throws UserNotFoundException, HotelNotFoundException, RoomDetailsNotFoundException {
+	void testUpdate() throws UserNotFoundException, HotelNotFoundException, RoomDetailsNotFoundException, RoomAlreadyBookedException {
 
 		try {
 			bookingDetailsDTO.setAmount(19000);
@@ -159,7 +161,7 @@ class BookingDetailsServiceImplTest {
 
 	@Test
 	void testUpdate_throwsBookingDetailsNotFoundException()
-			throws UserNotFoundException, HotelNotFoundException, RoomDetailsNotFoundException {
+			throws UserNotFoundException, HotelNotFoundException, RoomDetailsNotFoundException, RoomAlreadyBookedException {
 		try {
 			when(serviceImplMock.update(bookingDetailsDTO))
 					.thenThrow(new BookingDetailsNotFoundException(EXCEPTION + bookingDetailsDTO.getBookingId()));

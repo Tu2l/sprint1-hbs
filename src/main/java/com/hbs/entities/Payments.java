@@ -4,7 +4,8 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 
 import javax.persistence.Entity;
-
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -33,12 +34,13 @@ public class Payments {
 
 	@Id
 	@Column(name = "payment_id")
+	@GeneratedValue(strategy = GenerationType.SEQUENCE)
 	private int paymentId;
 	
 	@Transient
 	private double amount;
 	
-	@ManyToOne
+	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "fk_booking_id")
 	private BookingDetails bookingDetails;
 

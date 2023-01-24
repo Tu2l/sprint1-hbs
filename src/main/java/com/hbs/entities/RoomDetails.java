@@ -32,7 +32,7 @@ public class RoomDetails {
 	@JoinColumn(name = "fk_hotel_id")
 	private Hotel hotel;
 
-	@Column(name = "room_no", unique = true, nullable = true)
+	@Column(name = "room_no", nullable = true)
 	private String roomNo;
 
 	@Column(name = "room_type", nullable = true)
@@ -41,9 +41,7 @@ public class RoomDetails {
 	@Column(name = "rate_per_day", nullable = true)
 	private double ratePerDay;
 
-	@Column(name = "is_available", nullable = true)
-	private boolean isAvailable;
-
 	@Column(name = "photo")
 	private String imageUrl;
+
 }

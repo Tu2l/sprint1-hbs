@@ -23,6 +23,7 @@ import com.hbs.dto.BookingDetailsDTO;
 import com.hbs.entities.Hotel;
 import com.hbs.exceptions.BookingDetailsNotFoundException;
 import com.hbs.exceptions.HotelNotFoundException;
+import com.hbs.exceptions.RoomAlreadyBookedException;
 import com.hbs.exceptions.RoomDetailsNotFoundException;
 import com.hbs.exceptions.UserNotFoundException;
 import com.hbs.service.BookingDetailsService;
@@ -58,7 +59,7 @@ class BookingDetailsControllerTest {
 
 	@Test
 	@Order(1)
-	void testAdd() throws UserNotFoundException, HotelNotFoundException, RoomDetailsNotFoundException {
+	void testAdd() throws UserNotFoundException, HotelNotFoundException, RoomDetailsNotFoundException, RoomAlreadyBookedException {
 		when(bookingDetailsService.add(bookingDetailsDto)).thenReturn(bookingDetailsDto);
 		ResponseEntity<BookingDetailsDTO> response = bookingDetailsController.add(bookingDetailsDto);
 		assertEquals(HttpStatus.CREATED, response.getStatusCode());
@@ -69,7 +70,7 @@ class BookingDetailsControllerTest {
 	@Test
 	@Order(4)
 	void testUpdate() throws BookingDetailsNotFoundException, UserNotFoundException, HotelNotFoundException,
-			RoomDetailsNotFoundException {
+			RoomDetailsNotFoundException, RoomAlreadyBookedException {
 		when(bookingDetailsService.update(bookingDetailsDto)).thenReturn(bookingDetailsDto);
 		ResponseEntity<BookingDetailsDTO> response = bookingDetailsController.update(1,bookingDetailsDto);
 		assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -106,7 +107,7 @@ class BookingDetailsControllerTest {
 	}
 
 	@Test
-	void testAddNew() throws UserNotFoundException, HotelNotFoundException, RoomDetailsNotFoundException {
+	void testAddNew() throws UserNotFoundException, HotelNotFoundException, RoomDetailsNotFoundException, RoomAlreadyBookedException {
 		when(bookingDetailsService.add(bookingDetailsDto)).thenReturn(bookingDetailsDto);
 		ResponseEntity<BookingDetailsDTO> response = bookingDetailsController.add(bookingDetailsDto);
 		assertEquals(HttpStatus.CREATED, response.getStatusCode());

@@ -11,6 +11,7 @@ import javax.validation.constraints.Size;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
 
@@ -51,8 +52,9 @@ public class BookingDetailsDTO {
 	@NotNull(message = "Number of children is required.")
 	private int noOfChildren;
 
-	@NotNull
-	@Min(value = 0, message = "Amount must be greater than zero.")
+//	@NotNull
+//	@Min(value = 0, message = "Amount must be greater than zero.")
+	@JsonProperty(access = Access.READ_ONLY)
 	private double amount;
 
 	@NotNull
@@ -62,4 +64,22 @@ public class BookingDetailsDTO {
 	@NotNull
 	@Size(min = 1, message = "payment list must not be empty")
 	private List<Double> payments;
+	
+	public String getBookedFrom() {
+		return this.bookedFrom.toString();
+	}
+	
+	public String getBookedTo() {
+		return this.bookedTo.toString();
+	}
+	
+	@JsonIgnore
+	public LocalDate getBookedFromDate() {
+		return this.bookedFrom;
+	}
+	
+	@JsonIgnore
+	public LocalDate getBookedToDate() {
+		return this.bookedTo;
+	}
 }

@@ -1,6 +1,7 @@
 package com.hbs.controller;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.List;
 
 import javax.validation.Valid;
@@ -8,7 +9,6 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -18,17 +18,13 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.hbs.dto.RoomDetailsDTO;
-import com.hbs.entities.RoomDetails;
+import com.hbs.dto.RoomImage;
 import com.hbs.exceptions.HotelNotFoundException;
 import com.hbs.exceptions.InvalidImageFormatException;
 import com.hbs.exceptions.RoomDetailsNotFoundException;
 import com.hbs.service.RoomDetailsService;
-import com.hbs.util.FileUploadUtil;
-import com.hbs.util.MapperUtil;
-import com.hbs.util.ValidationUtil;
 
 @RestController
 @RequestMapping("/room")
@@ -37,30 +33,25 @@ public class RoomDetailsController {
 	@Autowired
 	private RoomDetailsService roomService;
 
-	@PostMapping(consumes = { "multipart/form-data" })
-	public ResponseEntity<RoomDetailsDTO> add(@Valid @ModelAttribute RoomDetailsDTO roomDetailsDto)
-			throws IOException, HotelNotFoundException, RoomDetailsNotFoundException, InvalidImageFormatException {
+	@PostMapping
+	public ResponseEntity<RoomDetailsDTO> add(@Valid @RequestBody RoomDetailsDTO dto)
+			throws HotelNotFoundException, RoomDetailsNotFoundException {
 
-		RoomDetails room = MapperUtil.mapToRoomDetails(roomDetailsDto);
-		MultipartFile photo = roomDetailsDto.getPhotoUpload();
+		return new ResponseEntity<>(roomService.add(dto), HttpStatus.CREATED);
+	}
 
-		String fileName = StringUtils.cleanPath(photo.getOriginalFilename());
-		StringBuilder sb = new StringBuilder(fileName);
-		String ext = sb.substring(sb.lastIndexOf("."));
-		if (!ValidationUtil.validateImageExtension(ext))
-			throw new InvalidImageFormatException("Invalid Image file");
+	@PostMapping(consumes = { "multipart/form-data" }, path = "/upload/{roomId}")
+	public ResponseEntity<RoomDetailsDTO> uploadImage(@Valid @ModelAttribute RoomImage image)
+			throws IOException, RoomDetailsNotFoundException, InvalidImageFormatException {
 
-		String uploadDir = roomDetailsDto.getHotelId() + "/" + room.getRoomNo();
-		String path = FileUploadUtil.saveFile(uploadDir, fileName, roomDetailsDto.getPhotoUpload());
-		roomDetailsDto.setImageUrl(path);
-		return new ResponseEntity<>(roomService.add(roomDetailsDto), HttpStatus.CREATED);
+		return new ResponseEntity<>(roomService.uploadImage(image), HttpStatus.CREATED);
 	}
 
 	@PutMapping("/{id}")
-	public ResponseEntity<RoomDetailsDTO> update(@Valid @RequestBody RoomDetailsDTO roomDetailsDto,
-			@PathVariable int id) throws RoomDetailsNotFoundException, HotelNotFoundException {
-		roomDetailsDto.setRoomId(id);
-		return new ResponseEntity<>(roomService.update(roomDetailsDto), HttpStatus.OK);
+	public ResponseEntity<RoomDetailsDTO> update(@Valid @RequestBody RoomDetailsDTO dto, @PathVariable int id)
+			throws RoomDetailsNotFoundException, HotelNotFoundException {
+		dto.setRoomId(id);
+		return new ResponseEntity<>(roomService.update(dto), HttpStatus.OK);
 	}
 
 	@DeleteMapping("/{id}")
@@ -78,8 +69,14 @@ public class RoomDetailsController {
 		return new ResponseEntity<>(roomService.findById(id), HttpStatus.OK);
 	}
 
-	@GetMapping("/byhotelid/{id}")
+	@GetMapping("/hotel/{id}")
 	public ResponseEntity<List<RoomDetailsDTO>> findByHotelId(@PathVariable int id) {
 		return new ResponseEntity<>((roomService.findByHotelId(id)), HttpStatus.OK);
+	}
+
+	@GetMapping("/{from}/{to}")
+	public ResponseEntity<List<RoomDetailsDTO>> findAvailable(@PathVariable String from, @PathVariable String to) {
+		return new ResponseEntity<>((roomService.findAllAvailableRoom(LocalDate.parse(from), LocalDate.parse(to))),
+				HttpStatus.OK);
 	}
 }

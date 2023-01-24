@@ -1,6 +1,7 @@
 package com.hbs.entities;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -11,6 +12,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -57,16 +59,20 @@ public class BookingDetails {
 	@Column(name = "amount", nullable = false)
 	private double amount;
 
-	@OneToMany
+	@ManyToMany
 	@JoinTable(name = "booking_rooms", inverseJoinColumns = @JoinColumn(name = "room_id"), joinColumns = @JoinColumn(name = "booking_id"))
 	private List<RoomDetails> roomList;
 
-	@OneToMany(cascade = CascadeType.ALL)
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinTable(name = "booking_payments", inverseJoinColumns = @JoinColumn(name = "payment_id"), joinColumns = @JoinColumn(name = "booking_id"))
-	private List<Payments> paymentList;
+	private List<Payments> paymentList = new ArrayList<>();
 
 	public void setPaymentList(List<Payments> paymentList) {
-		//generating payments
+
+		if (paymentList == null)
+			return;
+
+		// generating payments
 		this.paymentList = paymentList;
 		for (Payments payment : paymentList) {
 			payment.setBookingDetails(this);
@@ -75,6 +81,9 @@ public class BookingDetails {
 			Transactions transaction = new Transactions();
 			transaction.setAmount(payment.getAmount());
 			payment.setTransaction(transaction);
+
+			// calculating total amount
+			this.amount += payment.getAmount();
 		}
 	}
 

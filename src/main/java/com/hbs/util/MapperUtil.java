@@ -90,16 +90,33 @@ public class MapperUtil {
 
 		dto.setRoomIds(roomIdList);
 
-		List<Double> payments = bookingDetails.getPaymentList().stream().map((payment) -> payment.getAmount())
-				.collect(Collectors.toList());
+		List<Double> payments = bookingDetails.getPaymentList().stream()
+				.map((payment) -> payment.getTransaction().getAmount()).collect(Collectors.toList());
 
 		dto.setPayments(payments);
+
 		return dto;
 	}
 
 	public static List<BookingDetailsDTO> mapToBookingDetailsDtoList(List<BookingDetails> bookingDetailsList) {
-		return MAPPER.map(bookingDetailsList, new TypeToken<List<BookingDetailsDTO>>() {
+		List<List<Double>> paymentsList = bookingDetailsList
+				.stream().map((booking) -> booking.getPaymentList().stream()
+						.map(payment -> payment.getTransaction().getAmount()).collect(Collectors.toList()))
+				.collect(Collectors.toList());
+
+		List<List<Integer>> roomIdsList = bookingDetailsList.stream().map(
+				(booking) -> booking.getRoomList().stream().map(RoomDetails::getRoomId).collect(Collectors.toList()))
+				.collect(Collectors.toList());
+
+		List<BookingDetailsDTO> dtos = MAPPER.map(bookingDetailsList, new TypeToken<List<BookingDetailsDTO>>() {
 		}.getType());
+
+		for (int i = 0; i < dtos.size(); i++) {
+			dtos.get(i).setPayments(paymentsList.get(i));
+			dtos.get(i).setRoomIds(roomIdsList.get(i));
+		}
+
+		return dtos;
 	}
 
 	// payments<->paymentsdto
