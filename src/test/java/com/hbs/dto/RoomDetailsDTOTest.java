@@ -18,7 +18,6 @@ class RoomDetailsDTOTest {
 		dto.setRoomType("Ac Room");
 		dto.setRatePerDay(700);
 		dto.setImageUrl("http://image/");
-		dto.setAvailable(true);
 		
 	}
 
