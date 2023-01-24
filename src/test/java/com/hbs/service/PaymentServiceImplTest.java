@@ -18,6 +18,7 @@ import com.hbs.entities.BookingDetails;
 import com.hbs.entities.Payments;
 import com.hbs.entities.Transactions;
 import com.hbs.repository.PaymentRepository;
+import com.hbs.serviceimpl.PaymentServiceImpl;
 import com.hbs.util.MapperUtil;
 
 class PaymentServiceImplTest {
