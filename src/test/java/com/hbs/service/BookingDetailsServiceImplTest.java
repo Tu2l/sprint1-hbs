@@ -63,15 +63,8 @@ class BookingDetailsServiceImplTest {
 
 	private List<BookingDetailsDTO> allBookings = new ArrayList<>();
 
-	private List<Double> payments;
-
-	private List<Integer> roomsList;
-
 	@BeforeEach
 	public void setUp() {
-		
-//		roomsList = Arrays.asList(1, 2);
-//		payments = Arrays.asList(500.0, 500.0);
 		bookingDetailsDTO = new BookingDetailsDTO();
 		bookingDetailsDTO.setBookingId(1);
 		bookingDetailsDTO.setUserId(1);
@@ -83,28 +76,27 @@ class BookingDetailsServiceImplTest {
 		bookingDetailsDTO.setAmount(1000.0);
 		bookingDetailsDTO.setRoomIds(new ArrayList<>());
 		bookingDetailsDTO.setPayments(new ArrayList<>());
-		
+
 		serviceImplMock = new BookingDetailsServiceImpl();
 		MockitoAnnotations.openMocks(this);
 	}
 
 	@Test
 	void testAddBookingDetailsSuccess() throws Exception {
-	    when(userRepoMock.existsById(bookingDetailsDTO.getUserId())).thenReturn(true);
-	    when(hotelRepoMock.existsById(bookingDetailsDTO.getHotelId())).thenReturn(true);
+		when(userRepoMock.existsById(bookingDetailsDTO.getUserId())).thenReturn(true);
+		when(hotelRepoMock.existsById(bookingDetailsDTO.getHotelId())).thenReturn(true);
 //	    when(roomRepoMock.existsById(any(Integer.class))).thenReturn(true);
-	    when(bookingRepoMock.save(any(BookingDetails.class)))
-	        .thenReturn(MapperUtil.mapToBookingDetails(bookingDetailsDTO));
-	    BookingDetailsDTO result = serviceImplMock.add(bookingDetailsDTO);
+		when(bookingRepoMock.save(any(BookingDetails.class)))
+				.thenReturn(MapperUtil.mapToBookingDetails(bookingDetailsDTO));
+		BookingDetailsDTO result = serviceImplMock.add(bookingDetailsDTO);
 
-	    assertNotNull(result);
-	  
-	    System.out.println("Expected: " + bookingDetailsDTO);
-	    System.out.println("Actual: " + result);
-	    assertEquals(bookingDetailsDTO, result);
-	    verify(bookingRepoMock, times(1)).save(any(BookingDetails.class));
+		assertNotNull(result);
+
+		System.out.println("Expected: " + bookingDetailsDTO);
+		System.out.println("Actual: " + result);
+		assertEquals(bookingDetailsDTO, result);
+		verify(bookingRepoMock, times(1)).save(any(BookingDetails.class));
 	}
-
 
 	@Test
 	void testAdd() throws UserNotFoundException, HotelNotFoundException, RoomDetailsNotFoundException {
@@ -149,16 +141,15 @@ class BookingDetailsServiceImplTest {
 
 	@Test
 	void testFindById() throws BookingDetailsNotFoundException {
-	   // when(bookingRepoMock.findById(bookingDetailsDTO.getBookingId())).thenReturn(bookingDetailsDTO);
-	    BookingDetailsDTO search = serviceImplMock.findById(bookingDetailsDTO.getBookingId());
-	    assertEquals(bookingDetailsDTO, search);
-	    assertEquals(1,bookingDetailsDTO.getBookingId());
-	    verify(bookingRepoMock).findById(bookingDetailsDTO.getBookingId());
+		// when(bookingRepoMock.findById(bookingDetailsDTO.getBookingId())).thenReturn(bookingDetailsDTO);
+		BookingDetailsDTO search = serviceImplMock.findById(bookingDetailsDTO.getBookingId());
+		assertEquals(bookingDetailsDTO, search);
+		assertEquals(1, bookingDetailsDTO.getBookingId());
+		verify(bookingRepoMock).findById(bookingDetailsDTO.getBookingId());
 	}
 
-
 	@Test
-	void testUpdate_throwsBookingDetailsNotFoundException()
+	void testUpdateThrowsBookingDetailsNotFoundException()
 			throws UserNotFoundException, HotelNotFoundException, RoomDetailsNotFoundException {
 		try {
 			when(serviceImplMock.update(bookingDetailsDTO))
@@ -169,7 +160,7 @@ class BookingDetailsServiceImplTest {
 	}
 
 	@Test
-	void testFindById_throwsBookingDetailsNotFoundException() {
+	void testFindByIdThrowsBookingDetailsNotFoundException() {
 		try {
 			when(serviceImplMock.findById(bookingDetailsDTO.getBookingId()))
 					.thenThrow(new BookingDetailsNotFoundException(EXCEPTION + bookingDetailsDTO.getBookingId()));

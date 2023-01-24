@@ -1,11 +1,33 @@
 package com.hbs.controller;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.when;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+
+import com.hbs.dto.HotelDTO;
+import com.hbs.entities.Hotel;
+import com.hbs.exceptions.HotelAlreadyExistsExcetion;
+import com.hbs.exceptions.HotelNotFoundException;
+import com.hbs.exceptions.InvalidEmailFormatException;
+import com.hbs.exceptions.InvalidMobileNumberFormatException;
+import com.hbs.service.HotelService;
+import com.hbs.util.MapperUtil;
 
 @ExtendWith(MockitoExtension.class)
 class HotelControllerTest {
-/*
+
 	@Mock
 	private HotelService hotelService;
 
@@ -25,7 +47,6 @@ class HotelControllerTest {
 		hotelDto.setEmail("maurya.in@hotel.com");
 		hotelDto.setPhone1("080-54376");
 		hotelDto.setHotelName("maurya");
-		hotel = MapperUtil.mapToHotel(hotelDto);
 		hotels = new ArrayList<>();
 		hotels.add(hotel);
 		hotelDtos = MapperUtil.mapToHotelList(hotels);
@@ -33,7 +54,7 @@ class HotelControllerTest {
 
 	@Test
 	void add() throws InvalidEmailFormatException, InvalidMobileNumberFormatException, HotelAlreadyExistsExcetion {
-		when(hotelService.add(hotel)).thenReturn(hotel);
+		when(hotelService.add(hotelDto)).thenReturn(hotelDto);
 		ResponseEntity<HotelDTO> response = hotelController.add(hotelDto);
 		assertEquals(HttpStatus.CREATED, response.getStatusCode());
 		assertEquals(hotelDto, response.getBody());
@@ -41,7 +62,7 @@ class HotelControllerTest {
 
 	@Test
 	void update() throws HotelNotFoundException, InvalidEmailFormatException, InvalidMobileNumberFormatException, HotelAlreadyExistsExcetion {
-		when(hotelService.update(hotel)).thenReturn(hotel);
+		when(hotelService.update(hotelDto)).thenReturn(hotelDto);
 		ResponseEntity<HotelDTO> response = hotelController.update(hotelDto,1);
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 		assertEquals(hotelDto, response.getBody());
@@ -49,7 +70,7 @@ class HotelControllerTest {
 
 	@Test
 	void remove() throws HotelNotFoundException {
-		when(hotelService.remove(1)).thenReturn(hotel);
+		when(hotelService.remove(1)).thenReturn(hotelDto);
 		ResponseEntity<HotelDTO> response = hotelController.remove(1);
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 		assertEquals("nandyala", response.getBody().getCity());
@@ -57,19 +78,19 @@ class HotelControllerTest {
 
 	@Test
 	void findAll() {
-		when(hotelService.findAll()).thenReturn(hotels);
+		when(hotelService.findAll()).thenReturn(hotelDtos);
 		ResponseEntity<List<HotelDTO>> response = hotelController.findAll();
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 		assertEquals(hotelDtos, response.getBody());
 	}
 
-//	@Test
-//	void findById() throws HotelNotFoundException {
-//		when(hotelService.findById(1)).thenReturn(hotel);
-//		ResponseEntity<HotelDTO> response = hotelController.findById(1);
-//		assertEquals(HttpStatus.OK, response.getStatusCode());
-//		assertEquals(hotelDto, response.getBody());
-//	}
+	@Test
+	void findById() throws HotelNotFoundException {
+		when(hotelService.findById(1)).thenReturn(hotelDto);
+		ResponseEntity<HotelDTO> response = hotelController.findById(1);
+		assertEquals(HttpStatus.OK, response.getStatusCode());
+		assertEquals(hotelDto, response.getBody());
+	}
 
 	@Test
 	void removeThrowsHotelNotFoundException() throws HotelNotFoundException {
@@ -85,8 +106,8 @@ class HotelControllerTest {
 
 	@Test
 	void updateThrowsHotelNotFoundException() throws HotelNotFoundException, InvalidEmailFormatException, InvalidMobileNumberFormatException, HotelAlreadyExistsExcetion {
-		when(hotelService.update(hotel)).thenThrow(HotelNotFoundException.class);
+		when(hotelService.update(hotelDto)).thenThrow(HotelNotFoundException.class);
 		assertThrows(HotelNotFoundException.class, () -> hotelController.update(hotelDto,1));
 	}
-*/
+
 }
