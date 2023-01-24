@@ -1,4 +1,4 @@
-package com.hbs.service;
+package com.hbs.serviceimpl;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -21,6 +21,7 @@ import com.hbs.entities.JwtToken;
 import com.hbs.entities.UserRole;
 import com.hbs.exceptions.InvalidCredentialsException;
 import com.hbs.repository.JwtRepository;
+import com.hbs.service.JwtService;
 import com.hbs.util.MapperUtil;
 
 import io.jsonwebtoken.Claims;

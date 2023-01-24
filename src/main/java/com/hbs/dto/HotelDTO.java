@@ -1,7 +1,6 @@
 package com.hbs.dto;
 
 import javax.validation.constraints.Email;
-import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -28,7 +27,7 @@ public class HotelDTO {
 	@NotNull(message = "Description must not be empty ")
 	private String description;
 
-	@Min(value = 0, message = "AvgRatePerDay must be greater than 0 ")
+	@JsonProperty(access = Access.READ_ONLY)
 	private double avgRatePerDay;
 
 	@NotNull(message = "Email must not be empty")
@@ -45,5 +44,4 @@ public class HotelDTO {
 
 	@NotNull(message = "Website must not be empty")
 	private String website;
-
 }

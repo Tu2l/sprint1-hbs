@@ -25,7 +25,7 @@ public class ValidationUtil {
 	}
 	
 	public static boolean validateImageExtension(String ext) {
-		String regex = "([^\\s]+(\\.(?i)(jpe?g|png|gif|bmp))$)";
+		String regex = "(jpe?g|png|gif|bmp)";
 		
 		return validatePattern(regex, ext);
 		

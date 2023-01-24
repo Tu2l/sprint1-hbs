@@ -1,15 +1,10 @@
 package com.hbs.entities;
 
-import java.util.List;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -27,7 +22,7 @@ import lombok.ToString;
 @Table(name = "hotels")
 public class Hotel {
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE)
 	@Column(name = "hotel_id")
 	private int hotelId;
 
@@ -58,16 +53,21 @@ public class Hotel {
 	@Column(name = "website", unique = true, nullable = false)
 	private String website;
 
-	@OneToMany
-	@JoinTable(name = "hotel_rooms", inverseJoinColumns = @JoinColumn(name = "room_id"), joinColumns = @JoinColumn(name = "hotel_id"))
-	private List<RoomDetails> roomList;
-
-	public void setRoomList(List<RoomDetails> roomList) {
-		// setting hotel
-		this.roomList = roomList;
-		for (RoomDetails room : roomList) {
-			room.setHotel(this);
-
-		}
-	}
+//	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+//	@JoinTable(name = "hotel_rooms", inverseJoinColumns = @JoinColumn(name = "room_id"), joinColumns = @JoinColumn(name = "hotel_id"))
+//	private List<RoomDetails> roomList;
+//	
+//	public void setRoomList(List<RoomDetails> roomList) {
+//		// setting hotel
+//		this.roomList = roomList;
+//		for (RoomDetails room : roomList) {
+//			room.setHotel(this);
+//			avgRatePerDay += room.getRatePerDay();
+//		}
+//		
+//		if (!roomList.isEmpty())
+//			avgRatePerDay = avgRatePerDay / roomList.size();
+//		
+//		LoggerUtil.logInfo("rooms list set");
+//	}
 }

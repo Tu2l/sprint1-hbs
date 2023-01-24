@@ -32,7 +32,9 @@ public class GlobalExceptionHandler {
 								InvalidEmailFormatException.class,
 								InvalidMobileNumberFormatException.class, 
 								AdminAlreadyExistsException.class,
-								UserAlreadyExistsException.class })
+								UserAlreadyExistsException.class ,
+								InvalidImageFormatException.class,
+								RoomAlreadyBookedException.class})
 	public ErrorResponse handleValidationError(Exception ex, HttpServletRequest req) {
 		String msg = ex.getMessage();
 

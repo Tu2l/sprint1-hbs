@@ -3,7 +3,6 @@ package com.hbs.service;
 import com.hbs.auth.JwtRequest;
 import com.hbs.auth.JwtResponse;
 import com.hbs.dto.UserDTO;
-import com.hbs.entities.User;
 import com.hbs.exceptions.AdminAlreadyExistsException;
 import com.hbs.exceptions.AdminNotFoundException;
 import com.hbs.exceptions.InvalidCredentialsException;
