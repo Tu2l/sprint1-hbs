@@ -1,53 +1,74 @@
 package com.hbs.controller;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.web.servlet.MockMvc;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.hbs.entities.User;
+import com.hbs.dto.UserDTO;
+import com.hbs.entities.UserRole;
+import com.hbs.exceptions.InvalidEmailFormatException;
+import com.hbs.exceptions.InvalidMobileNumberFormatException;
+import com.hbs.exceptions.UserAlreadyExistsException;
+import com.hbs.exceptions.UserNotFoundException;
 import com.hbs.service.UserService;
 
+@ExtendWith(MockitoExtension.class)
 class UserControllerTest {
 
-//	@Test
-//	void test() {
-//		fail("Not yet implemented");
-//	}
-//	@Autowired
-//	private MockMvc mockmvc;
-//	
-//	@MockBean
-//	private UserService userService;
-//	
-//	private ObjectMapper mapper = new ObjectMapper();
-//	
-//	@Test
-//	public void testGetExample()throws Exception{
-//		List<User> users = new ArrayList<>();
-//		User user = new User();
-//		user.setUserId(1);
-//		user.setUserName("Abhi");
-//		user.setEmail("Abhi@gmail.com");
-//		user.setPassword("Abhi1234567");
-//		user.setRole("Normal");
-//		user.setMobile("9343850209");
-//		user.setAddress("Adressadded");
-//		users.add(user);
-//		Mockito.when(userService.findAll()).thenReturn(users);
-//		mockmvc.perform(get("/getMapping")).andExpect(status().isOk()).andExpect(jsonPath("$", Matchers.hasSize(1))).andExpect(jsonPath("$[0].name", Matchers.equalTo("Abhi")));
-//	}
-//	
+	@InjectMocks
+	private UserController controller;
 
+	@Mock
+	private UserService userService;
+
+	@Test
+	void testAdd() throws UserAlreadyExistsException, InvalidEmailFormatException, InvalidMobileNumberFormatException {
+		UserDTO dto = new UserDTO();
+		when(userService.add(dto)).thenReturn(dto);
+		ResponseEntity<UserDTO> response = controller.add(dto);
+		assertEquals(HttpStatus.CREATED, response.getStatusCode());
+	}
+
+	@Test
+	void testUpdate() throws UserNotFoundException, UserAlreadyExistsException, InvalidEmailFormatException,
+			InvalidMobileNumberFormatException {
+		UserDTO dto = new UserDTO();
+		when(userService.update(dto)).thenReturn(dto);
+		ResponseEntity<UserDTO> response = controller.update(dto, 1);
+		assertEquals(HttpStatus.OK, response.getStatusCode());
+	}
+
+	@Test
+	void testFindAll() throws UserNotFoundException {
+		List<UserDTO> users = new ArrayList<>();
+		when(userService.findAll()).thenReturn(users);
+		ResponseEntity<List<UserDTO>> response = controller.findAll();
+		assertEquals(HttpStatus.OK, response.getStatusCode());
+	}
+
+	@Test
+	void testFindById() throws UserNotFoundException {
+		UserDTO dto = new UserDTO();
+		when(userService.findById(1)).thenReturn(dto);
+		ResponseEntity<UserDTO> response = controller.find(1);
+		assertEquals(HttpStatus.OK, response.getStatusCode());
+	}
+
+	@Test
+	void testFindByEmailAndRole() throws UserNotFoundException {
+		UserDTO dto = new UserDTO();
+		when(userService.findByEmailAndRole("user1@ymail.com", UserRole.USER)).thenReturn(dto);
+		ResponseEntity<UserDTO> response = controller.find("user1@ymail.com", "USER");
+		assertEquals(HttpStatus.OK, response.getStatusCode());
+	}
 }

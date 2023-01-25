@@ -114,5 +114,6 @@ public class BookingDetailsServiceImpl implements BookingDetailsService {
 		return MapperUtil.mapToBookingDetailsDto(bookingDetailsRepository.findById(bookingId)
 				.orElseThrow(() -> new BookingDetailsNotFoundException(BOOKING_DETAILS_NOT_FOUND + bookingId)));
 	}
+	
 
 }

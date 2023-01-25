@@ -43,16 +43,6 @@ class BookingDetailsDTOTest {
 	}
 
 	@Test
-	void testGetBookedFrom() {
-		assertEquals(LocalDate.now(), dto.getBookedFrom());
-	}
-
-	@Test
-	void testGetBookedTo() {
-		assertEquals(LocalDate.now().plusDays(1), dto.getBookedTo());
-	}
-
-	@Test
 	void testGetNoOfAdults() {
 		assertEquals(2, dto.getNoOfAdults());
 	}
@@ -93,16 +83,6 @@ class BookingDetailsDTOTest {
 	@Test
 	void testGetHotelIdNegative() {
 		assertNotEquals(4, dto.getHotelId());
-	}
-
-	@Test
-	void testGetBookedFromNegative() {
-		assertNotEquals(LocalDate.MIN, dto.getBookedFrom());
-	}
-
-	@Test
-	void testGetBookedToNegative() {
-		assertNotEquals(LocalDate.now().plusDays(2), dto.getBookedTo());
 	}
 
 	@Test

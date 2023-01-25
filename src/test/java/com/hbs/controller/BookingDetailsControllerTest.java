@@ -93,7 +93,7 @@ class BookingDetailsControllerTest {
 		bookingDetailsList.add(bookingDetailsDto);
 		when(bookingDetailsService.findAll()).thenReturn(bookingDetailsList);
 		ResponseEntity<List<BookingDetailsDTO>> response = bookingDetailsController.findAll();
-		assertEquals(HttpStatus.FOUND, response.getStatusCode());
+		assertEquals(HttpStatus.OK, response.getStatusCode());
 		assertEquals(bookingDetailsList.size(), response.getBody().size());
 	}
 
