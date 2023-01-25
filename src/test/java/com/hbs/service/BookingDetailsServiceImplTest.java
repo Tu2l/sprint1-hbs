@@ -25,6 +25,7 @@ import com.hbs.dto.BookingDetailsDTO;
 import com.hbs.entities.BookingDetails;
 import com.hbs.entities.Payments;
 import com.hbs.entities.RoomDetails;
+import com.hbs.exceptions.ActiveBookingFoundException;
 import com.hbs.exceptions.BookingDetailsNotFoundException;
 import com.hbs.exceptions.HotelNotFoundException;
 import com.hbs.exceptions.RoomAlreadyBookedException;
@@ -122,7 +123,7 @@ class BookingDetailsServiceImplTest {
 	}
 
 	@Test
-	void testDelete() {
+	void testDelete() throws ActiveBookingFoundException {
 		BookingDetailsDTO deleted;
 		try {
 			deleted = serviceImplMock.remove(bookingDetailsDTO.getBookingId());

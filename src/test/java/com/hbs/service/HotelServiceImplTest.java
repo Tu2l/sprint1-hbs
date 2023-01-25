@@ -22,6 +22,7 @@ import org.modelmapper.ModelMapper;
 
 import com.hbs.dto.HotelDTO;
 import com.hbs.entities.Hotel;
+import com.hbs.exceptions.ActiveBookingFoundException;
 import com.hbs.exceptions.HotelAlreadyExistsExcetion;
 import com.hbs.exceptions.HotelNotFoundException;
 import com.hbs.exceptions.InvalidEmailFormatException;
@@ -104,7 +105,7 @@ class HotelServiceImplTest {
 //		verify(hotelRepository, times(1)).deleteById(hotel.getHotelId());	
 //	}
 	@Test
-	public void testRemove() throws HotelNotFoundException {
+	public void testRemove() throws HotelNotFoundException, ActiveBookingFoundException {
 		//when(hotelRepository.findById(hotel.getHotelId())).thenReturn(Optional.of(hotel));
 		when(hotelService.remove(hotel.getHotelId())).thenReturn(hotel);
 		HotelDTO result = hotelService.remove(hotel.getHotelId());

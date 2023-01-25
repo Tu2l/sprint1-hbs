@@ -18,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 
 import com.hbs.dto.HotelDTO;
 import com.hbs.entities.Hotel;
+import com.hbs.exceptions.ActiveBookingFoundException;
 import com.hbs.exceptions.HotelAlreadyExistsExcetion;
 import com.hbs.exceptions.HotelNotFoundException;
 import com.hbs.exceptions.InvalidEmailFormatException;
@@ -69,7 +70,7 @@ class HotelControllerTest {
 	}
 
 	@Test
-	void remove() throws HotelNotFoundException {
+	void remove() throws HotelNotFoundException, ActiveBookingFoundException {
 		when(hotelService.remove(1)).thenReturn(hotelDto);
 		ResponseEntity<HotelDTO> response = hotelController.remove(1);
 		assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -93,7 +94,7 @@ class HotelControllerTest {
 	}
 
 	@Test
-	void removeThrowsHotelNotFoundException() throws HotelNotFoundException {
+	void removeThrowsHotelNotFoundException() throws HotelNotFoundException, ActiveBookingFoundException {
 		when(hotelService.remove(1)).thenThrow(HotelNotFoundException.class);
 		assertThrows(HotelNotFoundException.class, () -> hotelController.remove(1));
 	}

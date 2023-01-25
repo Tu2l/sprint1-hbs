@@ -53,22 +53,21 @@ public class WebSecurityConfig {
 						"/**"
 						)
 				.permitAll()
-//				.antMatchers(
-//						HttpMethod.GET,
-//						"/hotel**/**", 
-//						"/room**/**"
-//						)
-//				.permitAll()
-//				.antMatchers("/auth/**").permitAll()
-//				.antMatchers(
-//						HttpMethod.GET,
-//						"/payments**/**", 
-//						"/transactions**/**", 
-//						"/booking**/**"
-//						).hasRole("USER")
-//				.antMatchers(HttpMethod.POST, "/booking**/**").hasRole("USER")
-//				.antMatchers(HttpMethod.PUT, "/admin/user/**").hasRole("USER")
-//				.antMatchers("/**").hasRole("ADMIN")
+				.antMatchers(
+						HttpMethod.GET,
+						"/hotel**/**", 
+						"/room**/**"
+						)
+				.permitAll()
+				.antMatchers("/auth/**").permitAll()
+				.antMatchers(HttpMethod.POST, "/booking**/**").hasRole("USER")
+				.antMatchers(HttpMethod.PUT, "/admin/user/**").hasRole("USER")
+				.antMatchers(
+						HttpMethod.GET,
+						"/booking**/**"
+						)
+				.hasRole("USER")
+				.antMatchers("/**").hasRole("ADMIN")
 				.anyRequest().authenticated();
 		
 		http.addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class);

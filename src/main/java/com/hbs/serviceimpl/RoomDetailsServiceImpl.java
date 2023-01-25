@@ -12,6 +12,7 @@ import com.hbs.dto.RoomImage;
 import com.hbs.entities.BookingDetails;
 import com.hbs.entities.Hotel;
 import com.hbs.entities.RoomDetails;
+import com.hbs.exceptions.ActiveBookingFoundException;
 import com.hbs.exceptions.HotelNotFoundException;
 import com.hbs.exceptions.InvalidImageFormatException;
 import com.hbs.exceptions.RoomDetailsNotFoundException;
@@ -27,6 +28,7 @@ public class RoomDetailsServiceImpl implements RoomDetailsService {
 	private static final String ROOM_DETAILS_FOUND = "Room details already exists for room no: ";
 	private static final String ROOM_DETAILS_NOT_FOUND = "Room details not found for roomid: ";
 	private static final String HOTEL_NOT_FOUND = "Hotel not found for hotelid: ";
+	private static final String ACTIVE_BOOKING_FOUND_MESSAGE = "Active booking found";
 
 	@Autowired
 	private RoomDetailsRepository roomRepository;
@@ -65,23 +67,26 @@ public class RoomDetailsServiceImpl implements RoomDetailsService {
 
 	@Override
 	public RoomDetailsDTO update(RoomDetailsDTO dto) throws RoomDetailsNotFoundException, HotelNotFoundException {
-		//RoomDetailsDTO find = findById(dto.getRoomId());
+		// RoomDetailsDTO find = findById(dto.getRoomId());
 
 		validateRoomDetails(dto);
 
 		RoomDetails room = roomRepository.save(MapperUtil.mapToRoomDetails(dto));
 		updateHotelAvgPrice(dto.getHotelId());
-//TODO
+
 		return MapperUtil.mapToRoomDetailsDto(room);
 	}
 
 	@Override
-	public RoomDetailsDTO removeById(int id) throws RoomDetailsNotFoundException {
+	public RoomDetailsDTO remove(int id) throws RoomDetailsNotFoundException, ActiveBookingFoundException {
 		RoomDetailsDTO dto = findById(id);
+
+		if (bookingRepository.findByDateAndRoomIdCount(id, LocalDate.now()) > 0)
+			throw new ActiveBookingFoundException(ACTIVE_BOOKING_FOUND_MESSAGE);
 
 		// remove all the references
 		// removing references from booking_rooms
-		List<BookingDetails> bookings = bookingRepository.findAllByRoomId(id);
+		List<BookingDetails> bookings = bookingRepository.findByRoomId(id);
 		for (BookingDetails booking : bookings)
 			booking.getRoomList().removeIf((room) -> room.getRoomId() == id);
 
