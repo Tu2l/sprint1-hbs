@@ -59,6 +59,4 @@ class RoomDetailsServiceImplTest {
 	    verify(roomRepository, times(1)).save(roomEntity);
 	    verify(roomRepository, times(1)).calculateAvgAmountByHotelId(1);
 	}
-
-
 }

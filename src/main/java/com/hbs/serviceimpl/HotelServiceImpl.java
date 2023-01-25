@@ -1,5 +1,6 @@
 package com.hbs.serviceimpl;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,10 +8,12 @@ import org.springframework.stereotype.Service;
 
 import com.hbs.dto.HotelDTO;
 import com.hbs.entities.Hotel;
+import com.hbs.exceptions.ActiveBookingFoundException;
 import com.hbs.exceptions.HotelAlreadyExistsExcetion;
 import com.hbs.exceptions.HotelNotFoundException;
 import com.hbs.exceptions.InvalidEmailFormatException;
 import com.hbs.exceptions.InvalidMobileNumberFormatException;
+import com.hbs.repository.BookingDetailsRepository;
 import com.hbs.repository.HotelRepository;
 import com.hbs.repository.RoomDetailsRepository;
 import com.hbs.service.HotelService;
@@ -23,12 +26,14 @@ public class HotelServiceImpl implements HotelService {
 	private static final String INVALID_EMAIL_FORMAT = "Invalid email: ";
 	private static final String INVALID_MOBILE_NUMBER_FORMAT = "Invalid mobile number";
 	private static final String HOTEL_ALREADY_EXISTS = "Hotel already exists with email: ";
+	private static final String ACTIVE_BOOKING_FOUND_MESSAGE = "Active booking found";
 
 	@Autowired
-	HotelRepository hotelRepository;
+	private HotelRepository hotelRepository;
 	@Autowired
-	RoomDetailsRepository roomRepository;
-	
+	private RoomDetailsRepository roomRepository;
+	@Autowired
+	private BookingDetailsRepository bookingRepository;
 
 	private void validateHotel(HotelDTO hotel) throws InvalidEmailFormatException, InvalidMobileNumberFormatException {
 		if (!ValidationUtil.validateEmail(hotel.getEmail()))
@@ -62,13 +67,16 @@ public class HotelServiceImpl implements HotelService {
 	}
 
 	@Override
-	public HotelDTO remove(int id) throws HotelNotFoundException {
+	public HotelDTO remove(int id) throws HotelNotFoundException, ActiveBookingFoundException {
 		HotelDTO dto = findById(id);
-		
+
+		if (bookingRepository.findByDateAndHotelIdCount(LocalDate.now(), id) > 0)
+			throw new ActiveBookingFoundException(ACTIVE_BOOKING_FOUND_MESSAGE);
+
 		roomRepository.deleteAll(roomRepository.findByHotelId(id));
-		
+
 		hotelRepository.deleteById(id);
-		
+
 		return dto;
 	}
 

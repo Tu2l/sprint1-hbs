@@ -6,6 +6,7 @@ import java.util.List;
 
 import com.hbs.dto.RoomDetailsDTO;
 import com.hbs.dto.RoomImage;
+import com.hbs.exceptions.ActiveBookingFoundException;
 import com.hbs.exceptions.HotelNotFoundException;
 import com.hbs.exceptions.InvalidImageFormatException;
 import com.hbs.exceptions.RoomDetailsNotFoundException;
@@ -18,7 +19,7 @@ public interface RoomDetailsService {
 	
 	RoomDetailsDTO update(RoomDetailsDTO dto) throws RoomDetailsNotFoundException, HotelNotFoundException;
 
-	RoomDetailsDTO removeById(int roomDetailsId) throws RoomDetailsNotFoundException;
+	RoomDetailsDTO remove(int roomDetailsId) throws RoomDetailsNotFoundException, ActiveBookingFoundException;
 
 	List<RoomDetailsDTO> findAll();
 

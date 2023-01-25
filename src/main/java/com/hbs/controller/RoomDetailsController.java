@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.hbs.dto.RoomDetailsDTO;
 import com.hbs.dto.RoomImage;
+import com.hbs.exceptions.ActiveBookingFoundException;
 import com.hbs.exceptions.HotelNotFoundException;
 import com.hbs.exceptions.InvalidImageFormatException;
 import com.hbs.exceptions.RoomDetailsNotFoundException;
@@ -55,8 +56,9 @@ public class RoomDetailsController {
 	}
 
 	@DeleteMapping("/{id}")
-	public ResponseEntity<RoomDetailsDTO> remove(@PathVariable int id) throws RoomDetailsNotFoundException {
-		return new ResponseEntity<>(roomService.removeById(id), HttpStatus.OK);
+	public ResponseEntity<RoomDetailsDTO> remove(@PathVariable int id)
+			throws RoomDetailsNotFoundException, ActiveBookingFoundException {
+		return new ResponseEntity<>(roomService.remove(id), HttpStatus.OK);
 	}
 
 	@GetMapping

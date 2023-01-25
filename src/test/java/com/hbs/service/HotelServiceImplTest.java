@@ -20,6 +20,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
 
 import com.hbs.dto.HotelDTO;
+import com.hbs.exceptions.ActiveBookingFoundException;
 import com.hbs.exceptions.HotelAlreadyExistsExcetion;
 import com.hbs.exceptions.HotelNotFoundException;
 import com.hbs.exceptions.InvalidEmailFormatException;
@@ -73,7 +74,7 @@ class HotelServiceImplTest {
 	}
 
 	@Test
-	void testRemove() throws HotelNotFoundException {
+	void testRemove() throws HotelNotFoundException, ActiveBookingFoundException {
 		when(hotelService.remove(1)).thenReturn(hotel);
 		verify(hotelRepository, times(1)).delete(MapperUtil.mapToHotel(hotel));
 	}

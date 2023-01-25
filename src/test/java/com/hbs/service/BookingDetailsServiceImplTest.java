@@ -23,6 +23,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.hbs.dto.BookingDetailsDTO;
 import com.hbs.entities.BookingDetails;
+import com.hbs.exceptions.ActiveBookingFoundException;
 import com.hbs.exceptions.BookingDetailsNotFoundException;
 import com.hbs.repository.BookingDetailsRepository;
 import com.hbs.repository.HotelRepository;
@@ -89,7 +90,7 @@ class BookingDetailsServiceImplTest {
 	}
 
 	@Test
-	void testRemove() throws BookingDetailsNotFoundException {
+	void testRemove() throws BookingDetailsNotFoundException, ActiveBookingFoundException {
 	    int bookingId = 1;
 	    BookingDetailsDTO dto = new BookingDetailsDTO();
 	    dto.setBookingId(bookingId);

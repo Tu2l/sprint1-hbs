@@ -17,6 +17,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import com.hbs.dto.RoomDetailsDTO;
+import com.hbs.exceptions.ActiveBookingFoundException;
 import com.hbs.exceptions.HotelNotFoundException;
 import com.hbs.exceptions.RoomDetailsNotFoundException;
 import com.hbs.service.RoomDetailsService;
@@ -47,9 +48,9 @@ class RoomDetailsControllerTest {
 	}
 
 	@Test
-	void testRemove() throws RoomDetailsNotFoundException {
+	void testRemove() throws RoomDetailsNotFoundException, ActiveBookingFoundException {
 		RoomDetailsDTO dto = new RoomDetailsDTO();
-		when(roomService.removeById(anyInt())).thenReturn(dto);
+		when(roomService.remove(anyInt())).thenReturn(dto);
 		ResponseEntity<RoomDetailsDTO> response = controller.remove(1);
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 	}
