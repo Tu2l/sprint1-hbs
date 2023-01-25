@@ -1,4 +1,4 @@
-package com.hbs.service;
+package com.hbs.serviceimpl;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
