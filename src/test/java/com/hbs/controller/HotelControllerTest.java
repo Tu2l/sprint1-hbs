@@ -74,7 +74,7 @@ class HotelControllerTest {
 		when(hotelService.remove(1)).thenReturn(hotelDto);
 		ResponseEntity<HotelDTO> response = hotelController.remove(1);
 		assertEquals(HttpStatus.OK, response.getStatusCode());
-		assertEquals("nandyala", response.getBody().getCity());
+		assertEquals("nandyal", response.getBody().getCity());
 	}
 
 	@Test

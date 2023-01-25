@@ -63,7 +63,7 @@ public class BookingDetailsController {
 	@GetMapping("/{bookingId}")
 	public ResponseEntity<BookingDetailsDTO> findById(@PathVariable int bookingId)
 			throws BookingDetailsNotFoundException {
-		return new ResponseEntity<>(bookingDetailsService.findById(bookingId), HttpStatus.OK);
+		return new ResponseEntity<>(bookingDetailsService.findById(bookingId), HttpStatus.FOUND);
 	}
 
 	@GetMapping

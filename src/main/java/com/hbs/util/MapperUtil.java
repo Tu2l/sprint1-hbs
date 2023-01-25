@@ -125,6 +125,7 @@ public class MapperUtil {
 	}
 
 	public static PaymentsDTO mapToPaymentDto(Payments payment) {
+		
 		return MAPPER.map(payment, PaymentsDTO.class);
 	}
 
