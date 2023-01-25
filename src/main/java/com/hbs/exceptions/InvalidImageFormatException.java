@@ -9,7 +9,6 @@ public class InvalidImageFormatException extends Exception {
 
 	public InvalidImageFormatException(String message) {
 		super(message);
-		// TODO Auto-generated constructor stub
 	}
 
 }

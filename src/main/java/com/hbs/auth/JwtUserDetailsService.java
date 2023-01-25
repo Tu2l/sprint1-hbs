@@ -34,7 +34,6 @@ public class JwtUserDetailsService implements UserDetailsService {
 			if (role == UserRole.UNDEFINED)
 				throw new UserNotFoundException("Role not defined");
 
-//			LoggerUtil.logInfo("asd");
 			UserDTO user = userService.findByEmailAndRole(email, role);
 
 			List<GrantedAuthority> roles = new ArrayList<>();

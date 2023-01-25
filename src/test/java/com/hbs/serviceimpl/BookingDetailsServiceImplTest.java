@@ -15,7 +15,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.hbs.dto.BookingDetailsDTO;
-import com.hbs.entities.BookingDetails;
 import com.hbs.exceptions.BookingDetailsNotFoundException;
 import com.hbs.exceptions.RoomAlreadyBookedException;
 import com.hbs.exceptions.RoomDetailsNotFoundException;
@@ -24,7 +23,6 @@ import com.hbs.repository.BookingDetailsRepository;
 import com.hbs.repository.HotelRepository;
 import com.hbs.repository.RoomDetailsRepository;
 import com.hbs.repository.UserRepository;
-import com.hbs.util.MapperUtil;
 @ExtendWith(MockitoExtension.class)
 class BookingDetailsServiceImplTest {
 
@@ -41,7 +39,7 @@ class BookingDetailsServiceImplTest {
     private BookingDetailsServiceImpl bookingDetailsService;
 
     private BookingDetailsDTO dto1,dto2;
-    private BookingDetails booking;   
+//    private BookingDetails booking;   
 
     @BeforeEach
     void setUp() {
@@ -63,7 +61,7 @@ class BookingDetailsServiceImplTest {
         dto2.setBookedTo(LocalDate.now().plusDays(2));
         dto2.setAmount(1000);
         dto2.setPayments(Arrays.asList(100.00,200.00,300.00));
-        booking = MapperUtil.mapToBookingDetails(dto1);
+//        booking = MapperUtil.mapToBookingDetails(dto1);
     }
 
     @Test

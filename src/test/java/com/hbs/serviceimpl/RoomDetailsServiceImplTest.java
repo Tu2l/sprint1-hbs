@@ -1,25 +1,11 @@
 package com.hbs.serviceimpl;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.mockStatic;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 
-import com.hbs.dto.RoomDetailsDTO;
-import com.hbs.entities.RoomDetails;
-import com.hbs.exceptions.HotelNotFoundException;
-import com.hbs.exceptions.RoomDetailsNotFoundException;
 import com.hbs.repository.HotelRepository;
 import com.hbs.repository.RoomDetailsRepository;
-import com.hbs.serviceimpl.RoomDetailsServiceImpl;
-import com.hbs.util.MapperUtil;
 
 class RoomDetailsServiceImplTest {
 
@@ -34,7 +20,7 @@ class RoomDetailsServiceImplTest {
 
 	@BeforeEach
 	void setup() {
-		MockitoAnnotations.openMocks(this);
+//		MockitoAnnotations.openMocks(this);
 	}
 	
 //	@Test

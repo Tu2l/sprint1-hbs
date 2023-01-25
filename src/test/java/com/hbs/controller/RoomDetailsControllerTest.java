@@ -48,7 +48,7 @@ class RoomDetailsControllerTest {
 	}
 
 	@Test
-	void testRemove() throws RoomDetailsNotFoundException, ActiveBookingFoundException {
+	void testRemove() throws RoomDetailsNotFoundException, ActiveBookingFoundException, HotelNotFoundException {
 		RoomDetailsDTO dto = new RoomDetailsDTO();
 		when(roomService.remove(anyInt())).thenReturn(dto);
 		ResponseEntity<RoomDetailsDTO> response = controller.remove(1);

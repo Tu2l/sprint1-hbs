@@ -1,6 +1,5 @@
 package com.hbs.util;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -38,19 +37,31 @@ public class FileUploadUtil {
 
 	public static String prepareImage(MultipartFile image, String uploadDir)
 			throws InvalidImageFormatException, IOException {
-		String fileName = StringUtils.cleanPath(image.getOriginalFilename());
-		StringBuilder sb = new StringBuilder(fileName);
+
+		String name = null;
+
+		name = image.getOriginalFilename();
+
+		if (name != null)
+			name = StringUtils.cleanPath(name);
+
+		StringBuilder sb = new StringBuilder(name);
 		String ext = sb.substring(sb.lastIndexOf(".") + 1);
 
 		if (!ValidationUtil.validateImageExtension(ext))
 			throw new InvalidImageFormatException("Invalid Image file");
 
-		return saveFile(uploadDir, fileName, image);
+		return saveFile(uploadDir, name, image);
 
 	}
 
 	public static boolean deleteImage(String path) {
-		if(path == null)return false;
-		return new File(path).delete();
+		if (path == null)
+			return false;
+		try {
+			return Files.deleteIfExists(Paths.get(path));
+		} catch (IOException e) {
+			return false;
+		}
 	}
 }

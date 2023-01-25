@@ -46,9 +46,10 @@ public class RoomDetailsServiceImpl implements RoomDetailsService {
 			throw new RoomDetailsNotFoundException(ROOM_DETAILS_FOUND + room.getRoomNo());
 	}
 
-	private void updateHotelAvgPrice(int hotelId) {
+	private void updateHotelAvgPrice(int hotelId) throws HotelNotFoundException {
 		// updating average price
-		Hotel hotel = hotelRepository.findById(hotelId).get();
+		Hotel hotel = hotelRepository.findById(hotelId)
+				.orElseThrow(() -> new HotelNotFoundException(HOTEL_NOT_FOUND + hotelId));
 		hotel.setAvgRatePerDay(roomRepository.calculateAvgAmountByHotelId(hotelId));
 		hotelRepository.save(hotel);
 	}
@@ -67,8 +68,6 @@ public class RoomDetailsServiceImpl implements RoomDetailsService {
 
 	@Override
 	public RoomDetailsDTO update(RoomDetailsDTO dto) throws RoomDetailsNotFoundException, HotelNotFoundException {
-		// RoomDetailsDTO find = findById(dto.getRoomId());
-
 		validateRoomDetails(dto);
 
 		RoomDetails room = roomRepository.save(MapperUtil.mapToRoomDetails(dto));
@@ -78,7 +77,8 @@ public class RoomDetailsServiceImpl implements RoomDetailsService {
 	}
 
 	@Override
-	public RoomDetailsDTO remove(int id) throws RoomDetailsNotFoundException, ActiveBookingFoundException {
+	public RoomDetailsDTO remove(int id)
+			throws RoomDetailsNotFoundException, ActiveBookingFoundException, HotelNotFoundException {
 		RoomDetailsDTO dto = findById(id);
 
 		if (bookingRepository.findByDateAndRoomIdCount(id, LocalDate.now()) > 0)
@@ -88,7 +88,7 @@ public class RoomDetailsServiceImpl implements RoomDetailsService {
 		// removing references from booking_rooms
 		List<BookingDetails> bookings = bookingRepository.findByRoomId(id);
 		for (BookingDetails booking : bookings)
-			booking.getRoomList().removeIf((room) -> room.getRoomId() == id);
+			booking.getRoomList().removeIf(room -> room.getRoomId() == id);
 
 		bookingRepository.saveAll(bookings);
 

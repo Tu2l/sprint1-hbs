@@ -50,7 +50,7 @@ public class JwtServiceImpl implements JwtService {
 		
 			authenticationManager.authenticate(auth);
 		} catch (BadCredentialsException e) {
-			// e.printStackTrace();
+		
 			throw new InvalidCredentialsException(INVALID_CREDENTIALS_MESSAGE);
 		}
 
@@ -86,7 +86,6 @@ public class JwtServiceImpl implements JwtService {
 
 	@Override
 	public JwtToken findByEmail(String email) throws InvalidCredentialsException {
-//		LoggerUtil.logInfo(email);
 		return repo.findByEmail(email).orElseThrow(() -> new InvalidCredentialsException(INVALID_TOKEN_MESSAGE));
 	}
 
