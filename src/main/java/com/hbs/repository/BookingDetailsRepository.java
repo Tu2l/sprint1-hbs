@@ -17,12 +17,12 @@ public interface BookingDetailsRepository extends JpaRepository<BookingDetails, 
 	List<BookingDetails> findByRoomId(@Param("roomId") int roomId);
 
 	@Query("SELECT booking FROM BookingDetails booking JOIN booking.roomList room WHERE room.roomId=:roomId"
-			+ "AND booking.bookedTo >=:date")
+			+ " AND booking.bookedTo >=:date")
 	List<BookingDetails> findByDateAndRoomId(@Param("date") LocalDate date, @Param("roomId") int roomId);
 	
 	@Query("SELECT COUNT(booking) FROM BookingDetails booking JOIN booking.roomList room WHERE room.roomId=:roomId"
-			+ "AND booking.bookedTo >=:date")
-	Integer findByDateAndRoomIdCount(@Param("date") LocalDate date, @Param("roomId") int roomId);
+			+ " AND booking.bookedTo >=:date")
+	Integer findByDateAndRoomIdCount(@Param("roomId") int roomId,@Param("date") LocalDate date);
 
 	@Query("SELECT booking FROM BookingDetails booking WHERE booking.bookedTo >=:date AND booking.bookingId=:bookingId")
 	List<BookingDetails> findByDate(@Param("date") LocalDate date, @Param("bookingId") int bookingId);

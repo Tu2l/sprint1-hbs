@@ -29,8 +29,8 @@ import com.hbs.util.ValidationUtil;
 
 @Service
 public class UserServiceImpl implements UserService {
-	private static final String USER_NOT_FOUND_EXCEPTION = "UserDTO not found with id: ";
-	private static final String USER_NOT_FOUND_EMAIL_EXCEPTION = "UserDTO not found with email: ";
+	private static final String USER_NOT_FOUND_EXCEPTION = "User not found with id: ";
+	private static final String USER_NOT_FOUND_EMAIL_EXCEPTION = "User not found with email: ";
 	private static final String USER_ALREADY_EXISTS = "UserDTO already exists with email: ";
 	private static final String INVALID_EMAIL_FORMAT = "Invalid email: ";
 	private static final String INVALID_MOBILE_NUMBER_FORMAT = "Invalid mobile number";
@@ -46,12 +46,12 @@ public class UserServiceImpl implements UserService {
 	@Autowired
 	private PasswordEncoder passwordEncoder;
 
-	private void validateUser(User user) throws InvalidEmailFormatException, InvalidMobileNumberFormatException {
+	void validateUser(UserDTO dto) throws InvalidEmailFormatException, InvalidMobileNumberFormatException {
 		// validate email, phone
-		if (!ValidationUtil.validateEmail(user.getEmail()))
-			throw new InvalidEmailFormatException(INVALID_EMAIL_FORMAT + user.getEmail());
-		if (!ValidationUtil.validatePhoneNumber(user.getMobile()))
-			throw new InvalidMobileNumberFormatException(INVALID_MOBILE_NUMBER_FORMAT + user.getMobile());
+		if (!ValidationUtil.validateEmail(dto.getEmail()))
+			throw new InvalidEmailFormatException(INVALID_EMAIL_FORMAT + dto.getEmail());
+		if (!ValidationUtil.validatePhoneNumber(dto.getMobile()))
+			throw new InvalidMobileNumberFormatException(INVALID_MOBILE_NUMBER_FORMAT + dto.getMobile());
 
 	}
 
@@ -59,12 +59,12 @@ public class UserServiceImpl implements UserService {
 	public UserDTO add(UserDTO dto)
 			throws UserAlreadyExistsException, InvalidEmailFormatException, InvalidMobileNumberFormatException {
 
+		validateUser(dto);
+
+		if (userRepository.findByEmail(dto.getEmail()).isPresent())
+			throw new UserAlreadyExistsException(USER_ALREADY_EXISTS + dto.getEmail());
+
 		User user = MapperUtil.mapToUser(dto);
-
-		if (userRepository.findByEmail(user.getEmail()).isPresent())
-			throw new UserAlreadyExistsException(USER_ALREADY_EXISTS + user.getEmail());
-
-		validateUser(user);
 
 		user.setRole(UserRole.USER);
 		user.setPassword(passwordEncoder.encode(user.getPassword()));
@@ -75,16 +75,16 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public UserDTO update(UserDTO dto) throws UserNotFoundException, UserAlreadyExistsException,
 			InvalidEmailFormatException, InvalidMobileNumberFormatException {
+		
+		validateUser(dto);
+
+		UserDTO find = findById(dto.getUserId());
+		if (!(dto.getEmail().equalsIgnoreCase(find.getEmail()))
+				&& userRepository.findByEmail(dto.getEmail()).isPresent())
+			throw new UserAlreadyExistsException(USER_ALREADY_EXISTS + dto.getEmail());
+
 
 		User user = MapperUtil.mapToUser(dto);
-
-		UserDTO find = findById(user.getUserId());
-		if (!(user.getEmail().equalsIgnoreCase(find.getEmail()))
-				&& userRepository.findByEmail(user.getEmail()).isPresent())
-			throw new UserAlreadyExistsException(USER_ALREADY_EXISTS + user.getEmail());
-
-		validateUser(user);
-
 		user.setPassword(passwordEncoder.encode(user.getPassword()));
 
 		return MapperUtil.mapToUserDto(userRepository.save(user));

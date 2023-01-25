@@ -67,13 +67,13 @@ public class RoomDetailsServiceImpl implements RoomDetailsService {
 
 	@Override
 	public RoomDetailsDTO update(RoomDetailsDTO dto) throws RoomDetailsNotFoundException, HotelNotFoundException {
-		//RoomDetailsDTO find = findById(dto.getRoomId());
+		// RoomDetailsDTO find = findById(dto.getRoomId());
 
 		validateRoomDetails(dto);
 
 		RoomDetails room = roomRepository.save(MapperUtil.mapToRoomDetails(dto));
 		updateHotelAvgPrice(dto.getHotelId());
-		
+
 		return MapperUtil.mapToRoomDetailsDto(room);
 	}
 
@@ -81,10 +81,9 @@ public class RoomDetailsServiceImpl implements RoomDetailsService {
 	public RoomDetailsDTO remove(int id) throws RoomDetailsNotFoundException, ActiveBookingFoundException {
 		RoomDetailsDTO dto = findById(id);
 
-		if(bookingRepository.findByDateAndRoomIdCount(LocalDate.now(), id) > 0)
+		if (bookingRepository.findByDateAndRoomIdCount(id, LocalDate.now()) > 0)
 			throw new ActiveBookingFoundException(ACTIVE_BOOKING_FOUND_MESSAGE);
-			
-		
+
 		// remove all the references
 		// removing references from booking_rooms
 		List<BookingDetails> bookings = bookingRepository.findByRoomId(id);

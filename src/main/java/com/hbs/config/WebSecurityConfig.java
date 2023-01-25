@@ -3,6 +3,7 @@ package com.hbs.config;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -52,22 +53,21 @@ public class WebSecurityConfig {
 						"/**"
 						)
 				.permitAll()
-//				.antMatchers(
-//						HttpMethod.GET,
-//						"/hotel**/**", 
-//						"/room**/**"
-//						)
-//				.permitAll()
-//				.antMatchers("/auth/**").permitAll()
-//				.antMatchers(
-//						HttpMethod.GET,
-//						"/payments**/**", 
-//						"/transactions**/**", 
-//						"/booking**/**"
-//						).hasRole("USER")
-//				.antMatchers(HttpMethod.POST, "/booking**/**").hasRole("USER")
-//				.antMatchers(HttpMethod.PUT, "/admin/user/**").hasRole("USER")
-//				.antMatchers("/**").hasRole("ADMIN")
+				.antMatchers(
+						HttpMethod.GET,
+						"/hotel**/**", 
+						"/room**/**"
+						)
+				.permitAll()
+				.antMatchers("/auth/**").permitAll()
+				.antMatchers(HttpMethod.POST, "/booking**/**").hasRole("USER")
+				.antMatchers(HttpMethod.PUT, "/admin/user/**").hasRole("USER")
+				.antMatchers(
+						HttpMethod.GET,
+						"/booking**/**"
+						)
+				.hasRole("USER")
+				.antMatchers("/**").hasRole("ADMIN")
 				.anyRequest().authenticated();
 		
 		http.addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class);

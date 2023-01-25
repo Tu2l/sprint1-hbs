@@ -27,7 +27,7 @@ import com.hbs.exceptions.UserNotFoundException;
 import com.hbs.service.UserService;
 
 @RestController
-@RequestMapping("/admin/user")
+@RequestMapping("/user")
 public class UserController {
 
 	@Autowired

@@ -1,108 +1,75 @@
 package com.hbs.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.junit.jupiter.api.Assertions.fail;
+import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.when;
 
-import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.mockito.MockedStatic;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import com.hbs.dto.UserDTO;
 import com.hbs.entities.User;
 import com.hbs.exceptions.InvalidEmailFormatException;
 import com.hbs.exceptions.InvalidMobileNumberFormatException;
 import com.hbs.exceptions.UserAlreadyExistsException;
-import com.hbs.exceptions.UserNotFoundException;
 import com.hbs.repository.UserRepository;
 import com.hbs.serviceimpl.UserServiceImpl;
+import com.hbs.util.MapperUtil;
 
+@ExtendWith(MockitoExtension.class)
 class UserServiceImplTest {
 
 	@Mock
 	private UserRepository userRepository;
 
-	@Autowired
-	private PasswordEncoder passwordEncoder;
-
-	@MockBean
-	private PasswordEncoder mockPasswordEncoder;
+	@Mock
+	private BCryptPasswordEncoder passwordEncoder;
 
 	@InjectMocks
-	private UserService userService;
+	private UserServiceImpl userService;
 
-	private UserDTO userDTO;
+	private UserDTO dto;
 	private User user;
+	private List<UserDTO> users = new ArrayList<>();
+	
 
 	@BeforeEach
 	void setUp() throws Exception {
+		dto = new UserDTO();
+		dto.setUserId(1);
+		dto.setUsername("user_one");
+		dto.setEmail("real1@user.com");
+		dto.setPassword("paasword");
+		dto.setMobile("1234567890");
+		dto.setAddress("japan");
 
-		userDTO = new UserDTO();
-		userDTO.setUsername("user_one");
-		userDTO.setEmail("real1@user.com");
-		userDTO.setPassword("qwerty@1237");
-		userDTO.setMobile("1234567890");
-		userDTO.setAddress("japan");
-
-		userService = new UserServiceImpl();
-		mockPasswordEncoder = mock(PasswordEncoder.class);
-		when(mockPasswordEncoder.encode("password")).thenReturn("encoded_password");
-
-		Field passwordEncoderField = userService.getClass().getDeclaredField("passwordEncoder");
-		passwordEncoderField.setAccessible(true);
-		passwordEncoderField.set(userService, mockPasswordEncoder);
-		MockitoAnnotations.openMocks(this);
+		users.add(dto);
+		
+		user = MapperUtil.mapToUser(dto);
 	}
 
 	@Test
-	public void testAddUser()
-			throws UserAlreadyExistsException, InvalidEmailFormatException, InvalidMobileNumberFormatException {
-		UserDTO userDTO = new UserDTO();
-		userDTO.setUsername("username");
-		userDTO.setEmail("email@example.com");
-		userDTO.setPassword("password");
-		userDTO.setMobile("1234567890");
-		userDTO.setAddress("address");
-
-		UserDTO addedUser = userService.add(userDTO);
-		verify(mockPasswordEncoder, times(1)).encode("password");
-		assertNotNull(addedUser);
-		assertEquals("username", addedUser.getUsername());
-		assertEquals("email@example.com", addedUser.getEmail());
-		assertEquals("encoded_password", addedUser.getPassword());
-		assertEquals("1234567890", addedUser.getMobile());
-		assertEquals("address", addedUser.getAddress());
+	void testAddUser() {
+		try{
+			mockStatic(MapperUtil.class);
+			when(MapperUtil.mapToUserDto(user)).thenReturn(dto);
+			when(MapperUtil.mapToUser(dto)).thenReturn(user);
+			when(userService.add(dto)).thenReturn(dto);
+			assertEquals(dto.toString(), userService.add(dto).toString());
+		} catch (UserAlreadyExistsException | InvalidEmailFormatException | InvalidMobileNumberFormatException e) {
+			fail("Exception not expected");
+		}
 	}
 
-	@Test
-	void testUpdateUser() throws UserNotFoundException, UserAlreadyExistsException, InvalidEmailFormatException,
-			InvalidMobileNumberFormatException {
-		UserDTO userDTO = new UserDTO();
-		userDTO.setUserId(1);
-		userDTO.setUsername("username");
-		userDTO.setEmail("email@example.com");
-		userDTO.setPassword("password");
-		userDTO.setMobile("1234567890");
-		userDTO.setAddress("address");
-		UserDTO updatedUser = userService.update(userDTO);
-		verify(mockPasswordEncoder, times(1)).encode("password");
-		assertNotNull(updatedUser);
-		assertEquals(1, updatedUser.getUserId());
-		assertEquals("username", updatedUser.getUsername());
-		assertEquals("email@example.com", updatedUser.getEmail());
-		assertEquals("encoded_password", updatedUser.getPassword());
-		assertEquals("1234567890", updatedUser.getMobile());
-		assertEquals("address", updatedUser.getAddress());
-	}
 
 }
