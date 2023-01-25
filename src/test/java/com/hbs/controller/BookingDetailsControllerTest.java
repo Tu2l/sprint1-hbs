@@ -21,6 +21,7 @@ import org.springframework.http.ResponseEntity;
 
 import com.hbs.dto.BookingDetailsDTO;
 import com.hbs.entities.Hotel;
+import com.hbs.exceptions.ActiveBookingFoundException;
 import com.hbs.exceptions.BookingDetailsNotFoundException;
 import com.hbs.exceptions.HotelNotFoundException;
 import com.hbs.exceptions.RoomAlreadyBookedException;
@@ -79,7 +80,7 @@ class BookingDetailsControllerTest {
 
 	@Test
 	@Order(5)
-	void testRemove() throws BookingDetailsNotFoundException {
+	void testRemove() throws BookingDetailsNotFoundException, ActiveBookingFoundException {
 		when(bookingDetailsService.remove(anyInt())).thenReturn(bookingDetailsDto);
 		ResponseEntity<BookingDetailsDTO> response = bookingDetailsController.remove(1);
 		assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -93,7 +94,7 @@ class BookingDetailsControllerTest {
 		bookingDetailsList.add(bookingDetailsDto);
 		when(bookingDetailsService.findAll()).thenReturn(bookingDetailsList);
 		ResponseEntity<List<BookingDetailsDTO>> response = bookingDetailsController.findAll();
-		assertEquals(HttpStatus.FOUND, response.getStatusCode());
+		assertEquals(HttpStatus.OK, response.getStatusCode());
 		assertEquals(bookingDetailsList.size(), response.getBody().size());
 	}
 

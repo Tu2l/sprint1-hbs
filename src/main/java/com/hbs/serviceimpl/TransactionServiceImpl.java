@@ -15,10 +15,10 @@ public class TransactionServiceImpl implements TransactionService {
 	@Autowired
 	private TransactionRepository transactionRepository;
 
+	@Override
 	public TransactionsDTO add(TransactionsDTO dto) {
-	    Transactions transactions = MapperUtil.mapToTransaction(dto);
-	    if(transactions==null||transactions.getAmount()<0) return null;
-	    return MapperUtil.mapToTransactionDto(transactionRepository.save(transactions));
+	    if(dto==null||dto.getAmount()<0) return null;
+	    return MapperUtil.mapToTransactionDto(transactionRepository.save(MapperUtil.mapToTransaction(dto)));
 	}
 
 

@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.hbs.dto.BookingDetailsDTO;
+import com.hbs.exceptions.ActiveBookingFoundException;
 import com.hbs.exceptions.BookingDetailsNotFoundException;
 import com.hbs.exceptions.HotelNotFoundException;
 import com.hbs.exceptions.RoomAlreadyBookedException;
@@ -33,29 +34,36 @@ public class BookingDetailsController {
 
 	@PostMapping
 	public ResponseEntity<BookingDetailsDTO> add(@Valid @RequestBody BookingDetailsDTO bookingDetailsDTO)
-			throws UserNotFoundException, HotelNotFoundException, RoomDetailsNotFoundException, RoomAlreadyBookedException {
+			throws UserNotFoundException, HotelNotFoundException, RoomDetailsNotFoundException,
+			RoomAlreadyBookedException {
 		return new ResponseEntity<>(bookingDetailsService.add(bookingDetailsDTO), HttpStatus.CREATED);
 	}
 
 	@PutMapping("/{bookingId}")
-	public ResponseEntity<BookingDetailsDTO> update(@PathVariable int bookingId,@Valid @RequestBody BookingDetailsDTO bookingDetailsDTO)
-			throws BookingDetailsNotFoundException, UserNotFoundException, HotelNotFoundException,
-			RoomDetailsNotFoundException, RoomAlreadyBookedException {
-		
+	public ResponseEntity<BookingDetailsDTO> update(@PathVariable int bookingId,
+			@Valid @RequestBody BookingDetailsDTO bookingDetailsDTO) throws BookingDetailsNotFoundException,
+			UserNotFoundException, HotelNotFoundException, RoomDetailsNotFoundException, RoomAlreadyBookedException {
+
 		bookingDetailsDTO.setBookingId(bookingId);
 		return new ResponseEntity<>(bookingDetailsService.update(bookingDetailsDTO), HttpStatus.OK);
 	}
 
 	@DeleteMapping("/{bookingId}")
 	public ResponseEntity<BookingDetailsDTO> remove(@PathVariable int bookingId)
-			throws BookingDetailsNotFoundException {
+			throws BookingDetailsNotFoundException, ActiveBookingFoundException {
 		return new ResponseEntity<>(bookingDetailsService.remove(bookingId), HttpStatus.OK);
+	}
+
+	@DeleteMapping("/force/{bookingId}")
+	public ResponseEntity<BookingDetailsDTO> removeActive(@PathVariable int bookingId)
+			throws BookingDetailsNotFoundException {
+		return new ResponseEntity<>(bookingDetailsService.removeActive(bookingId), HttpStatus.OK);
 	}
 
 	@GetMapping("/{bookingId}")
 	public ResponseEntity<BookingDetailsDTO> findById(@PathVariable int bookingId)
 			throws BookingDetailsNotFoundException {
-		return new ResponseEntity<>(bookingDetailsService.findById(bookingId), HttpStatus.OK);
+		return new ResponseEntity<>(bookingDetailsService.findById(bookingId), HttpStatus.FOUND);
 	}
 
 	@GetMapping

@@ -6,6 +6,7 @@ import com.hbs.auth.JwtRequest;
 import com.hbs.auth.JwtResponse;
 import com.hbs.dto.UserDTO;
 import com.hbs.entities.UserRole;
+import com.hbs.exceptions.ActiveBookingFoundException;
 import com.hbs.exceptions.InvalidCredentialsException;
 import com.hbs.exceptions.InvalidEmailFormatException;
 import com.hbs.exceptions.InvalidMobileNumberFormatException;
@@ -18,7 +19,7 @@ public interface UserService {
 	UserDTO update(UserDTO userDto) throws UserNotFoundException, UserAlreadyExistsException, InvalidEmailFormatException,
 			InvalidMobileNumberFormatException;
 
-	UserDTO remove(int id) throws UserNotFoundException;
+	UserDTO remove(int id) throws UserNotFoundException, ActiveBookingFoundException;
 
 	List<UserDTO> findAll() throws UserNotFoundException;
 
