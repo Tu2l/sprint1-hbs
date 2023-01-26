@@ -1,14 +1,10 @@
 package com.hbs.serviceimpl;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.doThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.Mockito.mockStatic;
-import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -26,13 +22,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import com.hbs.dto.UserDTO;
-import com.hbs.entities.BookingDetails;
 import com.hbs.entities.User;
 import com.hbs.entities.UserRole;
-import com.hbs.exceptions.InvalidEmailFormatException;
-import com.hbs.exceptions.InvalidMobileNumberFormatException;
-import com.hbs.exceptions.UserAlreadyExistsException;
-import com.hbs.exceptions.UserNotFoundException;
 import com.hbs.repository.BookingDetailsRepository;
 import com.hbs.repository.UserRepository;
 import com.hbs.util.MapperUtil;
@@ -83,7 +74,6 @@ class UserServiceImplTest {
 		dto2.setPassword("paasword");
 		dto2.setMobile("1234567890");
 		dto2.setAddress("japan");
-
 
 	}
 

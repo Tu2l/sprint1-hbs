@@ -19,7 +19,6 @@ import com.hbs.dto.PaymentsDTO;
 import com.hbs.entities.Payments;
 import com.hbs.exceptions.PaymentsNotFoundException;
 import com.hbs.repository.PaymentRepository;
-import com.hbs.serviceimpl.PaymentServiceImpl;
 import com.hbs.util.MapperUtil;
 
 @ExtendWith(MockitoExtension.class)
