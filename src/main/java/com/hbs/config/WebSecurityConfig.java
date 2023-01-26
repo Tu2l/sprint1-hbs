@@ -2,6 +2,7 @@ package com.hbs.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -35,23 +36,13 @@ public class WebSecurityConfig {
 		http.cors().and().csrf().disable().exceptionHandling().authenticationEntryPoint(authenticationEntryPoint).and()
 				.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and().authorizeRequests()
 				.antMatchers("/swagger-ui.html", "/configuration/security", "/configuration/ui", "/v2/api-docs",
-						"/swagger-resources/**", "/swagger-ui/**", "/webjars/**", "/**")
+						"/swagger-resources/**", "/swagger-ui/**", "/webjars/**", "/auth/**")
 				.permitAll()
-//				.antMatchers("/auth/**").permitAll()
-//				.antMatchers(
-//						HttpMethod.GET,
-//						"/hotel**/**", 
-//						"/room**/**"
-//						)
-//				.permitAll()
-//				.antMatchers(HttpMethod.POST, "/booking**/**").hasRole("USER")
-//				.antMatchers(HttpMethod.PUT, "/admin/user/**").hasRole("USER")
-//				.antMatchers(
-//						HttpMethod.GET,
-//						"/booking**/**"
-//						)
-//				.hasRole("USER")
-//				.antMatchers("/**").hasRole("ADMIN")
+				.antMatchers(HttpMethod.GET, "/hotel", "/hotel/**", "/room", "/room/**").permitAll()
+				.antMatchers(HttpMethod.POST, "/bookings").hasRole("USER")
+				.antMatchers(HttpMethod.GET, "/bookings/user/**").hasRole("USER")
+				.antMatchers(HttpMethod.PUT, "/user/{id}").hasRole("USER")
+				.antMatchers("/**").hasRole("ADMIN")
 				.anyRequest().authenticated();
 
 		http.addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class);

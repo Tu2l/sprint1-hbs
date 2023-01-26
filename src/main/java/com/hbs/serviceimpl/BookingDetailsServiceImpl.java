@@ -132,6 +132,14 @@ public class BookingDetailsServiceImpl implements BookingDetailsService {
 		return MapperUtil.mapToBookingDetailsDto(bookingDetailsRepository.findById(bookingId)
 				.orElseThrow(() -> new BookingDetailsNotFoundException(BOOKING_DETAILS_NOT_FOUND_MESSAGE + bookingId)));
 	}
+
+	@Override
+	public List<BookingDetailsDTO> findByUserId(int userId) throws UserNotFoundException {
+		if (!userRepository.existsById(userId))
+			throw new UserNotFoundException(USER_NOT_FOUND_MESSAGE + userId);
+
+		return  MapperUtil.mapToBookingDetailsDtoList(bookingDetailsRepository.findByUserId(userId));
+	}
 	
 
 }

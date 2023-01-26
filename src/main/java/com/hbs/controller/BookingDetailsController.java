@@ -66,6 +66,11 @@ public class BookingDetailsController {
 		return new ResponseEntity<>(bookingDetailsService.findById(bookingId), HttpStatus.FOUND);
 	}
 
+	@GetMapping("/user/{userId}")
+	public ResponseEntity<List<BookingDetailsDTO>> findByUserId(@PathVariable int userId) throws UserNotFoundException {
+		return new ResponseEntity<>(bookingDetailsService.findByUserId(userId), HttpStatus.FOUND);
+	}
+
 	@GetMapping
 	public ResponseEntity<List<BookingDetailsDTO>> findAll() {
 		return new ResponseEntity<>(bookingDetailsService.findAll(), HttpStatus.OK);

@@ -27,7 +27,7 @@ import com.hbs.util.MapperUtil;
 public class RoomDetailsServiceImpl implements RoomDetailsService {
 	private static final String ROOM_DETAILS_FOUND = "Room details already exists for room no: ";
 	private static final String ROOM_DETAILS_NOT_FOUND = "Room details not found for roomid: ";
-	private static final String HOTEL_NOT_FOUND = "Hotel not found for hotelid: ";
+	private static final String HOTEL_NOT_FOUND = "Hotel not found for hotelId: ";
 	private static final String ACTIVE_BOOKING_FOUND_MESSAGE = "Active booking found";
 
 	@Autowired

@@ -25,4 +25,6 @@ public interface BookingDetailsService {
 	List<BookingDetailsDTO> findAll();
 
 	BookingDetailsDTO findById(int bookingId) throws BookingDetailsNotFoundException;
+	
+	List<BookingDetailsDTO> findByUserId(int userId) throws UserNotFoundException;
 }
