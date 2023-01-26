@@ -1,8 +1,6 @@
 package com.hbs.entities;
 
-import static org.junit.jupiter.api.Assertions.*;
-
-import javax.validation.constraints.AssertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -23,6 +21,8 @@ class RoomDetailsTest {
 		room.setRoomType("Delux");
 		room.setHotel(hotel);
 	}
+
+	
 	@Test
 	void testGetRoomId() {
 		assertEquals(123, room.getRoomId());

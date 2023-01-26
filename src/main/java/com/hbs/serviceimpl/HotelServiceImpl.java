@@ -22,7 +22,7 @@ import com.hbs.util.ValidationUtil;
 
 @Service
 public class HotelServiceImpl implements HotelService {
-	private static final String HOTEL_NOT_FOUND = "No dto found with id: ";
+	private static final String HOTEL_NOT_FOUND = "No Hotel found with id: ";
 	private static final String INVALID_EMAIL_FORMAT = "Invalid email: ";
 	private static final String INVALID_MOBILE_NUMBER_FORMAT = "Invalid mobile number";
 	private static final String HOTEL_ALREADY_EXISTS = "Hotel already exists with email: ";
@@ -82,7 +82,7 @@ public class HotelServiceImpl implements HotelService {
 
 	@Override
 	public List<HotelDTO> findAll() {
-		return MapperUtil.mapToHotelList(hotelRepository.findAll());
+		return MapperUtil.mapToHotelDtoList(hotelRepository.findAll());
 	}
 
 	@Override

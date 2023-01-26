@@ -141,7 +141,7 @@ public class MapperUtil {
 		return MAPPER.map(hotel, HotelDTO.class);
 	}
 
-	public static List<HotelDTO> mapToHotelList(List<Hotel> hotel) {
+	public static List<HotelDTO> mapToHotelDtoList(List<Hotel> hotel) {
 		return MAPPER.map(hotel, new TypeToken<List<HotelDTO>>() {
 		}.getType());
 	}
