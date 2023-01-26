@@ -1,6 +1,5 @@
 package com.hbs.config;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -19,11 +18,6 @@ import com.hbs.auth.JwtFilter;
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig {
-	@Autowired
-	private JwtAuthenticationEntryPoint authenticationEntryPoint;
-	@Autowired
-	private JwtFilter filter;
-
 	@Bean
 	public PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
@@ -36,21 +30,12 @@ public class WebSecurityConfig {
 	}
 
 	@Bean
-	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+	public SecurityFilterChain filterChain(HttpSecurity http, JwtFilter filter,
+			JwtAuthenticationEntryPoint authenticationEntryPoint) throws Exception {
 		http.cors().and().exceptionHandling().authenticationEntryPoint(authenticationEntryPoint).and()
-				.sessionManagement()
-				.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-				.and().authorizeRequests()
-				.antMatchers(
-						"/swagger-ui.html", 
-						"/configuration/security", 
-						"/configuration/ui", 
-						"/v2/api-docs",
-						"/swagger-resources/**",
-						"/swagger-ui/**", 
-						"/webjars/**",
-						"/**"
-						)
+				.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and().authorizeRequests()
+				.antMatchers("/swagger-ui.html", "/configuration/security", "/configuration/ui", "/v2/api-docs",
+						"/swagger-resources/**", "/swagger-ui/**", "/webjars/**", "/**")
 				.permitAll()
 //				.antMatchers(
 //						HttpMethod.GET,
@@ -68,7 +53,7 @@ public class WebSecurityConfig {
 //				.hasRole("USER")
 //				.antMatchers("/**").hasRole("ADMIN")
 				.anyRequest().authenticated();
-		
+
 		http.addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class);
 		return http.build();
 	}

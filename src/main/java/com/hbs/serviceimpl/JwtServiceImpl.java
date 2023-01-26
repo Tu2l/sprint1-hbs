@@ -12,7 +12,6 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.CrossOrigin;
 
 import com.hbs.auth.JwtRequest;
 import com.hbs.auth.JwtResponse;
@@ -28,7 +27,6 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 
 @Service
-@CrossOrigin
 public class JwtServiceImpl implements JwtService {
 	private static final String INVALID_CREDENTIALS_MESSAGE = "Email or password is wrong";
 	private static final String INVALID_TOKEN_MESSAGE = "Invalid token";
