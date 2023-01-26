@@ -57,7 +57,7 @@ public class RoomDetailsController {
 
 	@DeleteMapping("/{id}")
 	public ResponseEntity<RoomDetailsDTO> remove(@PathVariable int id)
-			throws RoomDetailsNotFoundException, ActiveBookingFoundException {
+			throws RoomDetailsNotFoundException, ActiveBookingFoundException, HotelNotFoundException {
 		return new ResponseEntity<>(roomService.remove(id), HttpStatus.OK);
 	}
 

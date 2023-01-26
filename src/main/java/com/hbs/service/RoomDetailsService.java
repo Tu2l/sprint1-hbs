@@ -19,7 +19,7 @@ public interface RoomDetailsService {
 	
 	RoomDetailsDTO update(RoomDetailsDTO dto) throws RoomDetailsNotFoundException, HotelNotFoundException;
 
-	RoomDetailsDTO remove(int roomDetailsId) throws RoomDetailsNotFoundException, ActiveBookingFoundException;
+	RoomDetailsDTO remove(int roomDetailsId) throws RoomDetailsNotFoundException, ActiveBookingFoundException, HotelNotFoundException;
 
 	List<RoomDetailsDTO> findAll();
 

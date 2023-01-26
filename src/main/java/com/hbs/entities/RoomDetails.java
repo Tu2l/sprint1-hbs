@@ -24,7 +24,7 @@ import lombok.ToString;
 @Table(name = "room_details")
 public class RoomDetails {
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE)
 	@Column(name = "room_id")
 	private int roomId;
 

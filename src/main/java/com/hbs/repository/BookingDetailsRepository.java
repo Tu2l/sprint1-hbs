@@ -45,8 +45,5 @@ public interface BookingDetailsRepository extends JpaRepository<BookingDetails, 
 	@Query("SELECT booking FROM BookingDetails booking WHERE booking.user.userId=:userId")
 	List<BookingDetails> findByUserId(@Param("userId") int userId);
 
-//	@Modifying
-//	@Query("DELETE FROM BookingDetails booking WHERE booking.user.userId=:userId")
-//	void deleteByUserId(@Param("userId") int userId);
 
 }

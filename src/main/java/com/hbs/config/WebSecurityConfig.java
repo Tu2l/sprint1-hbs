@@ -1,9 +1,7 @@
 package com.hbs.config;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -20,11 +18,6 @@ import com.hbs.auth.JwtFilter;
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig {
-	@Autowired
-	private JwtAuthenticationEntryPoint authenticationEntryPoint;
-	@Autowired
-	private JwtFilter filter;
-
 	@Bean
 	public PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
@@ -37,29 +30,20 @@ public class WebSecurityConfig {
 	}
 
 	@Bean
-	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+	public SecurityFilterChain filterChain(HttpSecurity http, JwtFilter filter,
+			JwtAuthenticationEntryPoint authenticationEntryPoint) throws Exception {
 		http.cors().and().csrf().disable().exceptionHandling().authenticationEntryPoint(authenticationEntryPoint).and()
-				.sessionManagement()
-				.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-				.and().authorizeRequests()
-				.antMatchers(
-						"/swagger-ui.html", 
-						"/configuration/security", 
-						"/configuration/ui", 
-						"/v2/api-docs",
-						"/swagger-resources/**",
-						"/swagger-ui/**", 
-						"/webjars/**",
-						"/**"
-						)
+				.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and().authorizeRequests()
+				.antMatchers("/swagger-ui.html", "/configuration/security", "/configuration/ui", "/v2/api-docs",
+						"/swagger-resources/**", "/swagger-ui/**", "/webjars/**", "/**")
 				.permitAll()
+//				.antMatchers("/auth/**").permitAll()
 //				.antMatchers(
 //						HttpMethod.GET,
-//					"/hotel**/**", 
-//					"/room**/**"
-//				)
+//						"/hotel**/**", 
+//						"/room**/**"
+//						)
 //				.permitAll()
-//				.antMatchers("/auth/**").permitAll()
 //				.antMatchers(HttpMethod.POST, "/booking**/**").hasRole("USER")
 //				.antMatchers(HttpMethod.PUT, "/admin/user/**").hasRole("USER")
 //				.antMatchers(
@@ -67,9 +51,9 @@ public class WebSecurityConfig {
 //						"/booking**/**"
 //						)
 //				.hasRole("USER")
-//				.antMatchers("/**").hasRole("ADMIN") 
+//				.antMatchers("/**").hasRole("ADMIN")
 				.anyRequest().authenticated();
-		
+
 		http.addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class);
 		return http.build();
 	}

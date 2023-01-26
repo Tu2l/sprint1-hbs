@@ -125,7 +125,7 @@
 			<properties>
 				<!-- Optional URL to server. Default value is http://localhost:9000 -->
 				<sonar.host.url> http://localhost:9000 </sonar.host.url>
-				<sonar.login>squ_1d529f2b4c7fb44000927d6ee78315cbadff2169</sonar.login>
+				<sonar.login>squ_798b03ec0c44dab08edf3130b4c0d5e6b4312024</sonar.login>
 			</properties>
 		</profile>
 	</profiles>

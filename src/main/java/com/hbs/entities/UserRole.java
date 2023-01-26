@@ -4,12 +4,11 @@ public enum UserRole {
 	USER, ADMIN, UNDEFINED;
 
 	public static UserRole set(String string) {
-		switch (string.toLowerCase()) {
-		case "user":
-			return UserRole.USER;
-		case "admin":
-			return UserRole.ADMIN;
-		}
+		string = string.toLowerCase();
+		if (string.equals("user"))
+			return USER;
+		else if (string.equals("admin"))
+			return ADMIN;
 
 		return UserRole.UNDEFINED;
 	}

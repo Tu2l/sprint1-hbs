@@ -52,22 +52,4 @@ public class Hotel {
 
 	@Column(name = "website", unique = true, nullable = false)
 	private String website;
-
-//	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-//	@JoinTable(name = "hotel_rooms", inverseJoinColumns = @JoinColumn(name = "room_id"), joinColumns = @JoinColumn(name = "hotel_id"))
-//	private List<RoomDetails> roomList;
-//	
-//	public void setRoomList(List<RoomDetails> roomList) {
-//		// setting hotel
-//		this.roomList = roomList;
-//		for (RoomDetails room : roomList) {
-//			room.setHotel(this);
-//			avgRatePerDay += room.getRatePerDay();
-//		}
-//		
-//		if (!roomList.isEmpty())
-//			avgRatePerDay = avgRatePerDay / roomList.size();
-//		
-//		LoggerUtil.logInfo("rooms list set");
-//	}
 }
