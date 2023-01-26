@@ -1,85 +1,99 @@
 package com.hbs.serviceimpl;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.modelmapper.ModelMapper;
 
 import com.hbs.dto.HotelDTO;
-import com.hbs.exceptions.HotelNotFoundException;
+import com.hbs.entities.Hotel;
+import com.hbs.repository.BookingDetailsRepository;
 import com.hbs.repository.HotelRepository;
 import com.hbs.repository.RoomDetailsRepository;
+import com.hbs.util.MapperUtil;
 
 @ExtendWith(MockitoExtension.class)
 class HotelServiceImplTest {
 
-	private static final String EXCEPTION = "Hotel not found with id:";
-
 	@Mock
 	private HotelRepository hotelRepository;
-
 	@Mock
 	private RoomDetailsRepository roomRepo;
-
 	@Mock
-	ModelMapper mapper;
+	private BookingDetailsRepository bookingRepository;
 
 	@InjectMocks
 	private HotelServiceImpl hotelService;
+	private MockedStatic<MapperUtil> mockedUtil;
 
-	private HotelDTO hotel;
-//	private MockedStatic<MapperUtil> mockedUtil;
-	List<HotelDTO> hotels = new ArrayList<>();
-
+	private HotelDTO dto;
+	private List<HotelDTO> hotels = new ArrayList<>();
+	private Hotel hotel;
+	
 	@BeforeEach
 	void setUp() {
-		hotel = new HotelDTO();
-		hotel.setHotelId(1);
-		hotel.setCity("Delhi");
-		hotel.setHotelName("Chandra");
-		hotel.setEmail("ch@gmail.com");
-		hotel.setDescription("Good one");
-		hotel.setAddress("India");
-		hotel.setAvgRatePerDay(1500);
-		hotel.setPhone1("1234567890");
-		hotel.setPhone2("2345678901");
-		hotel.setWebsite("www.ch.com");
+		dto = new HotelDTO();
+		dto.setHotelId(1);
+		dto.setCity("Delhi");
+		dto.setHotelName("Chandra");
+		dto.setEmail("ch@gmail.com");
+		dto.setDescription("Good one");
+		dto.setAddress("India");
+		dto.setAvgRatePerDay(1500);
+		dto.setPhone1("1234567890");
+		dto.setPhone2("2345678901");
+		dto.setWebsite("www.ch.com");
+		
+		hotels.add(dto);
+		hotel = MapperUtil.mapToHotel(dto);
 	}
-
-	/*
-	 * @Test void testAdd() throws InvalidEmailFormatException,
-	 * InvalidMobileNumberFormatException, HotelAlreadyExistsExcetion {
-	 * 
-	 * when(hotelService.add(hotel)).thenReturn(hotel); assertEquals(hotel,
-	 * hotelService.add(hotel)); }
-	 */
-
 	
-
-	@Test
-	void testfindAll() {
-		hotels = Arrays.asList(hotel);
-		when(hotelService.findAll()).thenReturn(hotels);
-		assertEquals(1, hotelService.findAll().size());
+	@AfterEach
+	void close() {
+		mockedUtil.close();
 	}
 
 	@Test
-	void testFindByIdThrowsHotelNotFoundException() {
+	void testAdd() {
 		try {
-			when(hotelService.findById(1)).thenThrow(new HotelNotFoundException(EXCEPTION + hotel.getHotelId()));
-			assertThrows(HotelNotFoundException.class, () -> hotelService.findById(hotel.getHotelId()));
-		} catch (HotelNotFoundException e) {
+			when(MapperUtil.mapToHotel(dto)).thenReturn(hotel);
+			when(MapperUtil.mapToHotelDto(hotel)).thenReturn(dto);
+			when(hotelService.add(dto)).thenReturn(dto);
+			
+			assertEquals(dto, hotelService.add(dto));
+		} catch (Exception ex) {
+			fail(ex.getMessage());
 		}
+	}
+
+	@Test
+	void testUpdate() {
+		fail("Not yet implemented");
+	}
+
+	@Test
+	void testRemove() {
+		fail("Not yet implemented");
+	}
+
+	@Test
+	void testFindAll() {
+		fail("Not yet implemented");
+	}
+
+	@Test
+	void testFindById() {
+		fail("Not yet implemented");
 	}
 }
