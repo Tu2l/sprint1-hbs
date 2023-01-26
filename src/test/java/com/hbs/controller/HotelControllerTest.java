@@ -50,7 +50,7 @@ class HotelControllerTest {
 		hotelDto.setHotelName("maurya");
 		hotels = new ArrayList<>();
 		hotels.add(hotel);
-		hotelDtos = MapperUtil.mapToHotelList(hotels);
+		hotelDtos = MapperUtil.mapToHotelDtoList(hotels);
 	}
 
 	@Test
