@@ -32,18 +32,18 @@ public class WebSecurityConfig {
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http, JwtFilter filter,
 			JwtAuthenticationEntryPoint authenticationEntryPoint) throws Exception {
-		http.cors().and().exceptionHandling().authenticationEntryPoint(authenticationEntryPoint).and()
+		http.cors().and().csrf().disable().exceptionHandling().authenticationEntryPoint(authenticationEntryPoint).and()
 				.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and().authorizeRequests()
 				.antMatchers("/swagger-ui.html", "/configuration/security", "/configuration/ui", "/v2/api-docs",
 						"/swagger-resources/**", "/swagger-ui/**", "/webjars/**", "/**")
 				.permitAll()
+//				.antMatchers("/auth/**").permitAll()
 //				.antMatchers(
 //						HttpMethod.GET,
 //						"/hotel**/**", 
 //						"/room**/**"
 //						)
 //				.permitAll()
-//				.antMatchers("/auth/**").permitAll()
 //				.antMatchers(HttpMethod.POST, "/booking**/**").hasRole("USER")
 //				.antMatchers(HttpMethod.PUT, "/admin/user/**").hasRole("USER")
 //				.antMatchers(
