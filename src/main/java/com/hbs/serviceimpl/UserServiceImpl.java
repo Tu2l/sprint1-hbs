@@ -31,7 +31,7 @@ import com.hbs.util.ValidationUtil;
 public class UserServiceImpl implements UserService {
 	private static final String USER_NOT_FOUND_EXCEPTION = "User not found with id: ";
 	private static final String USER_NOT_FOUND_EMAIL_EXCEPTION = "User not found with email: ";
-	private static final String USER_ALREADY_EXISTS = "UserDTO already exists with email: ";
+	private static final String USER_ALREADY_EXISTS = "User already exists with email: ";
 	private static final String INVALID_EMAIL_FORMAT = "Invalid email: ";
 	private static final String INVALID_MOBILE_NUMBER_FORMAT = "Invalid mobile number";
 	private static final String ACTIVE_BOOKING_FOUND_MESSAGE = "Active booking found";
