@@ -31,7 +31,8 @@ import com.hbs.util.ValidationUtil;
 public class UserServiceImpl implements UserService {
 	private static final String USER_NOT_FOUND_EXCEPTION = "User not found with id: ";
 	private static final String USER_NOT_FOUND_EMAIL_EXCEPTION = "User not found with email: ";
-	private static final String USER_ALREADY_EXISTS = "User already exists with email: ";
+	private static final String USER_EMAIL_ALREADY_EXISTS = "User already exists with email: ";
+	private static final String USER_MOBILE_ALREADY_EXISTS = "User already exists with mobile: ";
 	private static final String INVALID_EMAIL_FORMAT = "Invalid email: ";
 	private static final String INVALID_MOBILE_NUMBER_FORMAT = "Invalid mobile number";
 	private static final String ACTIVE_BOOKING_FOUND_MESSAGE = "Active booking found";
@@ -62,7 +63,10 @@ public class UserServiceImpl implements UserService {
 		validateUser(dto);
 
 		if (userRepository.findByEmail(dto.getEmail()).isPresent())
-			throw new UserAlreadyExistsException(USER_ALREADY_EXISTS + dto.getEmail());
+			throw new UserAlreadyExistsException(USER_EMAIL_ALREADY_EXISTS + dto.getEmail());
+		
+		if (userRepository.findByMobile(dto.getMobile()).isPresent())
+			throw new UserAlreadyExistsException(USER_MOBILE_ALREADY_EXISTS + dto.getMobile());
 
 		User user = MapperUtil.mapToUser(dto);
 
@@ -81,8 +85,12 @@ public class UserServiceImpl implements UserService {
 		UserDTO find = findById(dto.getUserId());
 		if (!(dto.getEmail().equalsIgnoreCase(find.getEmail()))
 				&& userRepository.findByEmail(dto.getEmail()).isPresent())
-			throw new UserAlreadyExistsException(USER_ALREADY_EXISTS + dto.getEmail());
+			throw new UserAlreadyExistsException(USER_EMAIL_ALREADY_EXISTS + dto.getEmail());
 
+		if (!(dto.getMobile().equals(find.getMobile()))
+				&&userRepository.findByMobile(dto.getMobile()).isPresent())
+			throw new UserAlreadyExistsException(USER_MOBILE_ALREADY_EXISTS + dto.getMobile());
+		
 
 		User user = MapperUtil.mapToUser(dto);
 		user.setPassword(passwordEncoder.encode(user.getPassword()));

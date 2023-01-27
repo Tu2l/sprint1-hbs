@@ -12,6 +12,8 @@ import com.hbs.entities.UserRole;
 @Repository
 public interface UserRepository extends JpaRepository<User, Integer> {
 	Optional<User> findByEmail(String email);
+	
+	Optional<User> findByMobile(String mobile);
 
 	List<User> findAllByRole(UserRole user);
 
