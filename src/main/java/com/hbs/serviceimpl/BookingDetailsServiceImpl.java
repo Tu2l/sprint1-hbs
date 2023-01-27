@@ -1,7 +1,10 @@
 package com.hbs.serviceimpl;
 
+import java.time.Duration;
 import java.time.LocalDate;
+import java.time.Period;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -70,7 +73,10 @@ public class BookingDetailsServiceImpl implements BookingDetailsService {
 		checkForAvailability(dto);
 
 		// calculate amount
-		dto.setAmount(roomRepository.calculateTotalAmount(dto.getRoomIds()));
+		long days = Period.between(dto.getBookedFromDate(), dto.getBookedToDate()).getDays();
+
+		dto.setAmount(days * roomRepository.calculateTotalAmount(dto.getRoomIds()));
+
 		BookingDetails booking = bookingDetailsRepository.save(MapperUtil.mapToBookingDetails(dto));
 
 		return MapperUtil.mapToBookingDetailsDto(booking);
@@ -83,7 +89,7 @@ public class BookingDetailsServiceImpl implements BookingDetailsService {
 		validateBooking(dto);
 
 		bookingDetailsRepository.deleteById(dto.getBookingId());
-		
+
 		BookingDetails bookingDetails = MapperUtil.mapToBookingDetails(dto);
 
 		try {
@@ -102,8 +108,8 @@ public class BookingDetailsServiceImpl implements BookingDetailsService {
 	@Override
 	public BookingDetailsDTO remove(int bookingId) throws BookingDetailsNotFoundException, ActiveBookingFoundException {
 		BookingDetailsDTO dto = findById(bookingId);
-		
-		if(bookingDetailsRepository.findCountByDate(LocalDate.now(),bookingId) > 0)
+
+		if (bookingDetailsRepository.findCountByDate(LocalDate.now(), bookingId) > 0)
 			throw new ActiveBookingFoundException(ACTIVE_BOOKING_FOUND_MESSAGE);
 
 		bookingDetailsRepository.deleteById(bookingId);
@@ -111,16 +117,15 @@ public class BookingDetailsServiceImpl implements BookingDetailsService {
 		return dto;
 	}
 
-	
 	@Override
 	public BookingDetailsDTO removeActive(int bookingId) throws BookingDetailsNotFoundException {
 		BookingDetailsDTO dto = findById(bookingId);
-	
+
 		bookingDetailsRepository.deleteById(bookingId);
 
 		return dto;
 	}
-	
+
 	@Override
 	public List<BookingDetailsDTO> findAll() {
 		return MapperUtil.mapToBookingDetailsDtoList(bookingDetailsRepository.findAll());
@@ -138,8 +143,7 @@ public class BookingDetailsServiceImpl implements BookingDetailsService {
 		if (!userRepository.existsById(userId))
 			throw new UserNotFoundException(USER_NOT_FOUND_MESSAGE + userId);
 
-		return  MapperUtil.mapToBookingDetailsDtoList(bookingDetailsRepository.findByUserId(userId));
+		return MapperUtil.mapToBookingDetailsDtoList(bookingDetailsRepository.findByUserId(userId));
 	}
-	
 
 }
