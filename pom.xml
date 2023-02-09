@@ -101,6 +101,7 @@
 		</dependency>
 	</dependencies>
 	<build>
+		<finalName>hbs</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
